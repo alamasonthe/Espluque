@@ -1,0 +1,77 @@
+﻿<Window x:Class="Modele1.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:Modele1"
+        xmlns:uc="clr-namespace:Modele1.UserControls"
+        mc:Ignorable="d"
+        Title="MainWindow" 
+        Height="450" Width="800"
+        AllowDrop="True"
+        DragOver="MainWindow_DragOver"
+        Drop="MainWindow_Drop">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="8*"/>
+            <RowDefinition Height="5"/>
+            <RowDefinition Height="2*"/>
+        </Grid.RowDefinitions>
+        
+        <Grid>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="220" MinWidth="120" />
+                <ColumnDefinition Width="5" />
+                <ColumnDefinition Width="*" MinWidth="200" />
+            </Grid.ColumnDefinitions>
+
+            <!-- Menu gauche -->
+            <Border Grid.Column="0"
+                BorderBrush="#CCCCCC"
+                BorderThickness="0,0,1,0"
+                Padding="8">
+                <StackPanel>
+                    <TextBlock Text="Menu"
+                       Margin="0,0,0,8" />
+
+                    <Button Content="Logs"
+                            Tag="log"
+                            Click="Menu_Click"
+                            Margin="0,0,0,4" />
+
+                    <Button Content="Dyne extensions DB"
+                            Click="Menu_Click"
+                            Tag="dyne"
+                            Margin="0,0,0,4" />
+                    
+                    <Button Content="Pronom extensions DB"
+                            Click="Menu_Click"
+                            Tag="pronom"
+                            Margin="0,0,0,4" />
+                </StackPanel>
+            </Border>
+
+            <!-- Splitter redimensionnable -->
+            <GridSplitter Grid.Column="1"
+                          Width="5"
+                          HorizontalAlignment="Stretch"
+                          VerticalAlignment="Stretch"
+                          Background="#DDDDDD"
+                          ShowsPreview="True" />
+
+            <!-- Contenu droite -->
+            <ContentControl x:Name="ContentHost" Grid.Column="2" />
+        </Grid>
+
+        <GridSplitter Grid.Row="1"
+              Height="5"
+              HorizontalAlignment="Stretch"
+              VerticalAlignment="Stretch"
+              Background="#DDDDDD"
+              ShowsPreview="True" />
+
+        <ContentControl x:Name="InfoHost" Grid.Row="2" />
+
+    </Grid>
+
+</Window>

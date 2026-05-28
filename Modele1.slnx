@@ -1,0 +1,16 @@
+<Solution>
+  <Folder Name="/Domain/">
+    <Project Path="Espluque.Application/Espluque.Application.csproj" />
+    <Project Path="Espluque.Contracts/Espluque.Contracts.csproj" />
+  </Folder>
+  <Folder Name="/Infrastructure/">
+    <Project Path="DyneSqlite/DyneSqlite.csproj" Id="129f85e4-1f6b-42aa-9ff7-71d762d0e1a8" />
+    <Project Path="MiniFileLogger/MiniFileLogger.csproj" Id="e801c127-4a25-49e9-bd5b-016113a7eb58" />
+    <Project Path="PronomSqlite/PronomSqlite.csproj" Id="f5ca104a-25c1-4090-820e-5180357514b4" />
+  </Folder>
+  <Folder Name="/Interface/">
+    <Project Path="Modele1/Modele1.csproj" />
+  </Folder>
+  <Project Path="Bootstrap/Bootstrap.csproj" />
+  <Project Path="Util/Util.csproj" Id="224d5274-644c-4367-a415-be803b69a289" />
+</Solution>

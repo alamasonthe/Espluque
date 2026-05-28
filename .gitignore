@@ -1,0 +1,81 @@
+## Build output
+bin/
+obj/
+out/
+artifacts/
+
+## Visual Studio
+.vs/
+*.user
+*.userosscache
+*.suo
+*.rsuser
+*.sln.docstates
+*.ncrunch*
+*.localhistory
+*.VisualState.xml
+
+## Rider / JetBrains
+.idea/
+*.sln.iml
+
+## VS Code
+.vscode/*
+!.vscode/settings.json
+!.vscode/tasks.json
+!.vscode/launch.json
+!.vscode/extensions.json
+
+## Test results and coverage
+TestResults/
+coverage/
+coverage.*/
+*.coverage
+*.coveragexml
+*.trx
+*.opencover.xml
+*.cobertura.xml
+
+## NuGet
+*.nupkg
+*.snupkg
+packages/
+project.lock.json
+project.assets.json
+*.nuget.props
+*.nuget.targets
+
+## Logs and diagnostics
+*.log
+*.tlog
+*.binlog
+logs/
+
+## Temporary files
+*.tmp
+*.temp
+*.bak
+*.cache
+*.pid
+*.pdb
+*.ilk
+*.meta
+
+## Publish and deployment
+publish/
+PublishProfiles/
+*.pubxml.user
+
+## OS files
+.DS_Store
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+
+## User secrets / local environment
+.env
+.env.*
+!.env.example
+secrets.json
+appsettings.*.local.json
+appsettings.Local.json
