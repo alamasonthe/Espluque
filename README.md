@@ -1,4 +1,5 @@
 # Espluque
+[![Build](https://github.com/alamasonthe/Espluque/actions/workflows/build.yml/badge.svg)](https://github.com/alamasonthe/Espluque/actions/workflows/build.yml)
 
 > A modular, thesaurus-driven file analysis engine built with WPF and .NET.
 
