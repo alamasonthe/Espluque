@@ -1,0 +1,21 @@
+{
+  "name": "Pronom module",
+  "version": "0.0.1",
+  "assembly": "Pronom.dll",
+  "contributions": [
+    {
+      "interfaceType": "IDetector",
+      "label": "Pronom detector",
+      "className": "Pronom.Detector",
+      "tags": [ "AnyFile" ],
+      "active": true
+    },
+    {
+      "interfaceType": "IWpfMaintenance",
+      "label": "Pronom maintenance",
+      "className": "Pronom.Maintenance",
+      "tags": [],
+      "active": true
+    }
+  ]
+}

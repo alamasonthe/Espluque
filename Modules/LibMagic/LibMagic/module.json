@@ -1,0 +1,21 @@
+{
+  "name": "LibMagic module",
+  "version": "0.0.1",
+  "assembly": "LibMagic.dll",
+  "contributions": [
+    {
+      "interfaceType": "IDetector",
+      "label": "LibMagic detector",
+      "className": "LibMagic.Detector",
+      "tags": [ "AnyFile" ],
+      "active": true
+    },
+    {
+      "interfaceType": "IManagedDependencies",
+      "label": "LibMagic dependency list",
+      "className": "LibMagic.Preload",
+      "tags": [],
+      "active": true
+    }
+  ]
+}

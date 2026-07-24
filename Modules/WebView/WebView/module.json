@@ -1,0 +1,14 @@
+{
+  "name": "WebView2 module",
+  "version": "0.0.1",
+  "assembly": "WebView.dll",
+  "contributions": [
+    {
+      "interfaceType": "IWpfViewer",
+      "label": "Microsoft WebView 2",
+      "className": "WebView.Viewer",
+      "tags": [ "WebView2" ],
+      "active": true
+    }
+  ]
+}

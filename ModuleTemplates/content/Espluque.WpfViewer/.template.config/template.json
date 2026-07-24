@@ -1,0 +1,12 @@
+{
+  "$schema": "http://json.schemastore.org/template",
+  "identity": "Espluque.Templates.WpfViewer",
+  "name": "Espluque WPF Viewer Module",
+  "shortName": "espluque-wpfviewer",
+  "sourceName": "WpfViewerTemplate",
+  "preferNameDirectory": true,
+  "tags": {
+    "language": "C#",
+    "type": "project"
+  }
+}

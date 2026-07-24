@@ -1,0 +1,21 @@
+{
+  "name": "Registry file Edit",
+  "version": "0.0.1",
+  "assembly": "RegViewer.dll",
+  "contributions": [
+    {
+      "interfaceType": "IWpfViewer",
+      "label": "Reg file viewer",
+      "className": "RegViewer.Viewer",
+      "tags": [ "Reg file" ],
+      "active": true
+    },
+    {
+      "interfaceType": "IManagedDependencies",
+      "label": "Reg file dependency list",
+      "className": "RegViewer.Preload",
+      "tags": [],
+      "active": true
+    }
+  ]
+}

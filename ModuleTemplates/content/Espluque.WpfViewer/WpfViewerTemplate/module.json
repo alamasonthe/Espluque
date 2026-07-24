@@ -1,0 +1,14 @@
+{
+  "name": "WPF Viewer Template module",
+  "version": "0.0.1",
+  "assembly": "WpfViewerTemplate.dll",
+  "contributions": [
+    {
+      "interfaceType": "IWpfViewer",
+      "label": "Template WPF Viewer",
+      "className": "WpfViewerTemplate.WpfViewer",
+      "tags": [ "AnyFile" ],
+      "active": true
+    }
+  ]
+}

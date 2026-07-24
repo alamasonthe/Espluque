@@ -1,0 +1,32 @@
+<ResourceDictionary
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+
+    <!-- Interface colors -->
+    <!-- Interface colors -->
+	<Color x:Key="App.Color.Background">#FFFFFF</Color>
+	<Color x:Key="App.Color.Surface">#FFFFFF</Color>
+	<Color x:Key="App.Color.Border">#000000</Color>
+	<Color x:Key="App.Color.Text">#000000</Color>
+	<Color x:Key="App.Color.TextMuted">#000000</Color>
+    <Color x:Key="App.Color.TextInverse">#FFFFFF</Color>
+	<Color x:Key="App.Color.Accent">#0A4D8C</Color>
+	<Color x:Key="App.Color.Selection">#F9A825</Color>
+	<Color x:Key="App.Color.Danger">#C62828</Color>
+    <Color x:Key="App.Color.StatusSuccess">#2E7D32</Color>
+    <Color x:Key="App.Color.StatusWarning">#EF6C00</Color>
+
+    <SolidColorBrush x:Key="App.Background" Color="{StaticResource App.Color.Background}" />
+    <SolidColorBrush x:Key="App.Surface" Color="{StaticResource App.Color.Surface}" />
+    <SolidColorBrush x:Key="App.Border" Color="{StaticResource App.Color.Border}" />
+    <SolidColorBrush x:Key="App.Text" Color="{StaticResource App.Color.Text}" />
+    <SolidColorBrush x:Key="App.TextMuted" Color="{StaticResource App.Color.TextMuted}" />
+    <SolidColorBrush x:Key="App.TextInverse" Color="{StaticResource App.Color.TextInverse}" />
+    <SolidColorBrush x:Key="App.Accent" Color="{StaticResource App.Color.Accent}" />
+    <SolidColorBrush x:Key="App.Selection" Color="{StaticResource App.Color.Selection}" />
+    <SolidColorBrush x:Key="App.Danger" Color="{StaticResource App.Color.Danger}" />
+    <SolidColorBrush x:Key="App.StatusSuccess" Color="{StaticResource App.Color.StatusSuccess}" />
+    <SolidColorBrush x:Key="App.StatusWarning" Color="{StaticResource App.Color.StatusWarning}" />
+    <SolidColorBrush x:Key="App.StatusError" Color="{StaticResource App.Color.Danger}" />
+
+</ResourceDictionary>

@@ -1,0 +1,22 @@
+﻿<UserControl x:Class="AvalonEditViewer.TextEditorUC"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:AvalonEditViewer"
+             xmlns:avalonEdit="http://icsharpcode.net/sharpdevelop/avalonedit"
+             xmlns:theme="clr-namespace:Espluque.Theming;assembly=Espluque.Theming"
+             mc:Ignorable="d" 
+             d:DesignHeight="450" d:DesignWidth="800">
+    <Grid Background="{DynamicResource App.Background}">
+
+        <avalonEdit:TextEditor x:Name="TextBoxEditor"
+                   Background="{DynamicResource App.Background}"
+                   Foreground="{DynamicResource App.Text}"
+                   FontFamily="Consolas"
+                   FontSize="14"
+                   ShowLineNumbers="True"
+                   WordWrap="False" />
+
+    </Grid>
+</UserControl>

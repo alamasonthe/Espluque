@@ -1,0 +1,48 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+	<PropertyGroup>
+		<TargetFramework>net10.0</TargetFramework>
+		<ImplicitUsings>enable</ImplicitUsings>
+		<Nullable>enable</Nullable>
+		<CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
+		<EnableDynamicLoading>true</EnableDynamicLoading>
+	</PropertyGroup>
+
+	<ItemGroup>
+		<PackageReference Include="Mime" Version="3.8.0" GeneratePathProperty="true" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<ProjectReference Include="$(ContractsProjectPath)" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<None Update="module.json">
+			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+		</None>
+	</ItemGroup>
+
+	<Target Name="CopyModuleToHost" AfterTargets="Build">
+		<PropertyGroup>
+			<HostModuleDirectory>$(ModuleOutputDirectory)$(AssemblyName)\</HostModuleDirectory>
+		</PropertyGroup>
+
+		<ItemGroup>
+			<MimeRuntimeFiles Include="$(PkgMime)\runtimes\win-x64\native\*" />
+		</ItemGroup>
+
+		<MakeDir Directories="$(HostModuleDirectory)" />
+		<MakeDir Directories="$(HostModuleDirectory)runtimes\win-x64\native" />
+
+		<Copy SourceFiles="$(TargetPath)" DestinationFolder="$(HostModuleDirectory)" />
+		<Copy SourceFiles="$(TargetDir)$(TargetName).pdb" DestinationFolder="$(HostModuleDirectory)" Condition="'$(Configuration)' == 'Debug'" />
+		<Copy SourceFiles="$(ProjectDir)module.json" DestinationFolder="$(HostModuleDirectory)" />
+
+		<Copy SourceFiles="@(MimeRuntimeFiles)" DestinationFolder="$(HostModuleDirectory)runtimes\win-x64\native" />
+
+		<Copy SourceFiles="$(TargetDir)Mime.dll" DestinationFolder="$(HostModuleDirectory)" />
+		<Copy SourceFiles="$(TargetDir)MimeTypesMap.dll" DestinationFolder="$(HostModuleDirectory)" />
+		<Copy SourceFiles="$(TargetDir)$(TargetName).deps.json" DestinationFolder="$(HostModuleDirectory)" />
+	</Target>
+
+</Project>

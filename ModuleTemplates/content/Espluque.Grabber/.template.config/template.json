@@ -1,0 +1,12 @@
+{
+  "$schema": "http://json.schemastore.org/template",
+  "identity": "Espluque.Templates.Grabber",
+  "name": "Espluque Grabber Module",
+  "shortName": "espluque-grabber",
+  "sourceName": "GrabberTemplate",
+  "preferNameDirectory": true,
+  "tags": {
+    "language": "C#",
+    "type": "project"
+  }
+}

@@ -1,0 +1,35 @@
+{
+  "name": "Composit Module Sample",
+  "version": "0.0.1",
+  "assembly": "CompositeMdModule.dll",
+  "contributions": [
+    {
+      "interfaceType": "IDetector",
+      "label": "Markdown detector",
+      "className": "CompositeMdModule.ModuleService",
+      "tags": [ "Markdown" ],
+      "active": true
+    },
+    {
+      "interfaceType": "IGrabber",
+      "label": "Markdown infos",
+      "className": "CompositeMdModule.ModuleService",
+      "tags": [ "Markdown" ],
+      "active": true
+    },
+    {
+      "interfaceType": "IWpfViewer",
+      "label": "Markdown viewer",
+      "className": "CompositeMdModule.ModuleService",
+      "tags": [ "Markdown" ],
+      "active": true
+    },
+    {
+      "interfaceType": "IManagedDependencies",
+      "label": "Markdig dependency list",
+      "className": "CompositeMdModule.ModuleService",
+      "tags": [],
+      "active": true
+    }
+  ]
+}

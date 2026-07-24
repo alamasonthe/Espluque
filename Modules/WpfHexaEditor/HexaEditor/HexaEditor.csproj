@@ -1,0 +1,50 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+	<PropertyGroup>
+		<TargetFramework>net10.0-windows</TargetFramework>
+		<Nullable>enable</Nullable>
+		<UseWPF>true</UseWPF>
+		<ImplicitUsings>enable</ImplicitUsings>
+		<CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
+		<EnableDynamicLoading>true</EnableDynamicLoading>
+	</PropertyGroup>
+
+	<ItemGroup>
+		<PackageReference Include="WPFHexaEditor" Version="2.2.0" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<ProjectReference Include="$(ContractsProjectPath)" />
+		<ProjectReference Include="$(ModuleCommonsProjectPath)" />
+		<ProjectReference Include="$(ThemingProjectPath)" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<Compile Update="HexEditUC.xaml.cs">
+			<SubType>Code</SubType>
+		</Compile>
+	</ItemGroup>
+
+	<ItemGroup>
+		<None Update="module.json">
+			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+		</None>
+	</ItemGroup>
+
+	<Target Name="CopyModuleToHost" AfterTargets="Build">
+		<PropertyGroup>
+			<HostModuleDirectory>$(ModuleOutputDirectory)$(AssemblyName)\</HostModuleDirectory>
+		</PropertyGroup>
+
+		<MakeDir Directories="$(HostModuleDirectory)" />
+		<Copy SourceFiles="$(TargetPath)" DestinationFolder="$(HostModuleDirectory)" />
+		<Copy SourceFiles="$(TargetDir)$(TargetName).pdb" DestinationFolder="$(HostModuleDirectory)" Condition="'$(Configuration)' == 'Debug'" />
+		<Copy SourceFiles="$(ProjectDir)module.json" DestinationFolder="$(HostModuleDirectory)" />
+
+		<Copy SourceFiles="$(TargetDir)WPFHexaEditor.dll" DestinationFolder="$(HostModuleDirectory)" />
+
+		<Copy SourceFiles="$(TargetDir)$(TargetName).deps.json" DestinationFolder="$(HostModuleDirectory)" />
+
+	</Target>
+
+</Project>

@@ -1,0 +1,8 @@
+{
+  "Espluquer": {
+    "Db": "espluque.db",
+    "PronomDb": "pronom.db",
+    "LogFilePath": "",
+    "Theme": "Light",
+  }
+}

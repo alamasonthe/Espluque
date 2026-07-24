@@ -1,0 +1,28 @@
+{
+  "name": "ImageMagick module",
+  "version": "0.0.1",
+  "assembly": "Magick.dll",
+  "contributions": [
+    {
+      "interfaceType": "IGrabber",
+      "label": "ImageMagick image properties",
+      "className": "Magick.Grabber",
+      "tags": [ "Image" ],
+      "active": true
+    },
+    {
+      "interfaceType": "IWpfViewer",
+      "label": "ImageMagick Image viewer",
+      "className": "Magick.ImageMagickImageViewer",
+      "tags": [ "ImageMagick viewer" ],
+      "active": true
+    },
+    {
+      "interfaceType": "IManagedDependencies",
+      "label": "ImageMagick dependency list",
+      "className": "Magick.Preload",
+      "tags": [],
+      "active": true
+    }
+  ]
+}

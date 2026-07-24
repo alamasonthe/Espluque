@@ -1,0 +1,33 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+	<PropertyGroup>
+		<TargetFramework>net10.0</TargetFramework>
+		<ImplicitUsings>enable</ImplicitUsings>
+		<Nullable>enable</Nullable>
+	</PropertyGroup>
+
+	<ItemGroup>
+		<ProjectReference Include="$(ContractsProjectPath)" />
+		<ProjectReference Include="$(ModuleCommonsProjectPath)" />
+		<ProjectReference Include="$(UtilProjectPath)" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<None Update="module.json">
+			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+		</None>
+	</ItemGroup>
+
+	<Target Name="CopyModuleToHost" AfterTargets="Build">
+		<PropertyGroup>
+			<HostModuleDirectory>$(ModuleOutputDirectory)$(AssemblyName)\</HostModuleDirectory>
+		</PropertyGroup>
+
+		<MakeDir Directories="$(HostModuleDirectory)" />
+
+		<Copy SourceFiles="$(TargetPath)" DestinationFolder="$(HostModuleDirectory)" />
+		<Copy SourceFiles="$(TargetDir)$(TargetName).pdb" DestinationFolder="$(HostModuleDirectory)" Condition="'$(Configuration)' == 'Debug'" />
+		<Copy SourceFiles="$(ProjectDir)module.json" DestinationFolder="$(HostModuleDirectory)" />
+	</Target>
+
+</Project>

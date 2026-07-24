@@ -1,0 +1,28 @@
+{
+  "name": "Windows App Package",
+  "version": "0.0.1",
+  "assembly": "WindowsAppPackage.dll",
+  "contributions": [
+    {
+      "interfaceType": "IDetector",
+      "label": "WindowsAppPackage detector",
+      "className": "WindowsAppPackage.Detector",
+      "tags": [ "Windows App" ],
+      "active": true
+    },
+    {
+      "interfaceType": "IGrabber",
+      "label": "Windows App Package infos",
+      "className": "WindowsAppPackage.PackageGrabber",
+      "tags": [ "Windows App Package" ],
+      "active": true
+    },
+    {
+      "interfaceType": "IGrabber",
+      "label": "Windows App Bundle infos",
+      "className": "WindowsAppPackage.BundleGrabber",
+      "tags": [ "Windows App Bundle" ],
+      "active": true
+    }
+  ]
+}

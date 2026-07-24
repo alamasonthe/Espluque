@@ -1,0 +1,28 @@
+{
+  "name": "Any File module",
+  "version": "0.0.1",
+  "assembly": "AnyFile.dll",
+  "contributions": [
+    {
+      "interfaceType": "IGrabber",
+      "label": "File properties",
+      "className": "AnyFile.InfosGrabber",
+      "tags": [ "AnyFile" ],
+      "active": true
+    },
+    {
+      "interfaceType": "IGrabber",
+      "label": "File attributes",
+      "className": "AnyFile.AttributesGrabber",
+      "tags": [ "AnyFile" ],
+      "active": true
+    },
+    {
+      "interfaceType": "IDetector",
+      "label": "Text or Binary",
+      "className": "AnyFile.TextOrBinaryDetector",
+      "tags": [ "AnyFile" ],
+      "active": true
+    }
+  ]
+}

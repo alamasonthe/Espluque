@@ -1,0 +1,21 @@
+{
+  "name": "WpfHexaEditor",
+  "version": "0.0.1",
+  "assembly": "HexaEditor.dll",
+  "contributions": [
+    {
+      "interfaceType": "IWpfViewer",
+      "label": "Wpf Hexa Editor",
+      "className": "HexaEditor.Viewer",
+      "tags": [ "Binary" ],
+      "active": true
+    },
+    {
+      "interfaceType": "IManagedDependencies",
+      "label": "HexaEditor dependency list",
+      "className": "HexaEditor.Viewer",
+      "tags": [],
+      "active": true
+    }
+  ]
+}

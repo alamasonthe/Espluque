@@ -1,0 +1,15 @@
+<Project>
+	<PropertyGroup>
+		<EspluqueRoot>$(MSBuildThisFileDirectory)..\</EspluqueRoot>
+		
+		<ContractsProjectPath>$(EspluqueRoot)src\Domain\Espluque.Contracts\Espluque.Contracts.csproj</ContractsProjectPath>
+		<ModuleCommonsProjectPath>$(EspluqueRoot)src\Domain\Espluque.ModuleCommons\Espluque.ModuleCommons.csproj</ModuleCommonsProjectPath>
+		<ThemingProjectPath>$(EspluqueRoot)src\Interface\Espluque.Theming\Espluque.Theming.csproj</ThemingProjectPath>
+
+		<UtilProjectPath>$(EspluqueRoot)src\Shared\Util\Util.csproj</UtilProjectPath>
+		<SevenZipProjectPath>$(EspluqueRoot)src\Shared\SevenZip\SevenZip.csproj</SevenZipProjectPath>
+		<SqliteUtilProjectPath>$(EspluqueRoot)src\Shared\SqliteUtil\SqliteUtil.csproj</SqliteUtilProjectPath>
+		
+		<ModuleOutputDirectory>$(EspluqueRoot)src\Interface\Espluquer\bin\x64\$(Configuration)\net10.0-windows\win-x64\Modules\</ModuleOutputDirectory>
+	</PropertyGroup>
+</Project>

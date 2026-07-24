@@ -1,0 +1,61 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+	<PropertyGroup>
+		<TargetFramework>net10.0-windows</TargetFramework>
+		<Nullable>enable</Nullable>
+		<UseWPF>true</UseWPF>
+		<ImplicitUsings>enable</ImplicitUsings>
+		<CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
+		<EnableDynamicLoading>true</EnableDynamicLoading>
+	</PropertyGroup>
+
+	<ItemGroup>
+		<PackageReference Include="LibVLCSharp.WPF" Version="3.10.0" />
+		<PackageReference Include="VideoLAN.LibVLC.Windows" Version="3.0.23.1" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<ProjectReference Include="$(ContractsProjectPath)" />
+		<ProjectReference Include="$(ThemingProjectPath)" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<Compile Update="VlcUC.xaml.cs">
+			<SubType>Code</SubType>
+		</Compile>
+	</ItemGroup>
+
+	<ItemGroup>
+		<None Update="module.json">
+			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+		</None>
+	</ItemGroup>
+
+	<Target Name="CopyModuleToHost" AfterTargets="Build">
+		<PropertyGroup>
+			<HostModuleDirectory>$(ModuleOutputDirectory)$(AssemblyName)\</HostModuleDirectory>
+		</PropertyGroup>
+
+		<ItemGroup>
+			<VlcPluginFiles Include="$(TargetDir)libvlc\win-x64\plugins\**\*" />
+		</ItemGroup>
+		<Error Condition="'@(VlcPluginFiles)' == ''" Text="No VLC plugins were found in $(TargetDir)libvlc\win-x64\plugins." />
+
+		<MakeDir Directories="$(HostModuleDirectory)" />
+		<MakeDir Directories="$(HostModuleDirectory)plugins\" />
+
+		<Copy SourceFiles="$(TargetPath)" DestinationFolder="$(HostModuleDirectory)" />
+		<Copy SourceFiles="$(TargetDir)$(TargetName).pdb" DestinationFolder="$(HostModuleDirectory)" Condition="'$(Configuration)' == 'Debug'" />
+		<Copy SourceFiles="$(ProjectDir)module.json" DestinationFolder="$(HostModuleDirectory)" />
+
+		<Copy SourceFiles="$(TargetDir)LibVLCSharp.dll" DestinationFolder="$(HostModuleDirectory)" />
+		<Copy SourceFiles="$(TargetDir)LibVLCSharp.WPF.dll" DestinationFolder="$(HostModuleDirectory)" />
+		<Copy SourceFiles="$(TargetDir)libvlc\win-x64\libvlc.dll" DestinationFolder="$(HostModuleDirectory)" />
+		<Copy SourceFiles="$(TargetDir)libvlc\win-x64\libvlccore.dll" DestinationFolder="$(HostModuleDirectory)" />
+
+		<Copy SourceFiles="@(VlcPluginFiles)" DestinationFiles="@(VlcPluginFiles->'$(HostModuleDirectory)plugins\%(RecursiveDir)%(Filename)%(Extension)')" SkipUnchangedFiles="true" />
+
+		<Copy SourceFiles="$(TargetDir)$(TargetName).deps.json" DestinationFolder="$(HostModuleDirectory)" />
+	</Target>
+
+</Project>

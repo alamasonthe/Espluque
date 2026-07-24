@@ -1,0 +1,21 @@
+{
+  "name": "FFmpeg module",
+  "version": "0.0.1",
+  "assembly": "FFmpeg.dll",
+  "contributions": [
+    {
+      "interfaceType": "IGrabber",
+      "label": "FFmpeg media properties",
+      "className": "FFmpeg.MediaInfosGrabber",
+      "tags": [ "Video" ],
+      "active": true
+    },
+    {
+      "interfaceType": "IManagedDependencies",
+      "label": "FFmpaeg dependency list",
+      "className": "FFmpeg.Preload",
+      "tags": [],
+      "active": true
+    }
+  ]
+}

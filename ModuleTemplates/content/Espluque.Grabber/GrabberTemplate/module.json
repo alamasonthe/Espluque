@@ -1,0 +1,14 @@
+{
+  "name": "Grabber Template module",
+  "version": "0.0.1",
+  "assembly": "GrabberTemplate.dll",
+  "contributions": [
+    {
+      "interfaceType": "IGrabber",
+      "label": "Template Grabber",
+      "className": "GrabberTemplate.Grabber",
+      "tags": [ "AnyFile" ],
+      "active": true
+    }
+  ]
+}

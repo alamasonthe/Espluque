@@ -1,0 +1,43 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+	<PropertyGroup>
+		<TargetFramework>net10.0-windows</TargetFramework>
+		<ImplicitUsings>enable</ImplicitUsings>
+		<Nullable>enable</Nullable>
+		<CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
+	</PropertyGroup>
+
+	<ItemGroup>
+		<PackageReference Include="Magick.NET-Q16-x64" Version="14.15.0" GeneratePathProperty="true" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<ProjectReference Include="$(ContractsProjectPath)" />
+		<ProjectReference Include="$(ModuleCommonsProjectPath)" />
+		<ProjectReference Include="$(UtilProjectPath)" />
+		<ProjectReference Include="..\MagickViewer\MagickViewer.csproj" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<None Update="module.json">
+			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+		</None>
+	</ItemGroup>
+
+	<Target Name="CopyModuleToHost" AfterTargets="Build">
+		<PropertyGroup>
+			<HostModuleDirectory>$(ModuleOutputDirectory)$(AssemblyName)\</HostModuleDirectory>
+		</PropertyGroup>
+
+		<MakeDir Directories="$(HostModuleDirectory)" />
+
+		<Copy SourceFiles="$(TargetPath)" DestinationFolder="$(HostModuleDirectory)" />
+		<Copy SourceFiles="$(TargetDir)$(TargetName).pdb" DestinationFolder="$(HostModuleDirectory)" Condition="'$(Configuration)' == 'Debug'" />
+		<Copy SourceFiles="$(ProjectDir)module.json" DestinationFolder="$(HostModuleDirectory)" />
+
+		<Copy SourceFiles="$(TargetDir)Magick.NET.Core.dll" DestinationFolder="$(HostModuleDirectory)" />
+		<Copy SourceFiles="$(TargetDir)Magick.NET-Q16-x64.dll" DestinationFolder="$(HostModuleDirectory)" />
+		<Copy SourceFiles="$(TargetDir)runtimes\win-x64\native\Magick.Native-Q16-x64.dll" DestinationFolder="$(HostModuleDirectory)" />
+	</Target>
+
+</Project>

@@ -1,0 +1,21 @@
+{
+  "name": "AvalonEdit",
+  "version": "0.0.1",
+  "assembly": "AvalonEditViewer.dll",
+  "contributions": [
+    {
+      "interfaceType": "IWpfViewer",
+      "label": "Avalon Text Editor",
+      "className": "AvalonEditViewer.Viewer",
+      "tags": [ "Text" ],
+      "active": true
+    },
+    {
+      "interfaceType": "IManagedDependencies",
+      "label": "Avalon dependency list",
+      "className": "AvalonEditViewer.Viewer",
+      "tags": [],
+      "active": true
+    }
+  ]
+}

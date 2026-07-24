@@ -1,0 +1,21 @@
+{
+  "name": "VLC viewer",
+  "version": "0.0.1",
+  "assembly": "VlcViewer.dll",
+  "contributions": [
+    {
+      "interfaceType": "IWpfViewer",
+      "label": "VLC video viewer",
+      "className": "VlcViewer.Viewer",
+      "tags": [ "Binary" ],
+      "active": true
+    },
+    {
+      "interfaceType": "IManagedDependencies",
+      "label": "VLC dependency list",
+      "className": "VlcViewer.Preload",
+      "tags": [],
+      "active": true
+    }
+  ]
+}

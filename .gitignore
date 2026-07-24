@@ -79,3 +79,12 @@ Desktop.ini
 secrets.json
 appsettings.*.local.json
 appsettings.Local.json
+
+## Required FFmpeg native binaries
+!/Modules/FFmpeg/FFmpeg/Native/FFmpeg/bin/
+!/Modules/FFmpeg/FFmpeg/Native/FFmpeg/bin/x64/
+/Modules/FFmpeg/FFmpeg/Native/FFmpeg/bin/x64/*
+!/Modules/FFmpeg/FFmpeg/Native/FFmpeg/bin/x64/avcodec-62.dll
+!/Modules/FFmpeg/FFmpeg/Native/FFmpeg/bin/x64/avformat-62.dll
+!/Modules/FFmpeg/FFmpeg/Native/FFmpeg/bin/x64/avutil-60.dll
+!/Modules/FFmpeg/FFmpeg/Native/FFmpeg/bin/x64/swresample-6.dll

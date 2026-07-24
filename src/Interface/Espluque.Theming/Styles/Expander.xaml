@@ -1,0 +1,145 @@
+﻿<ResourceDictionary
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+
+    <Style x:Key="App.SectionExpanderToggleButton" TargetType="ToggleButton">
+
+        <Setter Property="Height" Value="25" />
+        <Setter Property="Padding" Value="5,0" />
+        <Setter Property="HorizontalContentAlignment" Value="Stretch" />
+        <Setter Property="VerticalContentAlignment" Value="Center" />
+        <Setter Property="Foreground" Value="{DynamicResource App.TextInverse}" />
+        <Setter Property="Background" Value="{DynamicResource App.Border}" />
+        <Setter Property="BorderThickness" Value="0" />
+        <Setter Property="FontSize" Value="14" />
+        <Setter Property="FontWeight" Value="SemiBold" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="ToggleButton">
+
+                    <Border Background="{TemplateBinding Background}"
+                            BorderBrush="{TemplateBinding BorderBrush}"
+                            BorderThickness="{TemplateBinding BorderThickness}"
+                            Padding="{TemplateBinding Padding}">
+
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="20" />
+                            </Grid.ColumnDefinitions>
+
+                            <ContentPresenter Grid.Column="0"
+                                  ContentSource="Content"
+                                  VerticalAlignment="Center"
+                                  HorizontalAlignment="Left"
+                                  RecognizesAccessKey="True" />
+
+                            <Path x:Name="Arrow"
+                                  Grid.Column="1"
+                                  Width="8"
+                                  Height="5"
+                                  HorizontalAlignment="Center"
+                                  VerticalAlignment="Center"
+                                  Fill="{TemplateBinding Foreground}"
+                                  Data="M 0 0 L 8 0 L 4 5 Z">
+
+                                <Path.RenderTransform>
+                                    <RotateTransform Angle="-90"
+                                                     CenterX="4"
+                                                     CenterY="2.5" />
+                                </Path.RenderTransform>
+
+                            </Path>
+
+                        </Grid>
+
+                    </Border>
+
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsChecked"
+                                 Value="True">
+
+                            <Setter TargetName="Arrow"
+                                    Property="RenderTransform">
+
+                                <Setter.Value>
+                                    <RotateTransform Angle="0"
+                                                     CenterX="4"
+                                                     CenterY="2.5" />
+                                </Setter.Value>
+
+                            </Setter>
+
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+
+    </Style>
+
+    <Style x:Key="App.SectionExpander"
+           TargetType="Expander">
+
+        <Setter Property="Foreground"
+                Value="{DynamicResource App.Text}" />
+
+        <Setter Property="Background"
+                Value="{DynamicResource App.Background}" />
+
+        <Setter Property="HorizontalContentAlignment"
+                Value="Stretch" />
+
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="Expander">
+
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="Auto" />
+                        </Grid.RowDefinitions>
+
+                        <ToggleButton Grid.Row="0"
+                                      Content="{TemplateBinding Header}"
+                                      ContentTemplate="{TemplateBinding HeaderTemplate}"
+                                      ContentTemplateSelector="{TemplateBinding HeaderTemplateSelector}"
+                                      IsChecked="{Binding IsExpanded,
+                                                          Mode=TwoWay,
+                                                          RelativeSource={RelativeSource TemplatedParent}}"
+                                      Style="{StaticResource App.SectionExpanderToggleButton}" />
+
+                        <Border x:Name="ContentBorder"
+                                Grid.Row="1"
+                                Background="{TemplateBinding Background}"
+                                BorderBrush="{DynamicResource App.Border}"
+                                BorderThickness="1,0,1,1"
+                                Visibility="Collapsed">
+
+                            <ContentPresenter Margin="{TemplateBinding Padding}"
+                                              HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+                                              VerticalAlignment="{TemplateBinding VerticalContentAlignment}" />
+
+                        </Border>
+
+                    </Grid>
+
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsExpanded"
+                                 Value="True">
+
+                            <Setter TargetName="ContentBorder"
+                                    Property="Visibility"
+                                    Value="Visible" />
+
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+
+    </Style>
+
+</ResourceDictionary>

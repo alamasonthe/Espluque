@@ -1,0 +1,192 @@
+﻿<UserControl x:Class="VlcViewer.VlcUC"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:VlcViewer"
+             xmlns:vlc="clr-namespace:LibVLCSharp.WPF;assembly=LibVLCSharp.WPF"
+             mc:Ignorable="d" 
+             d:DesignHeight="450" d:DesignWidth="800"
+             IsVisibleChanged="VlcUC_IsVisibleChanged">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*" />
+            <RowDefinition Height="48" />
+        </Grid.RowDefinitions>
+
+        <vlc:VideoView x:Name="VideoView"
+                   Grid.Row="0"
+                   MinWidth="320"
+                   MinHeight="180"
+                   HorizontalAlignment="Stretch"
+                   VerticalAlignment="Stretch">
+
+            <Grid x:Name="ControlOverlay"
+                  Background="#01000000"
+                  Visibility="Collapsed">
+
+                <Grid x:Name="PreviewLayer">
+
+                    <Border Background="{DynamicResource App.Background}" />
+
+                    <Image x:Name="PreviewImage"
+                       Stretch="Uniform" />
+
+                </Grid>
+
+                <Button x:Name="PlayPauseButton"
+                    Width="112"
+                    Height="112"
+                    HorizontalAlignment="Center"
+                    VerticalAlignment="Center"
+                    Background="#66000000"
+                    BorderThickness="0"
+                    Cursor="Hand"
+                    Click="PlayPauseButton_Click">
+
+                    <Button.Style>
+                        <Style TargetType="Button">
+                            <Setter Property="Visibility"
+                                Value="Collapsed" />
+
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding IsMouseOver,
+                                                           RelativeSource={RelativeSource AncestorType=Grid}}"
+                                         Value="True">
+                                    <Setter Property="Visibility"
+                                        Value="Visible" />
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </Button.Style>
+
+                    <Button.Template>
+                        <ControlTemplate TargetType="Button">
+                            <Border x:Name="ButtonBorder"
+                                Background="{TemplateBinding Background}"
+                                CornerRadius="56">
+
+                                <ContentPresenter HorizontalAlignment="Center"
+                                              VerticalAlignment="Center" />
+
+                            </Border>
+
+                            <ControlTemplate.Triggers>
+                                <Trigger Property="IsMouseOver"
+                                     Value="True">
+                                    <Setter TargetName="ButtonBorder"
+                                        Property="Background"
+                                        Value="#88000000" />
+                                </Trigger>
+
+                                <Trigger Property="IsPressed"
+                                     Value="True">
+                                    <Setter TargetName="ButtonBorder"
+                                        Property="Background"
+                                        Value="#AA000000" />
+                                </Trigger>
+                            </ControlTemplate.Triggers>
+                        </ControlTemplate>
+                    </Button.Template>
+
+                    <TextBlock x:Name="PlayPauseIcon"
+                           FontFamily="/Espluque.Theming;component/Fonts/#FluentSystemIcons-Regular"
+                           FontSize="120"
+                           Foreground="White"
+                           HorizontalAlignment="Center"
+                           VerticalAlignment="Center" />
+
+                </Button>
+
+            </Grid>
+
+        </vlc:VideoView>
+
+        <Border Grid.Row="1"
+            Background="{DynamicResource App.Surface}"
+            BorderBrush="{DynamicResource App.Border}"
+            BorderThickness="0,1,0,0">
+
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="52" />
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="52" />
+                </Grid.ColumnDefinitions>
+
+                <!-- Futur emplacement lecture/pause -->
+                <Grid x:Name="PlaybackControlArea"
+                  Grid.Column="0" />
+
+                <!-- emplacement temps actuel / durée -->
+                <Grid x:Name="TimeControlArea" Grid.Column="1">
+
+                    <StackPanel Orientation="Horizontal"
+                HorizontalAlignment="Center"
+                VerticalAlignment="Center">
+
+                        <TextBlock x:Name="CurrentTimeText"
+                   Text="00:00"
+                   Foreground="{DynamicResource App.Text}" />
+
+                        <TextBlock Text=" / "
+                   Foreground="{DynamicResource App.TextMuted}" />
+
+                        <TextBlock x:Name="TotalTimeText"
+                   Text="00:00"
+                   Foreground="{DynamicResource App.Text}" />
+
+                    </StackPanel>
+
+                </Grid>
+
+                <!-- Son -->
+                <Button x:Name="MuteButton"
+                    Grid.Column="2"
+                    Width="40"
+                    Height="40"
+                    HorizontalAlignment="Center"
+                    VerticalAlignment="Center"
+                    Background="Transparent"
+                    BorderThickness="0"
+                    Cursor="Hand"
+                    Click="MuteButton_Click">
+
+                    <Button.Template>
+                        <ControlTemplate TargetType="Button">
+                            <Border x:Name="MuteButtonBorder"
+                                Background="{TemplateBinding Background}"
+                                CornerRadius="4">
+
+                                <ContentPresenter HorizontalAlignment="Center"
+                                              VerticalAlignment="Center" />
+
+                            </Border>
+
+                            <ControlTemplate.Triggers>
+                                <Trigger Property="IsMouseOver"
+                                     Value="True">
+                                    <Setter TargetName="MuteButtonBorder"
+                                        Property="Background"
+                                        Value="{DynamicResource App.Selection}" />
+                                </Trigger>
+                            </ControlTemplate.Triggers>
+                        </ControlTemplate>
+                    </Button.Template>
+
+                    <TextBlock x:Name="MuteIcon"
+                           FontFamily="/Espluque.Theming;component/Fonts/#FluentSystemIcons-Regular"
+                           FontSize="24"
+                           Foreground="{DynamicResource App.Text}"
+                           HorizontalAlignment="Center"
+                           VerticalAlignment="Center" />
+
+                </Button>
+
+            </Grid>
+
+        </Border>
+
+    </Grid>
+    
+</UserControl>

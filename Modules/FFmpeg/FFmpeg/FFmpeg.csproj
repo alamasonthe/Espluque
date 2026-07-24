@@ -1,0 +1,49 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+	<PropertyGroup>
+		<TargetFramework>net10.0</TargetFramework>
+		<ImplicitUsings>enable</ImplicitUsings>
+		<Nullable>enable</Nullable>
+		<AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+		<CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
+		<EnableDynamicLoading>true</EnableDynamicLoading>
+	</PropertyGroup>
+
+	<ItemGroup>
+		<PackageReference Include="FFmpeg.AutoGen" Version="8.1.0" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<ProjectReference Include="$(ContractsProjectPath)" />
+		<ProjectReference Include="$(ModuleCommonsProjectPath)" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<None Update="module.json">
+			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+		</None>
+	</ItemGroup>
+
+	<Target Name="CopyModuleToHost" AfterTargets="Build">
+		<PropertyGroup>
+			<HostModuleDirectory>$(ModuleOutputDirectory)$(AssemblyName)\</HostModuleDirectory>
+			<FFmpegNativeDirectory>$(ProjectDir)Native\FFmpeg\bin\x64\</FFmpegNativeDirectory>
+		</PropertyGroup>
+
+		<MakeDir Directories="$(HostModuleDirectory)" />
+
+		<Copy SourceFiles="$(TargetPath)" DestinationFolder="$(HostModuleDirectory)" />
+		<Copy SourceFiles="$(TargetDir)$(TargetName).pdb" DestinationFolder="$(HostModuleDirectory)" Condition="'$(Configuration)' == 'Debug'" />
+		<Copy SourceFiles="$(ProjectDir)module.json" DestinationFolder="$(HostModuleDirectory)" />
+
+		<Copy SourceFiles="$(FFmpegNativeDirectory)avformat-62.dll" DestinationFolder="$(HostModuleDirectory)" />
+		<Copy SourceFiles="$(FFmpegNativeDirectory)avcodec-62.dll" DestinationFolder="$(HostModuleDirectory)" />
+		<Copy SourceFiles="$(FFmpegNativeDirectory)avutil-60.dll" DestinationFolder="$(HostModuleDirectory)" />
+		<Copy SourceFiles="$(FFmpegNativeDirectory)swresample-6.dll" DestinationFolder="$(HostModuleDirectory)" />
+
+		<Copy SourceFiles="$(TargetDir)FFmpeg.AutoGen.dll" DestinationFolder="$(HostModuleDirectory)" />
+
+		<Copy SourceFiles="$(TargetDir)$(TargetName).deps.json" DestinationFolder="$(HostModuleDirectory)" />
+	</Target>
+
+</Project>

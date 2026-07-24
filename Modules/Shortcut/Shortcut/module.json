@@ -1,0 +1,35 @@
+{
+  "name": "Shortcut File module",
+  "version": "0.0.1",
+  "assembly": "Shortcut.dll",
+  "contributions": [
+    {
+      "interfaceType": "IGrabber",
+      "label": "Shortcut infos",
+      "className": "Shortcut.ShortcutInfosGrabber",
+      "tags": [ "Shortcut" ],
+      "active": true
+    },
+    {
+      "interfaceType": "IGrabber",
+      "label": "Shortcut Link Flags",
+      "className": "Shortcut.LinkFlagsGrabber",
+      "tags": [ "Shortcut" ],
+      "active": true
+    },
+    {
+      "interfaceType": "IGrabber",
+      "label": "Shortcut Link Resolution Data",
+      "className": "Shortcut.LinkResolutionDataGrabber",
+      "tags": [ "Shortcut" ],
+      "active": true
+    },
+    {
+      "interfaceType": "IGrabber",
+      "label": "Shortcut Tracker Data",
+      "className": "Shortcut.TrackerDataGrabber",
+      "tags": [ "Shortcut" ],
+      "active": true
+    }
+  ]
+}

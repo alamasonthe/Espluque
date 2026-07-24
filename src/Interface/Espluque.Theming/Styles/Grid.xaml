@@ -1,0 +1,17 @@
+﻿<ResourceDictionary
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+
+    <!-- Fenêtre -->
+
+    <Style x:Key="App.WindowLayout" TargetType="Grid">
+        <Setter Property="Background" Value="{DynamicResource App.Background}" />
+    </Style>
+
+    <!-- Barre haute -->
+
+    <Style x:Key="App.TopBar" TargetType="Grid">
+        <Setter Property="Background" Value="{DynamicResource App.Background}" />
+    </Style>
+
+</ResourceDictionary>

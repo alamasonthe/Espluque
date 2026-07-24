@@ -1,0 +1,14 @@
+{
+  "name": "Detect module",
+  "version": "0.0.1",
+  "assembly": "detectorTemplate.dll",
+  "contributions": [
+    {
+      "interfaceType": "IDetector",
+      "label": "Template detector",
+      "className": "detectorTemplate.Detector",
+      "tags": [ "AnyFile" ],
+      "active": true
+    }
+  ]
+}

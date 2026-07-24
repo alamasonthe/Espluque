@@ -1,0 +1,14 @@
+{
+  "name": "SevenZip",
+  "version": "0.0.1",
+  "assembly": "SevenZipViewer.dll",
+  "contributions": [
+    {
+      "interfaceType": "IWpfViewer",
+      "label": "7zip explorer",
+      "className": "SevenZipViewer.Viewer",
+      "tags": [ "Binary" ],
+      "active": true
+    }
+  ]
+}

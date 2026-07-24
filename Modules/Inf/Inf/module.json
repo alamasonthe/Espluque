@@ -1,0 +1,14 @@
+{
+  "name": "Inf File module",
+  "version": "0.0.1",
+  "assembly": "Inf.dll",
+  "contributions": [
+    {
+      "interfaceType": "IGrabber",
+      "label": "Inf Version Section",
+      "className": "Inf.InfVersionSectionGrabber",
+      "tags": [ "Inf file" ],
+      "active": true
+    }
+  ]
+}

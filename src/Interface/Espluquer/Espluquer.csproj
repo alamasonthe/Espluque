@@ -1,0 +1,163 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+	<PropertyGroup>
+		<OutputType>WinExe</OutputType>
+		<TargetFramework>net10.0-windows</TargetFramework>
+		<Nullable>enable</Nullable>
+		<ImplicitUsings>enable</ImplicitUsings>
+		<UseWPF>true</UseWPF>
+		<ApplicationIcon>Espluquer.ico</ApplicationIcon>
+		<RuntimeIdentifier>win-x64</RuntimeIdentifier>
+		<Platforms>x64</Platforms>
+		<DisableFastUpToDateCheck>true</DisableFastUpToDateCheck>
+	</PropertyGroup>
+
+	<ItemGroup>
+		<ModuleProject Include="$(MSBuildProjectDirectory)\..\..\..\Modules\**\*.csproj" />
+	</ItemGroup>
+
+	<Target Name="BuildAndDeployModules"
+			AfterTargets="Build"
+			Condition="'$(DesignTimeBuild)' != 'true'">
+
+		<MSBuild Projects="@(ModuleProject)"
+				 Targets="Build"
+				 BuildInParallel="true"
+				 Properties="Configuration=$(Configuration);Platform=$(Platform);BuildProjectReferences=true" />
+	</Target>
+
+	<PropertyGroup Condition="'$(Configuration)' == 'Release'">
+		<DebugType>none</DebugType>
+	</PropertyGroup>
+
+	<ItemGroup>
+		<Content Include="Espluquer.ico" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="10.0.10" />
+		<PackageReference Include="Microsoft.Web.WebView2" Version="1.0.4078.44" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<ProjectReference Include="..\..\Bootstrap\Bootstrap.csproj" />
+		<ProjectReference Include="..\..\Domain\Espluque.Application\Espluque.Application.csproj" />
+		<ProjectReference Include="..\..\Domain\Espluque.Contracts\Espluque.Contracts.csproj" />
+		<ProjectReference Include="..\..\Shared\SevenZip\SevenZip.csproj" />
+		<ProjectReference Include="..\..\Domain\Espluque.ModuleCommons\Espluque.ModuleCommons.csproj" />
+		<ProjectReference Include="..\Espluque.Theming\Espluque.Theming.csproj" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<Compile Update="UserControls\Components\KeyValueListUC.xaml.cs">
+			<SubType>Code</SubType>
+		</Compile>
+
+		<Compile Update="UserControls\Views\LogUC.xaml.cs">
+			<SubType>Code</SubType>
+		</Compile>
+	</ItemGroup>
+
+	<ItemGroup>
+		<None Update="espluque.db">
+			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+		</None>
+	</ItemGroup>
+
+	<ItemGroup>
+		<FileMoves Include="$(TargetDir)Microsoft.Extensions.Logging.dll" TargetRelativePath="managed\nuGet\Microsoft.Extensions.Logging.dll" />
+		<FileMoves Include="$(TargetDir)Microsoft.Extensions.Logging.Abstractions.dll" TargetRelativePath="managed\nuGet\Microsoft.Extensions.Logging.Abstractions.dll" />
+		<FileMoves Include="$(TargetDir)Microsoft.Extensions.DependencyInjection.dll" TargetRelativePath="managed\nuGet\Microsoft.Extensions.DependencyInjection.dll" />
+		<FileMoves Include="$(TargetDir)Microsoft.Extensions.DependencyInjection.Abstractions.dll" TargetRelativePath="managed\nuGet\Microsoft.Extensions.DependencyInjection.Abstractions.dll" />
+		<FileMoves Include="$(TargetDir)Microsoft.Extensions.Options.dll" TargetRelativePath="managed\nuGet\Microsoft.Extensions.Options.dll" />
+		<FileMoves Include="$(TargetDir)Microsoft.Extensions.Primitives.dll" TargetRelativePath="managed\nuGet\Microsoft.Extensions.Primitives.dll" />
+		<FileMoves Include="$(TargetDir)JsonSchema.Net.dll" TargetRelativePath="managed\nuGet\JsonSchema.Net.dll" />
+		<FileMoves Include="$(TargetDir)JsonPointer.Net.dll" TargetRelativePath="managed\nuGet\JsonPointer.Net.dll" />
+		<FileMoves Include="$(TargetDir)Json.More.dll" TargetRelativePath="managed\nuGet\Json.More.dll" />
+		<FileMoves Include="$(TargetDir)Humanizer.dll" TargetRelativePath="managed\nuGet\Humanizer.dll" />
+		<FileMoves Include="$(TargetDir)Microsoft.Data.Sqlite.dll" TargetRelativePath="managed\nuGet\Microsoft.Data.Sqlite.dll" />
+		<FileMoves Include="$(TargetDir)SQLitePCLRaw.batteries_v2.dll" TargetRelativePath="managed\nuGet\SQLitePCLRaw.batteries_v2.dll" />
+		<FileMoves Include="$(TargetDir)SQLitePCLRaw.core.dll" TargetRelativePath="managed\nuGet\SQLitePCLRaw.core.dll" />
+		<FileMoves Include="$(TargetDir)SQLitePCLRaw.provider.e_sqlite3.dll" TargetRelativePath="managed\nuGet\SQLitePCLRaw.provider.e_sqlite3.dll" />
+		<FileMoves Include="$(TargetDir)Microsoft.Web.WebView2.Core.dll" TargetRelativePath="managed\nuGet\Microsoft.Web.WebView2.Core.dll" />
+		<FileMoves Include="$(TargetDir)Microsoft.Web.WebView2.WinForms.dll" TargetRelativePath="managed\nuGet\Microsoft.Web.WebView2.WinForms.dll" />
+		<FileMoves Include="$(TargetDir)Microsoft.Web.WebView2.Wpf.dll" TargetRelativePath="managed\nuGet\Microsoft.Web.WebView2.Wpf.dll" />
+		<FileMoves Include="$(TargetDir)SevenZipExtractor.dll" TargetRelativePath="managed\nuGet\SevenZipExtractor.dll" />
+
+		<FileMoves Include="$(TargetDir)Bootstrap.dll" TargetRelativePath="managed\Espluque\Bootstrap.dll" />
+		<FileMoves Include="$(TargetDir)Espluque.Theming.dll" TargetRelativePath="managed\Espluque\Espluque.Theming.dll" />
+		<FileMoves Include="$(TargetDir)Espluque.Application.dll" TargetRelativePath="managed\Espluque\Espluque.Application.dll" />
+		<FileMoves Include="$(TargetDir)Espluque.Contracts.dll" TargetRelativePath="managed\Espluque\Espluque.Contracts.dll" />
+		<FileMoves Include="$(TargetDir)Espluque.ModuleCommons.dll" TargetRelativePath="managed\Espluque\Espluque.ModuleCommons.dll" />
+		<FileMoves Include="$(TargetDir)EspluqueSqlite.dll" TargetRelativePath="managed\Espluque\EspluqueSqlite.dll" />
+		<FileMoves Include="$(TargetDir)MiniFileLogger.dll" TargetRelativePath="managed\Espluque\MiniFileLogger.dll" />
+		<FileMoves Include="$(TargetDir)SettingsJson.dll" TargetRelativePath="managed\Espluque\SettingsJson.dll" />
+		<FileMoves Include="$(TargetDir)SqliteUtil.dll" TargetRelativePath="managed\Espluque\SqliteUtil.dll" />
+		<FileMoves Include="$(TargetDir)Util.dll" TargetRelativePath="managed\Espluque\Util.dll" />
+		<FileMoves Include="$(TargetDir)SevenZip.dll" TargetRelativePath="managed\Espluque\SevenZip.dll" />
+		<FileMoves Include="$(TargetDir)x64\7z.dll" TargetRelativePath="native\sevenzip\7z.dll" />
+		<FileMoves Include="$(TargetDir)WebView2Loader.dll" TargetRelativePath="native\webview2\WebView2Loader.dll" />
+		<FileMoves Include="$(TargetDir)e_sqlite3.dll" TargetRelativePath="native\sqlite\e_sqlite3.dll" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<FileDeletes Include="$(TargetDir)runtimes\win-x64\native\WebView2Loader.dll" />
+		<FileDeletes Include="$(TargetDir)Microsoft.Web.WebView2.Core.xml" />
+		<FileDeletes Include="$(TargetDir)Microsoft.Web.WebView2.WinForms.xml" />
+		<FileDeletes Include="$(TargetDir)Microsoft.Web.WebView2.Wpf.xml" />
+		<FileDeletes Include="$(TargetDir)x86\7z.dll" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<FolderDeletes Include="$(TargetDir)x64" />
+		<FolderDeletes Include="$(TargetDir)x86" />
+		<FolderDeletes Include="$(TargetDir)runtimes" />
+	</ItemGroup>
+
+	<Target Name="MoveDebugFiles" AfterTargets="CopyFilesToOutputDirectory" Condition="'$(Configuration)' == 'Debug'">
+
+		<ItemGroup>
+			<DebugPdbFiles Include="$(TargetDir)*.pdb" />
+		</ItemGroup>
+
+		<MakeDir Directories="$(TargetDir)symbols" Condition="'@(DebugPdbFiles)' != ''" />
+
+		<Move SourceFiles="@(DebugPdbFiles)" DestinationFiles="@(DebugPdbFiles->'$(TargetDir)symbols\%(Filename)%(Extension)')" Condition="'@(DebugPdbFiles)' != ''" />
+	</Target>
+
+	<Target Name="MoveFiles" AfterTargets="CopyFilesToOutputDirectory">
+
+		<ItemGroup>
+			<ExistingFileMoves Include="@(FileMoves)" />
+
+			<ExistingFileMoves Remove="@(ExistingFileMoves)" Condition="!Exists('%(ExistingFileMoves.FullPath)')" />
+		</ItemGroup>
+
+		<MakeDir Directories="@(ExistingFileMoves-&gt;'$(TargetDir)%(TargetRelativePath)'-&gt;'%(RootDir)%(Directory)')" Condition="'@(ExistingFileMoves)' != ''" />
+
+		<Move SourceFiles="@(ExistingFileMoves)" DestinationFiles="@(ExistingFileMoves->'$(TargetDir)%(TargetRelativePath)')" Condition="'@(ExistingFileMoves)' != ''" />
+	</Target>
+
+	<Target Name="DeleteFiles" AfterTargets="MoveFiles">
+
+		<ItemGroup>
+			<ExistingFileDeletes Include="@(FileDeletes)" />
+
+			<ExistingFileDeletes Remove="@(ExistingFileDeletes)" Condition="!Exists('%(ExistingFileDeletes.FullPath)')" />
+		</ItemGroup>
+
+		<Delete Files="@(ExistingFileDeletes)" Condition="'@(ExistingFileDeletes)' != ''" />
+	</Target>
+
+	<Target Name="RemoveFolders" AfterTargets="DeleteFiles">
+
+		<ItemGroup>
+			<ExistingFolderDeletes Include="@(FolderDeletes)" />
+
+			<ExistingFolderDeletes Remove="@(ExistingFolderDeletes)" Condition="!Exists('%(ExistingFolderDeletes.FullPath)')" />
+		</ItemGroup>
+
+		<RemoveDir Directories="@(ExistingFolderDeletes)" Condition="'@(ExistingFolderDeletes)' != ''" />
+	</Target>
+
+</Project>
