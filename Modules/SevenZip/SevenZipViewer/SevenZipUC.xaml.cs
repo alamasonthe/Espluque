@@ -192,17 +192,6 @@ namespace SevenZipViewer
 
             row.TryGetValue("Path", out string? internalPath);
 
-
-            // _messageCenter.SendAsync();
-
-            /*
-            RaiseEvent(new EmbeddedFile(
-                EmbeddedFileRequestedEvent,
-                _filePath,
-                internalPath));
-
-            e.Handled = true;
-            */
         }
 
         private async void LeafDataGrid_MouseDoubleClick(object sender, MouseButtonEventArgs e)

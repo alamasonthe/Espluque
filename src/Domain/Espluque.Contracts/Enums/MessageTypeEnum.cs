@@ -2,7 +2,6 @@
 {
     public enum MessageTypeEnum
     {
-        Instruction,
         ExtractAndAnalyze,
         Analyze
     }
