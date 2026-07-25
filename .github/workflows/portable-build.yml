@@ -1,0 +1,173 @@
+name: Portable build
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - main
+
+permissions:
+  contents: read
+
+env:
+  SOLUTION_PATH: ./Espluque.slnx
+  PROJECT_PATH: ./src/Interface/Espluquer/Espluquer.csproj
+  PUBLISH_DIR: ./artifacts/Espluque-win-x64
+  ZIP_PATH: ./artifacts/Espluque-win-x64.zip
+
+jobs:
+  publish:
+    runs-on: windows-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+
+      - name: Install .NET 10
+        uses: actions/setup-dotnet@v5
+        with:
+          dotnet-version: 10.0.x
+
+      - name: Restore solution
+        shell: pwsh
+        run: dotnet restore $env:SOLUTION_PATH -r win-x64
+
+      - name: Build solution
+        shell: pwsh
+        run: dotnet build $env:SOLUTION_PATH -c Release -r win-x64 --no-restore
+
+      - name: Publish application
+        shell: pwsh
+        run: |
+          dotnet publish $env:PROJECT_PATH `
+            -c Release `
+            -r win-x64 `
+            --self-contained true `
+            --no-restore `
+            -p:PublishSingleFile=false `
+            -p:PublishTrimmed=false `
+            -o $env:PUBLISH_DIR
+
+      - name: Validate portable distribution
+        shell: pwsh
+        run: |
+          $ErrorActionPreference = 'Stop'
+          $publishDir = Join-Path $env:GITHUB_WORKSPACE $env:PUBLISH_DIR
+          $missing = [System.Collections.Generic.List[string]]::new()
+
+          $requiredFiles = @(
+            'Espluquer.exe',
+            'Espluquer.dll',
+            'Espluquer.deps.json',
+            'Espluquer.runtimeconfig.json'
+          )
+
+          foreach ($relativePath in $requiredFiles) {
+            $path = Join-Path $publishDir $relativePath
+            if (-not (Test-Path -LiteralPath $path -PathType Leaf)) {
+              $missing.Add($relativePath)
+            }
+          }
+
+          $requiredDirectories = @('Modules', 'Managed', 'Native')
+
+          foreach ($relativePath in $requiredDirectories) {
+            $path = Join-Path $publishDir $relativePath
+            if (-not (Test-Path -LiteralPath $path -PathType Container)) {
+              $missing.Add("$relativePath/")
+            }
+          }
+
+          $moduleDescriptors = @()
+          $modulesDir = Join-Path $publishDir 'Modules'
+
+          if (Test-Path -LiteralPath $modulesDir -PathType Container) {
+            $moduleDescriptors = @(Get-ChildItem -LiteralPath $modulesDir -Recurse -Filter module.json -File)
+
+            if ($moduleDescriptors.Count -eq 0) {
+              $missing.Add('Modules/**/module.json')
+            }
+
+            foreach ($descriptor in $moduleDescriptors) {
+              try {
+                $module = Get-Content -LiteralPath $descriptor.FullName -Raw | ConvertFrom-Json
+              }
+              catch {
+                throw "Invalid module descriptor: $($descriptor.FullName)"
+              }
+
+              if ([string]::IsNullOrWhiteSpace($module.Assembly)) {
+                $missing.Add("$($descriptor.FullName): Assembly")
+                continue
+              }
+
+              $assemblyPath = Join-Path $descriptor.Directory.FullName $module.Assembly
+              if (-not (Test-Path -LiteralPath $assemblyPath -PathType Leaf)) {
+                $missing.Add($assemblyPath)
+              }
+            }
+          }
+
+          $moduleCommons = Join-Path $publishDir 'Managed\Espluque\Espluque.ModuleCommons.dll'
+          if (-not (Test-Path -LiteralPath $moduleCommons -PathType Leaf)) {
+            $missing.Add('Managed/Espluque/Espluque.ModuleCommons.dll')
+          }
+
+          $nativeFiles = @()
+          $nativeDir = Join-Path $publishDir 'Native'
+          if (Test-Path -LiteralPath $nativeDir -PathType Container) {
+            $nativeFiles = @(Get-ChildItem -LiteralPath $nativeDir -Recurse -File)
+            if ($nativeFiles.Count -eq 0) {
+              $missing.Add('Native/**')
+            }
+          }
+
+          $databaseFiles = @(
+            Get-ChildItem -LiteralPath $publishDir -Recurse -File |
+              Where-Object { $_.Extension -in @('.db', '.db3', '.sqlite', '.sqlite3') }
+          )
+
+          if ($databaseFiles.Count -eq 0) {
+            $missing.Add('initial thesaurus database (*.db, *.db3, *.sqlite or *.sqlite3)')
+          }
+
+          $publishedFiles = @(Get-ChildItem -LiteralPath $publishDir -Recurse -File)
+          $publishedSize = ($publishedFiles | Measure-Object -Property Length -Sum).Sum
+
+          "## Portable distribution" | Out-File -FilePath $env:GITHUB_STEP_SUMMARY -Append
+          "- Files: $($publishedFiles.Count)" | Out-File -FilePath $env:GITHUB_STEP_SUMMARY -Append
+          "- Size: $([math]::Round($publishedSize / 1MB, 2)) MB" | Out-File -FilePath $env:GITHUB_STEP_SUMMARY -Append
+          "- Modules: $($moduleDescriptors.Count)" | Out-File -FilePath $env:GITHUB_STEP_SUMMARY -Append
+          "- Native files: $($nativeFiles.Count)" | Out-File -FilePath $env:GITHUB_STEP_SUMMARY -Append
+          "- Databases: $($databaseFiles.Count)" | Out-File -FilePath $env:GITHUB_STEP_SUMMARY -Append
+
+          if ($missing.Count -gt 0) {
+            $missing | ForEach-Object { Write-Host "::error::Missing from portable distribution: $_" }
+            throw 'Portable distribution is incomplete.'
+          }
+
+      - name: Create portable ZIP
+        shell: pwsh
+        run: |
+          $publishDir = Join-Path $env:GITHUB_WORKSPACE $env:PUBLISH_DIR
+          $zipPath = Join-Path $env:GITHUB_WORKSPACE $env:ZIP_PATH
+
+          if (Test-Path -LiteralPath $zipPath) {
+            Remove-Item -LiteralPath $zipPath -Force
+          }
+
+          Compress-Archive `
+            -Path (Join-Path $publishDir '*') `
+            -DestinationPath $zipPath `
+            -CompressionLevel Optimal
+
+          $hash = Get-FileHash -LiteralPath $zipPath -Algorithm SHA256
+          "- ZIP SHA-256: ``$($hash.Hash)``" | Out-File -FilePath $env:GITHUB_STEP_SUMMARY -Append
+
+      - name: Upload portable ZIP
+        uses: actions/upload-artifact@v7
+        with:
+          path: ./artifacts/Espluque-win-x64.zip
+          archive: false
+          if-no-files-found: error
+          retention-days: 30

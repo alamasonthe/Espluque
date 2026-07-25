@@ -56,6 +56,10 @@ Espluque currently has no installer and must be built from source.
 
 The module projects are copied automatically to the application's Modules directory during the build.
 
+## Documentation
+
+[Open the documentation](docs/README.md)
+
 ## License
 
 This project is licensed under the [MIT License](LICENSE).

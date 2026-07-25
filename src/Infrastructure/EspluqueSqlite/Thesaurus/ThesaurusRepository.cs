@@ -19,6 +19,8 @@ namespace EspluqueSqlite.Thesaurus
             _entityFactory = entityFactory;
 
             GetDbFilePath(settingsService);
+
+            _logger.Log(Microsoft.Extensions.Logging.LogLevel.Debug, $"Espluque DB filepath: {DbFilepath}");
         }
 
 

@@ -122,7 +122,7 @@ namespace Espluquer
             {
                 case "Light":
                     _themeTag = "Dark";
-                    ThemeButton.Content = IconService.FluentGlyph("ic_fluent_accessibility_24_regular");
+                    ThemeButton.Content = IconService.FluentGlyph("ic_fluent_heart_circle_24_regular");
                     break;
 
                 case "Dark":
