@@ -1,9 +1,10 @@
-using LibVLCSharp.Shared;
+using Espluque.Contracts.Entities;
 using Espluque.Contracts.Interfaces;
 using Espluque.Contracts.MessageInterfaces;
-using Espluque.Contracts.Ports;
-using System.IO;
 using Espluque.Contracts.ModuleInterfaces.Contributions;
+using Espluque.Contracts.Ports;
+using LibVLCSharp.Shared;
+using System.IO;
 
 namespace VlcViewer
 {
@@ -22,11 +23,11 @@ namespace VlcViewer
             _entityFactory = entityFactory;
         }
 
-        public async Task<object?> GetViewer(string filePath)
+        public async Task<object?> GetViewer(AnalysisContext analysisContext)
         {
-            string formattedFileName = Path.GetFileName(filePath).PadRight(35);
+            string formattedFileName = Path.GetFileName(analysisContext.FilePath).PadRight(35);
 
-            bool canRead = await CanRead(filePath);
+            bool canRead = await CanRead(analysisContext.FilePath);
 
             if (!canRead)
             {
@@ -34,7 +35,7 @@ namespace VlcViewer
                 return null;
             }
 
-            return new VlcUC(filePath);
+            return new VlcUC(analysisContext.FilePath);
         }
 
         private static async Task<bool> CanRead(string filePath)

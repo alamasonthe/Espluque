@@ -1,4 +1,5 @@
-﻿using Espluque.Contracts.Interfaces;
+﻿using Espluque.Contracts.Entities;
+using Espluque.Contracts.Interfaces;
 using Espluque.Contracts.MessageInterfaces;
 using Espluque.Contracts.ModuleInterfaces.Contributions;
 using Espluque.Contracts.Ports;
@@ -24,10 +25,10 @@ namespace Shortcut
             _entityFactory = entityFactory;
         }
 
-        public async Task<List<KeyValuePair<string, string>>> Grab(string filePath)
+        public async Task<List<KeyValuePair<string, string>>> Grab(AnalysisContext analysisContext)
         {
-            var fileName = Path.GetFileName(filePath).PadRight(35);
-            var infosResult = Grabber.GetShortcutInfos(filePath);
+            var fileName = Path.GetFileName(analysisContext.FilePath).PadRight(35);
+            var infosResult = Grabber.GetShortcutInfos(analysisContext.FilePath);
             if (!infosResult.IsSuccess)
             {
                 _logger.Log(Microsoft.Extensions.Logging.LogLevel.Error, $"{fileName}\t{infosResult.Error.Code} {infosResult.Error.Message}");

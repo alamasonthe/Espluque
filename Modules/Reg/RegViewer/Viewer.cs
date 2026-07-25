@@ -1,12 +1,13 @@
-﻿using Microsoft.Extensions.Configuration;
-using Microsoft.Win32;
-using System.Text;
-using Util;
-using System.IO;
+﻿using Espluque.Contracts.Entities;
 using Espluque.Contracts.Interfaces;
 using Espluque.Contracts.MessageInterfaces;
-using Espluque.Contracts.Ports;
 using Espluque.Contracts.ModuleInterfaces.Contributions;
+using Espluque.Contracts.Ports;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Win32;
+using System.IO;
+using System.Text;
+using Util;
 
 namespace RegViewer
 {
@@ -28,9 +29,9 @@ namespace RegViewer
             _entityFactory = entityFactory;
         }
 
-        public async Task<object?> GetViewer(string filePath)
+        public async Task<object?> GetViewer(AnalysisContext analysisContext)
         {
-            object viewer = new RegEdit(filePath, _logger);
+            object viewer = new RegEdit(analysisContext.FilePath, _logger);
             return viewer;
         }
 

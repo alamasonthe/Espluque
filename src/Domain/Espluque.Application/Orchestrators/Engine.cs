@@ -10,6 +10,7 @@ using Espluque.Contracts.Orchestrators;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Espluque.Contracts.ModuleInterfaces.Contributions;
+using Espluque.Contracts.Entities;
 
 namespace Espluque.Application.Orchestrators
 {
@@ -31,7 +32,9 @@ namespace Espluque.Application.Orchestrators
         private List<TaskRequest> _grabberBacklog;
         private List<string> _doneDetectors = [];
 
-        private IFileFormat _currentFormat;
+        // private IFileFormat _currentFormat;
+
+        private AnalysisContext _analysisContext;
 
         public Engine(IServiceProvider serviceProvider, List<ICatalogEntry> catalog)
         {
@@ -44,6 +47,11 @@ namespace Espluque.Application.Orchestrators
             _thesaurusService = _serviceProvider.GetRequiredService<IThesaurusService>();
 
             _catalog = catalog;
+        }
+
+        private void InitializeAnalyze(AnalysisContext analysisContext)
+        {
+            _analysisContext = analysisContext;
 
             _viewerBacklog = new()
             {
@@ -55,22 +63,21 @@ namespace Espluque.Application.Orchestrators
                 new TaskRequest { Tag = "AnyFile" }
             };
 
-            _currentFormat = _entityFactory.CreateFileFormat("Espluque", "AnyFile", null, null);
+            _analysisContext.CurrentFileFormat = _entityFactory.CreateFileFormat("Espluque", "AnyFile", null, null);
         }
 
-        public async Task AnalyzeFileAsync(string filePath)
+        public async Task AnalyzeFileAsync(AnalysisContext analysisContext)
         {
+            InitializeAnalyze(analysisContext);
 
-            string formattedFileName = Path.GetFileName(filePath).PadRight(35);
+            _logger.Log(LogLevel.Information, $"{FormattedFileName()}\t--------------- Analysis started --------------- : {_analysisContext.FilePath}");
 
-            _logger.Log(LogLevel.Information, $"{formattedFileName}\t--------------- Analysis started --------------- : {filePath}");
-
-            Result<bool> canOpenReadResult = Util.File.CanOpenRead(filePath);
+            Result<bool> canOpenReadResult = Util.File.CanOpenRead(_analysisContext.FilePath);
 
             if (!canOpenReadResult.IsSuccess)
             {
-                _logger.Log(LogLevel.Error, $"{formattedFileName}\tFile check failed: {canOpenReadResult.Error?.Code} - {canOpenReadResult.Error?.Message}");
-                _logger.Log(LogLevel.Information, $"{formattedFileName}\t--------------- Analysis finished --------------- ");
+                _logger.Log(LogLevel.Error, $"{FormattedFileName()}\tFile check failed: {canOpenReadResult.Error?.Code} - {canOpenReadResult.Error?.Message}");
+                _logger.Log(LogLevel.Information, $"{FormattedFileName()}\t--------------- Analysis finished --------------- ");
                 return;
             }
 
@@ -80,45 +87,45 @@ namespace Espluque.Application.Orchestrators
                 | _grabberBacklog.Any(taskRequest => taskRequest.Status == TaskStatusEnum.ToDo)
                 | detectorsToExecute.Count > 0)
             {
-                await ExecuteViewerTaskAsync(formattedFileName);
-                await ExecuteGrabberTaskAsync(formattedFileName, filePath);
-                List<IFileFormat> detectedFileFormats =  await ExecuteDetectorsAsync(detectorsToExecute, formattedFileName, filePath);
+                await ExecuteViewerTaskAsync();
+                await ExecuteGrabberTaskAsync();
+                List<IFileFormat> detectedFileFormats =  await ExecuteDetectorsAsync(detectorsToExecute);
                 await UpdateCurrentFormatAsync(detectedFileFormats);
-                await UpdateBacklogsAsync(formattedFileName);
+                await UpdateBacklogsAsync();
                 detectorsToExecute = await GetDetectorsToExecuteAsync();
             }
 
             AnalyserMessageEvent?.Invoke(new Factory().CreateAnalysisMessage(AnalysisMessageTypeEnum.AnalysisCompleted, true, null, null, null, null));
 
-            _logger.Log( LogLevel.Information, $"{formattedFileName}\tCurrent format: Referentiel={_currentFormat.Referentiel}, Label={_currentFormat.Label}, Version={_currentFormat.Version}, MIMEType={_currentFormat.MIMEType}");
-            _logger.Log(LogLevel.Information, $"{formattedFileName}\t--------------- Analysis finished --------------- ");
+            _logger.Log( LogLevel.Information, $"{FormattedFileName()}\tCurrent format: Referentiel={_analysisContext.CurrentFileFormat.Referentiel}, Label={_analysisContext.CurrentFileFormat.Label}, Version={_analysisContext.CurrentFileFormat.Version}, MIMEType={_analysisContext.CurrentFileFormat.MIMEType}");
+            _logger.Log(LogLevel.Information, $"{FormattedFileName()}\t--------------- Analysis finished --------------- ");
         }
 
-        private async Task ExecuteViewerTaskAsync(string formattedFileName)
+        private async Task ExecuteViewerTaskAsync()
         {
             TaskRequest? viewerTaskRequest = _viewerBacklog.FirstOrDefault(x => x.Status == TaskStatusEnum.ToDo);
             if (viewerTaskRequest is not null)
             {
-                _logger.Log(LogLevel.Debug, $"{formattedFileName}\tCatalog viewers for {viewerTaskRequest.Tag}: {string.Join(", ", _catalog.Where(entry => entry.InterfaceType == "IWpfViewer" && entry.Tags.Any(tag => string.Equals(tag, viewerTaskRequest.Tag, StringComparison.OrdinalIgnoreCase))).Select(entry => $"{entry.Label} [{entry.ClassName}]"))}");
+                _logger.Log(LogLevel.Debug, $"{FormattedFileName()}\tCatalog viewers for {viewerTaskRequest.Tag}: {string.Join(", ", _catalog.Where(entry => entry.InterfaceType == "IWpfViewer" && entry.Tags.Any(tag => string.Equals(tag, viewerTaskRequest.Tag, StringComparison.OrdinalIgnoreCase))).Select(entry => $"{entry.Label} [{entry.ClassName}]"))}");
                 await foreach ((string label, object instance) in InstanceBuilder.CreateInstancesAsync(_catalog, "IWpfViewer", viewerTaskRequest!.Tag, _messageCenter, _logger, _settingsService, _entityFactory))
                 {
                     if (string.IsNullOrEmpty(label) || instance is null)
                     {
-                        _logger.Log(LogLevel.Warning, $"{formattedFileName}\tTask viewer cannot create instance for {viewerTaskRequest!.Tag}");
+                        _logger.Log(LogLevel.Warning, $"{FormattedFileName()}\tTask viewer cannot create instance for {viewerTaskRequest!.Tag}");
                     }
                     else
                     {
                         var message = new Factory().CreateAnalysisMessage(AnalysisMessageTypeEnum.ViewerUC, false, null, null, label, instance);
-                        _logger.Log(LogLevel.Debug, $"{formattedFileName}\tTask viewer {viewerTaskRequest.Tag}: sending message for {label}");
+                        _logger.Log(LogLevel.Debug, $"{FormattedFileName()}\tTask viewer {viewerTaskRequest.Tag}: sending message for {label}");
                         AnalyserMessageEvent?.Invoke(message);
                     }
                 }
                 viewerTaskRequest.Status = TaskStatusEnum.Done;
-                _logger.Log(LogLevel.Information, $"{formattedFileName}\tTask viewer {viewerTaskRequest.Tag} queued");
+                _logger.Log(LogLevel.Debug, $"{FormattedFileName()}\tTask viewer {viewerTaskRequest.Tag} queued");
             }
         }
 
-        private async Task ExecuteGrabberTaskAsync(string formattedFileName, string filePath)
+        private async Task ExecuteGrabberTaskAsync()
         {
             TaskRequest? grabberTaskRequest = _grabberBacklog.FirstOrDefault(x => x.Status == TaskStatusEnum.ToDo);
             if (grabberTaskRequest is not null)
@@ -127,11 +134,11 @@ namespace Espluque.Application.Orchestrators
                 {
                     if (instance is not IGrabber grabber)
                     {
-                        _logger.Log(LogLevel.Error, $"{formattedFileName}\tTask grabber {label} invalid instance type: {instance.GetType().FullName}");
+                        _logger.Log(LogLevel.Error, $"{FormattedFileName()}\tTask grabber {label} invalid instance type: {instance.GetType().FullName}");
                         continue;
                     }
 
-                    List<KeyValuePair<string, string>> keyValueList = await grabber.Grab(filePath);
+                    List<KeyValuePair<string, string>> keyValueList = await grabber.Grab(_analysisContext);
                     IFileInformationPack fileInformationPack = _entityFactory.CreateFileInformationPack(label, keyValueList);
 
                     IAnalysisMessage message = new Factory().CreateAnalysisMessage(AnalysisMessageTypeEnum.GrabberResult, false, null, fileInformationPack, label, instance);
@@ -140,7 +147,7 @@ namespace Espluque.Application.Orchestrators
                 }
 
                 grabberTaskRequest.Status = TaskStatusEnum.Done;
-                _logger.Log(LogLevel.Information, $"{formattedFileName}\tTask grabber {grabberTaskRequest.Tag} done");
+                _logger.Log(LogLevel.Debug, $"{FormattedFileName()}\tTask grabber {grabberTaskRequest.Tag} done");
             }
         }
 
@@ -148,14 +155,14 @@ namespace Espluque.Application.Orchestrators
         {
             List<ICatalogEntry> detectorsToExecute = [];
 
-            (int conceptId, string mainTerm)? conceptMainTerm = await _thesaurusService.GetConceptMainTermByTerm(_currentFormat.Referentiel!, _currentFormat.Label!);
-            if (conceptMainTerm is null && !string.IsNullOrWhiteSpace(_currentFormat.MIMEType))
+            (int conceptId, string mainTerm)? conceptMainTerm = await _thesaurusService.GetConceptMainTermByTerm(_analysisContext.CurrentFileFormat.Referentiel!, _analysisContext.CurrentFileFormat.Label!);
+            if (conceptMainTerm is null && !string.IsNullOrWhiteSpace(_analysisContext.CurrentFileFormat.MIMEType))
             {
-                conceptMainTerm = await _thesaurusService.GetConceptMainTermByTerm("MIMEType", _currentFormat.MIMEType);
+                conceptMainTerm = await _thesaurusService.GetConceptMainTermByTerm("MIMEType", _analysisContext.CurrentFileFormat.MIMEType);
             }
             if (conceptMainTerm is null) return detectorsToExecute;
 
-            _logger.Log(LogLevel.Debug, $"Detector search: {_currentFormat.Referentiel} / {_currentFormat.Label} => thesaurus tag \"{conceptMainTerm.Value.mainTerm}\"");
+            _logger.Log(LogLevel.Debug, $"Detector search: {_analysisContext.CurrentFileFormat.Referentiel} / {_analysisContext.CurrentFileFormat.Label} => thesaurus tag \"{conceptMainTerm.Value.mainTerm}\"");
 
             detectorsToExecute = _catalog
                 .Where(entry =>
@@ -210,7 +217,7 @@ namespace Espluque.Application.Orchestrators
             return detectorsToExecute;
         }
 
-        private async Task<List<IFileFormat>> ExecuteDetectorsAsync( List<ICatalogEntry> detectorsToExecute, string formattedFileName, string filePath)
+        private async Task<List<IFileFormat>> ExecuteDetectorsAsync( List<ICatalogEntry> detectorsToExecute)
         {
             List<IFileFormat> detectedFileFormats = [];
 
@@ -226,7 +233,7 @@ namespace Espluque.Application.Orchestrators
                 if (contribution is null)
                 {
                     _doneDetectors.Add($"{detectorEntry.AssemblyPath}|{detectorEntry.ClassName}");
-                    _logger.Log( LogLevel.Error, $"{formattedFileName}\tTask detector {detectorEntry.Label} failed: Cannot create instance");
+                    _logger.Log( LogLevel.Error, $"{FormattedFileName()}\tTask detector {detectorEntry.Label} failed: Cannot create instance");
                     continue;
                 }
 
@@ -234,11 +241,11 @@ namespace Espluque.Application.Orchestrators
 
                 IDetector detector = (IDetector)instance;
 
-                IFileFormat? fileFormat = await detector.Detect(filePath);
+                IFileFormat? fileFormat = await detector.Detect(_analysisContext);
 
                 if (fileFormat is null)
                 {
-                    _logger.Log( LogLevel.Warning, $"{formattedFileName}\tTask detector {label} returned no format");
+                    _logger.Log( LogLevel.Warning, $"{FormattedFileName()}\tTask detector {label} returned no format");
 
                     _doneDetectors.Add($"{detectorEntry.AssemblyPath}|{detectorEntry.ClassName}");
                     continue;
@@ -251,7 +258,7 @@ namespace Espluque.Application.Orchestrators
                 }
 
                 _doneDetectors.Add($"{detectorEntry.AssemblyPath}|{detectorEntry.ClassName}");
-                _logger.Log(LogLevel.Information, $"{formattedFileName}\tTask detector {label} done");
+                _logger.Log(LogLevel.Debug, $"{FormattedFileName()}\tTask detector {label} done");
             }
 
             return detectedFileFormats;
@@ -265,7 +272,8 @@ namespace Espluque.Application.Orchestrators
                     return;
 
                 case 1:
-                    _currentFormat = detectedFileFormats[0];
+                    _analysisContext.FileFormatHistory.Add(_analysisContext.CurrentFileFormat);
+                    _analysisContext.CurrentFileFormat = detectedFileFormats[0];
                     return;
             }
 
@@ -291,7 +299,12 @@ namespace Espluque.Application.Orchestrators
             }
             while (hasMoved);
 
-            _currentFormat = detectedFileFormats[0];
+            foreach (IFileFormat format in detectedFileFormats)
+            {
+                _analysisContext.FileFormatHistory.Add(format);
+            }
+
+            _analysisContext.CurrentFileFormat = detectedFileFormats[0];
         }
 
         private async Task<bool> IsSecondFormatMoreSpecificAsync( IFileFormat firstFormat, IFileFormat secondFormat)
@@ -340,9 +353,9 @@ namespace Espluque.Application.Orchestrators
             return false;
         }
 
-        private async Task UpdateBacklogsAsync(string formattedFileName)
+        private async Task UpdateBacklogsAsync()
         {
-            List<string>? taskTags = await _thesaurusService.GetAncestorPreferredTerms(_currentFormat);
+            List<string>? taskTags = await _thesaurusService.GetAncestorPreferredTerms(_analysisContext.CurrentFileFormat);
 
             if (taskTags is null)
             {
@@ -373,7 +386,7 @@ namespace Espluque.Application.Orchestrators
                         Tag = tag
                     });
 
-                    _logger.Log(LogLevel.Information, $"{formattedFileName}\tTask grabber {tag}: ToDo");
+                    _logger.Log(LogLevel.Debug, $"{FormattedFileName()}\tTask grabber {tag}: ToDo");
                 }
             }
         }
@@ -406,6 +419,11 @@ namespace Espluque.Application.Orchestrators
             }
 
             return descendants;
+        }
+
+        private string FormattedFileName()
+        {
+            return Path.GetFileName(_analysisContext.FilePath).PadRight(35);
         }
 
         #endregion

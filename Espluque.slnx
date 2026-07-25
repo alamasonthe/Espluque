@@ -81,7 +81,7 @@
   <Folder Name="/src/Interface/">
     <Project Path="src/Interface/Espluque.Theming/Espluque.Theming.csproj" Id="bfb97c90-fb8b-4243-9869-91101074d84d" />
     <Project Path="src/Interface/Espluquer/Espluquer.csproj" Id="2a98516c-0dae-4341-bc98-09eaadef6cb0">
-	
+
 		<BuildDependency Project="Modules/AnyFile/AnyFile/AnyFile.csproj" />
 		<BuildDependency Project="Modules/AvalonEdit/AvalonEditViewer/AvalonEditViewer.csproj" />
 		<BuildDependency Project="Modules/FFmpeg/FFmpeg/FFmpeg.csproj" />
@@ -95,9 +95,9 @@
 		<BuildDependency Project="Modules/Shortcut/Shortcut/Shortcut.csproj" />
 		<BuildDependency Project="Modules/Vlc/VlcViewer/VlcViewer.csproj" />
 		<BuildDependency Project="Modules/WebView/WebView/WebView.csproj" />
-		<BuildDependency Project="Modules/WindowsAppPackage/WindowsAppPackage/WindowsAppPackage/WindowsAppPackage.csproj" />
+		<BuildDependency Project= "Modules/WindowsAppPackage/WindowsAppPackage/WindowsAppPackage/WindowsAppPackage.csproj" />
 		<BuildDependency Project="Modules/WpfHexaEditor/HexaEditor/HexaEditor.csproj" />
-	
+
       <Platform Solution="*|x64" Project="x64" />
     </Project>
   </Folder>

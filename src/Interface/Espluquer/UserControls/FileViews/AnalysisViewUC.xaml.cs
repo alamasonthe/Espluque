@@ -1,5 +1,5 @@
 ﻿using Espluque.Application.Entities;
-using Espluque.Application.MessageBus.Entities;
+using Espluque.Contracts.Entities;
 using Espluque.Contracts.Enums;
 using Espluque.Contracts.Interfaces;
 using Espluque.Contracts.Orchestrators;
@@ -19,7 +19,7 @@ namespace Espluquer.UserControls.FileViews
 {
     public partial class AnalysisViewUC : UserControl, IDisposable
     {
-        private readonly string _filePath;
+        private AnalysisContext _analysisContext;
         private List<KeyValuePair<string, string>>? _fileProperties;
         private readonly List<TaskRequest> _taskRequests = [];
 
@@ -32,14 +32,14 @@ namespace Espluquer.UserControls.FileViews
 
         #region Lifecycle
 
-        public AnalysisViewUC(IEngine engine, ILogger logger, string filePath)
+        public AnalysisViewUC(IEngine engine, ILogger logger, AnalysisContext analysisContext)
         {
             _engine = engine;
             _logger = logger;
-            _filePath = filePath;
+            _analysisContext = analysisContext;
 
             InitializeComponent();
-            FilePathTextbox.Text = filePath;
+            FilePathTextbox.Text = analysisContext.FilePath;
             AnalysisTabControl.ItemsSource = _analysisTabItems;
             Loaded += OnLoaded;
         }
@@ -47,7 +47,7 @@ namespace Espluquer.UserControls.FileViews
         private async void OnLoaded(object sender, RoutedEventArgs e)
         {
             Loaded -= OnLoaded;
-            await AnalyzeFileAsync(_filePath);
+            await AnalyzeFileAsync(_analysisContext);
         }
 
         public void Dispose()
@@ -75,13 +75,13 @@ namespace Espluquer.UserControls.FileViews
 
         #region Analysis Workflow
 
-        private async Task AnalyzeFileAsync(string filePath)
+        private async Task AnalyzeFileAsync(AnalysisContext analysisContext)
         {
             _engine.AnalyserMessageEvent += ReceiveAnalyserMessage;
 
             StartAnalysisProgressAnimation();
 
-            await Task.Run(() => _engine.AnalyzeFileAsync(filePath));
+            await Task.Run(() => _engine.AnalyzeFileAsync(analysisContext));
         }
 
         private async void ReceiveAnalyserMessage(IAnalysisMessage message)
@@ -134,7 +134,7 @@ namespace Espluquer.UserControls.FileViews
 
         private async Task ProcessViewerBacklogAsync()
         {
-            string formattedFileName = System.IO.Path.GetFileName(_filePath).PadRight(35);
+            string formattedFileName = System.IO.Path.GetFileName(_analysisContext.FilePath).PadRight(35);
             _logger.Log(Microsoft.Extensions.Logging.LogLevel.Debug, $"{formattedFileName}\tViewer Tasks queued: {_viewerQueue.Count}");
 
             foreach ((string label, IWpfViewer viewer) in _viewerQueue)
@@ -162,13 +162,13 @@ namespace Espluquer.UserControls.FileViews
 
                 if (loadContext is null)
                 {
-                    result = await viewer.GetViewer(_filePath);
+                    result = await viewer.GetViewer(_analysisContext);
                 }
                 else
                 {
                     using (loadContext.EnterContextualReflection())
                     {
-                        result = await viewer.GetViewer(_filePath);
+                        result = await viewer.GetViewer(_analysisContext);
                     }
                 }
 
@@ -214,12 +214,12 @@ namespace Espluquer.UserControls.FileViews
 
         private void OpenFileLocationButton_Click(object sender, RoutedEventArgs e)
         {
-            if (!System.IO.File.Exists(_filePath))
+            if (!System.IO.File.Exists(_analysisContext.FilePath))
             {
                 return;
             }
 
-            string arguments = $"/select,\"{_filePath}\"";
+            string arguments = $"/select,\"{_analysisContext.FilePath}\"";
 
             Process.Start(new ProcessStartInfo
             {

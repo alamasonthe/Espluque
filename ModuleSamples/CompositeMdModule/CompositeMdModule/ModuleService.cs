@@ -1,3 +1,4 @@
+using Espluque.Contracts.Entities;
 using Espluque.Contracts.Interfaces;
 using Espluque.Contracts.MessageInterfaces;
 using Espluque.Contracts.ModuleInterfaces.Contributions;
@@ -31,7 +32,7 @@ namespace CompositeMdModule
             _entityFactory = entityFactory;
         }
 
-        public async Task<IFileFormat> Detect(string filePath)
+        public async Task<IFileFormat> Detect(AnalysisContext analysisContext)
         {
             IFileFormat fileFormat = _entityFactory.CreateFileFormat(
                     _referentiel,
@@ -39,7 +40,7 @@ namespace CompositeMdModule
                     null,
                     null);
 
-            string extension = Path.GetExtension(filePath);
+            string extension = Path.GetExtension(analysisContext.FilePath);
             bool isMarkdown = string.Equals(extension, ".md", StringComparison.OrdinalIgnoreCase);
 
             if (isMarkdown)
@@ -50,20 +51,20 @@ namespace CompositeMdModule
             return fileFormat;
         }
 
-        public async Task<List<KeyValuePair<string, string>>> Grab(string filePath)
+        public async Task<List<KeyValuePair<string, string>>> Grab(AnalysisContext analysisContext)
         {
             List<KeyValuePair<string, string>> infos = [];
 
-            var linesCount = File.ReadLines(filePath).LongCount();
+            var linesCount = File.ReadLines(analysisContext.FilePath).LongCount();
 
             infos.Add(new("Lines", linesCount.ToString()));
 
             return infos;
         }
 
-        public Task<object?> GetViewer(string filePath)
+        public Task<object?> GetViewer(AnalysisContext analysisContext)
         {
-            object viewer = new MdViewerUC(filePath);
+            object viewer = new MdViewerUC(analysisContext.FilePath);
             return Task.FromResult<object?>(viewer);
         }
 

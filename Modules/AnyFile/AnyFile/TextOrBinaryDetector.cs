@@ -1,10 +1,11 @@
-﻿using Espluque.Contracts.Interfaces;
+﻿using Espluque.Contracts.Entities;
+using Espluque.Contracts.Interfaces;
 using Espluque.Contracts.MessageInterfaces;
+using Espluque.Contracts.ModuleInterfaces.Contributions;
 using Espluque.Contracts.Ports;
 using Microsoft.Extensions.Logging;
 using Util;
 using Util.Enums;
-using Espluque.Contracts.ModuleInterfaces.Contributions;
 
 namespace AnyFile
 {
@@ -28,9 +29,9 @@ namespace AnyFile
             _entityFactory = entityFactory;
         }
 
-        public async Task<IFileFormat> Detect(string filePath)
+        public async Task<IFileFormat> Detect(AnalysisContext analysisContext)
         {
-            var formattedFileName = Path.GetFileName(filePath).PadRight(35);
+            var formattedFileName = Path.GetFileName(analysisContext.FilePath).PadRight(35);
 
             IFileFormat fileFormat = _entityFactory.CreateFileFormat(
                     _referentiel,
@@ -41,7 +42,7 @@ namespace AnyFile
             try
             {
 
-                Result<byte[]> byteSampleResult = Bin.ReadBytesFromFile(filePath, 0, 4096);
+                Result<byte[]> byteSampleResult = Bin.ReadBytesFromFile(analysisContext.FilePath, 0, 4096);
 
                 if (!byteSampleResult.IsSuccess)
                 {

@@ -1,7 +1,9 @@
-﻿namespace Espluque.Contracts.ModuleInterfaces.Contributions
+﻿using Espluque.Contracts.Entities;
+
+namespace Espluque.Contracts.ModuleInterfaces.Contributions
 {
     public interface IWpfViewer
     {
-        Task<object?> GetViewer(string filePath);
+        Task<object?> GetViewer(AnalysisContext analysisContext);
     }
 }

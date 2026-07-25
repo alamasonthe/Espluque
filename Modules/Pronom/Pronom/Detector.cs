@@ -1,4 +1,5 @@
 ﻿using Espluque.Contracts.Interfaces;
+using Espluque.Contracts.Entities;
 using Espluque.Contracts.MessageInterfaces;
 using Espluque.Contracts.Ports;
 using Microsoft.Extensions.Logging;
@@ -29,13 +30,13 @@ namespace Pronom
             _entityFactory = entityFactory;
         }
 
-        public async Task<IFileFormat> Detect(string filePath)
+        public async Task<IFileFormat> Detect(AnalysisContext analysisContext)
         {
-            var formattedFileName = Path.GetFileName(filePath).PadRight(35);
+            var formattedFileName = Path.GetFileName(analysisContext.FilePath).PadRight(35);
 
             FormatIdentifier formatIdentifier = new(_logger, _entityFactory);
             var dbFilePath = GetDbFilePath(_settingsService);
-            var fileFormatResult = await formatIdentifier.MatchSignaturesAsync(filePath, dbFilePath);
+            var fileFormatResult = await formatIdentifier.MatchSignaturesAsync(analysisContext.FilePath, dbFilePath);
             if (fileFormatResult.IsSuccess)
             {
                 return fileFormatResult.Value;

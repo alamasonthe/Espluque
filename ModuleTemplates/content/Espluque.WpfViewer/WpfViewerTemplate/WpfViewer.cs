@@ -28,9 +28,9 @@ namespace WpfViewerTemplate
             _entityFactory = entityFactory;
         }
 
-        public Task<object?> GetViewer(string filePath)
+        public Task<object?> GetViewer(AnalysisContext analysisContext)
         {
-            object viewer = new CustomUserControl(filePath);
+            object viewer = new CustomUserControl(analysisContext.FilePath);
             return Task.FromResult<object?>(viewer);
         }
     }

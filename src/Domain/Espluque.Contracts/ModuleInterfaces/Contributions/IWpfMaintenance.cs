@@ -2,6 +2,6 @@
 {
     public interface IWpfMaintenance
     {
-        Task<object?> GetWpfMaintenance(string filePath);
+        Task<object?> GetWpfMaintenance();
     }
 }

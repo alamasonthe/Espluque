@@ -1,4 +1,5 @@
-﻿using Espluque.Contracts.Interfaces;
+﻿using Espluque.Contracts.Entities;
+using Espluque.Contracts.Interfaces;
 using Espluque.Contracts.MessageInterfaces;
 using Espluque.Contracts.ModuleInterfaces.Contributions;
 using Espluque.Contracts.Ports;
@@ -25,14 +26,14 @@ namespace FFmpeg
             _entityFactory = entityFactory;
         }
 
-        public async Task<List<KeyValuePair<string, string>>> Grab(string filePath)
+        public async Task<List<KeyValuePair<string, string>>> Grab(AnalysisContext analysisContext)
         {
-            string fileName = Path.GetFileName(filePath).PadRight(35);
+            string fileName = Path.GetFileName(analysisContext.FilePath).PadRight(35);
             List<KeyValuePair<string, string>> infos = [];
 
             IntPtr mediaContextPointer = 0;
 
-            Result<IntPtr> openMediaContextResult = await Grabber.OpenMediaContext(filePath);
+            Result<IntPtr> openMediaContextResult = await Grabber.OpenMediaContext(analysisContext.FilePath);
 
             if (!openMediaContextResult.IsSuccess)
             {

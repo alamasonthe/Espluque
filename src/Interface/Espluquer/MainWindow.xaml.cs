@@ -1,15 +1,17 @@
-﻿using Espluque.Theming.Services;
+﻿using Espluque.Contracts.Entities;
 using Espluque.Contracts.Enums;
 using Espluque.Contracts.MessageInterfaces;
 using Espluque.Contracts.ModuleInterfaces;
 using Espluque.Contracts.ModuleInterfaces.Contributions;
 using Espluque.Contracts.Orchestrators;
 using Espluque.Contracts.Ports;
+using Espluque.Theming.Services;
 using Espluquer.UserControls.Components;
 using Espluquer.UserControls.FileViews;
 using Espluquer.UserControls.Views;
 using Microsoft.Extensions.Logging;
 using Microsoft.Win32;
+using System.Drawing;
 using System.IO;
 using System.Windows;
 using System.Windows.Controls;
@@ -33,6 +35,8 @@ namespace Espluquer
         private readonly List<ICatalogEntry> _catalog;
 
         private readonly List<string> _recentFiles = [];
+
+        string _startingTag = "AnyFile";
 
         public MainWindow(LogUC logUC, ThesaurusExplorerUC thesaurusExplorerUC, ModuleDiagnosticUC moduleDiagnosticUC, Espluque.Contracts.Ports.ILogger logger, IOrchestratorFactory orchestratorFactory, ISettingsService settingsService, IMessageCenter messageCenter, List<ICatalogEntry> catalog, IModuleAdministrationService moduleAdministration)
         {
@@ -218,15 +222,28 @@ namespace Espluquer
             };
         }
 
-        private void AnalyzeFile(string filePath)
+        private void AnalyzeFile(string filePath, string? tempFolderPath = null)
         {
             if (!File.Exists(filePath))
             {
                 return;
             }
 
+            if (string.IsNullOrWhiteSpace(tempFolderPath))
+            {
+                tempFolderPath = Util.File.CreateTempFolder("Espluquer").FullName;
+            }
+            AnalysisContext analysisContext = new()
+            {
+                FilePath = filePath,
+                TempFolderPath = tempFolderPath,
+                StartingTag = _startingTag
+            };
+            
+
             IEngine engine = _orchestratorFactory.CreateEngine();
-            AnalysisViewUC analysisView = new AnalysisViewUC(engine, _logger, filePath);
+
+            AnalysisViewUC analysisView = new AnalysisViewUC(engine, _logger, analysisContext);
 
             AddTab(Path.GetFileName(filePath), analysisView);
             AddRecentFile(filePath);
@@ -300,7 +317,7 @@ namespace Espluquer
 
                         if (instancePack?.instance is not IWpfMaintenance maintenance) return;
 
-                        object? content = await maintenance.GetWpfMaintenance(string.Empty);
+                        object? content = await maintenance.GetWpfMaintenance();
 
                         if (content is UserControl userControl)
                         {
@@ -439,7 +456,7 @@ namespace Espluquer
                         _logger.Log(LogLevel.Error, $"Cannot extract {internalPath} from {containerFilePath}: {extractFileResult?.Error?.Message}");
                         return Task.CompletedTask;
                     }
-                    AnalyzeFile(extractedFilePath);
+                    AnalyzeFile(extractedFilePath, tempFolderPath);
                     break;
             }
 

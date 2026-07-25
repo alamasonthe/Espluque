@@ -1,4 +1,5 @@
-﻿using Espluque.Contracts.Interfaces;
+﻿using Espluque.Contracts.Entities;
+using Espluque.Contracts.Interfaces;
 
 namespace Espluque.Contracts.Orchestrators
 {
@@ -6,6 +7,6 @@ namespace Espluque.Contracts.Orchestrators
     {
         event Action<IAnalysisMessage>? AnalyserMessageEvent;
 
-        Task AnalyzeFileAsync( string filePath);
+        Task AnalyzeFileAsync(AnalysisContext analysisContext);
     }
 }

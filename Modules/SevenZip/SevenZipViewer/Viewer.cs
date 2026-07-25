@@ -1,3 +1,4 @@
+using Espluque.Contracts.Entities;
 using Espluque.Contracts.Interfaces;
 using Espluque.Contracts.MessageInterfaces;
 using Espluque.Contracts.ModuleInterfaces.Contributions;
@@ -24,15 +25,15 @@ namespace SevenZipViewer
             _entityFactory = entityFactory;
         }
 
-        public async Task<object?> GetViewer(string filePath)
+        public async Task<object?> GetViewer(AnalysisContext analysisContext)
         {
-            var canOpenContainer = SevenZipService.CanOpenContainer(filePath);
+            var canOpenContainer = SevenZipService.CanOpenContainer(analysisContext.FilePath);
             if (!canOpenContainer.IsSuccess) 
             { 
                 return null; 
             }
 
-            object viewer = new SevenZipUC(filePath, _messageCenter, _entityFactory);
+            object viewer = new SevenZipUC(analysisContext.FilePath, _messageCenter, _entityFactory);
             return viewer;
         }
 

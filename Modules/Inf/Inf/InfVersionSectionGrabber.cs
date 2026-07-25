@@ -1,4 +1,5 @@
-﻿using Espluque.Contracts.Interfaces;
+﻿using Espluque.Contracts.Entities;
+using Espluque.Contracts.Interfaces;
 using Espluque.Contracts.MessageInterfaces;
 using Espluque.Contracts.ModuleInterfaces.Contributions;
 using Espluque.Contracts.Ports;
@@ -25,11 +26,11 @@ namespace Inf
             _entityFactory = entityFactory;
         }
 
-        public async Task<List<KeyValuePair<string, string>>> Grab(string filePath)
+        public async Task<List<KeyValuePair<string, string>>> Grab(AnalysisContext analysisContext)
         {
-            string fileName = Path.GetFileName(filePath).PadRight(35);
+            string fileName = Path.GetFileName(analysisContext.FilePath).PadRight(35);
 
-            Result<List<KeyValuePair<string, string>>> versionInfosResult = await Grabber.GetVersionSectionInfos(filePath);
+            Result<List<KeyValuePair<string, string>>> versionInfosResult = await Grabber.GetVersionSectionInfos(analysisContext.FilePath);
 
             if (!versionInfosResult.IsSuccess)
             {
