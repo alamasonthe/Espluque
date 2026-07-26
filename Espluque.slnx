@@ -36,6 +36,9 @@
   <Folder Name="/Modules/Shortcut/">
     <Project Path="Modules/Shortcut/Shortcut/Shortcut.csproj" Id="40af2b05-8492-42c1-8b7b-d07338392333" />
   </Folder>
+  <Folder Name="/Modules/TinyHtml/">
+    <Project Path="Modules/TinyHtml/TinyHtml/TinyHtml/TinyHtml.csproj" Id="88047e04-03ed-457c-8a54-b2e16e36127e" />
+  </Folder>
   <Folder Name="/Modules/Vlc/">
     <Project Path="Modules/Vlc/VlcViewer/VlcViewer.csproj" Id="e64dc373-0151-4e2d-aea3-4130a6ffda56" />
   </Folder>
@@ -57,57 +60,55 @@
   </Folder>
   <Folder Name="/src/">
     <Project Path="src/Bootstrap/Bootstrap.csproj">
-      <Platform Solution="*|x64" Project="x64" />
+      <Platform Project="x64" />
     </Project>
   </Folder>
   <Folder Name="/src/Domain/">
     <Project Path="src/Domain/Espluque.Application/Espluque.Application.csproj">
-      <Platform Solution="*|x64" Project="x64" />
+      <Platform Project="x64" />
     </Project>
     <Project Path="src/Domain/Espluque.Contracts/Espluque.Contracts.csproj">
-      <Platform Solution="*|x64" Project="x64" />
+      <Platform Project="x64" />
     </Project>
     <Project Path="src/Domain/Espluque.ModuleCommons/Espluque.ModuleCommons.csproj" Id="e3471df0-c412-4897-b88b-874a50ec4adb" />
   </Folder>
   <Folder Name="/src/Infrastructure/">
     <Project Path="src/Infrastructure/EspluqueSqlite/EspluqueSqlite.csproj" Id="98a0c1d9-845d-4c56-9d75-b63a53a3e11e">
-      <Platform Solution="*|x64" Project="x64" />
+      <Platform Project="x64" />
     </Project>
     <Project Path="src/Infrastructure/MiniFileLogger/MiniFileLogger.csproj" Id="e801c127-4a25-49e9-bd5b-016113a7eb58">
-      <Platform Solution="*|x64" Project="x64" />
+      <Platform Project="x64" />
     </Project>
     <Project Path="src/Infrastructure/SettingsJson/SettingsJson.csproj" Id="f1cb9b80-2d5f-47dc-a693-7b3eddc1a605" />
   </Folder>
   <Folder Name="/src/Interface/">
     <Project Path="src/Interface/Espluque.Theming/Espluque.Theming.csproj" Id="bfb97c90-fb8b-4243-9869-91101074d84d" />
     <Project Path="src/Interface/Espluquer/Espluquer.csproj" Id="2a98516c-0dae-4341-bc98-09eaadef6cb0">
-
-		<BuildDependency Project="Modules/AnyFile/AnyFile/AnyFile.csproj" />
-		<BuildDependency Project="Modules/AvalonEdit/AvalonEditViewer/AvalonEditViewer.csproj" />
-		<BuildDependency Project="Modules/FFmpeg/FFmpeg/FFmpeg.csproj" />
-		<BuildDependency Project="Modules/ImageMagick/Magick/Magick.csproj" />
-		<BuildDependency Project="Modules/ImageMagick/MagickViewer/MagickViewer.csproj" />
-		<BuildDependency Project="Modules/Inf/Inf/Inf.csproj" />
-		<BuildDependency Project="Modules/LibMagic/LibMagic/LibMagic.csproj" />
-		<BuildDependency Project="Modules/Pronom/Pronom/Pronom.csproj" />
-		<BuildDependency Project="Modules/Reg/RegViewer/RegViewer.csproj" />
-		<BuildDependency Project="Modules/SevenZip/SevenZipViewer/SevenZipViewer.csproj" />
-		<BuildDependency Project="Modules/Shortcut/Shortcut/Shortcut.csproj" />
-		<BuildDependency Project="Modules/Vlc/VlcViewer/VlcViewer.csproj" />
-		<BuildDependency Project="Modules/WebView/WebView/WebView.csproj" />
-		<BuildDependency Project= "Modules/WindowsAppPackage/WindowsAppPackage/WindowsAppPackage/WindowsAppPackage.csproj" />
-		<BuildDependency Project="Modules/WpfHexaEditor/HexaEditor/HexaEditor.csproj" />
-
-      <Platform Solution="*|x64" Project="x64" />
+      <BuildDependency Project="Modules/AnyFile/AnyFile/AnyFile.csproj" />
+      <BuildDependency Project="Modules/AvalonEdit/AvalonEditViewer/AvalonEditViewer.csproj" />
+      <BuildDependency Project="Modules/FFmpeg/FFmpeg/FFmpeg.csproj" />
+      <BuildDependency Project="Modules/ImageMagick/Magick/Magick.csproj" />
+      <BuildDependency Project="Modules/ImageMagick/MagickViewer/MagickViewer.csproj" />
+      <BuildDependency Project="Modules/Inf/Inf/Inf.csproj" />
+      <BuildDependency Project="Modules/LibMagic/LibMagic/LibMagic.csproj" />
+      <BuildDependency Project="Modules/Pronom/Pronom/Pronom.csproj" />
+      <BuildDependency Project="Modules/Reg/RegViewer/RegViewer.csproj" />
+      <BuildDependency Project="Modules/SevenZip/SevenZipViewer/SevenZipViewer.csproj" />
+      <BuildDependency Project="Modules/Shortcut/Shortcut/Shortcut.csproj" />
+      <BuildDependency Project="Modules/Vlc/VlcViewer/VlcViewer.csproj" />
+      <BuildDependency Project="Modules/WebView/WebView/WebView.csproj" />
+      <BuildDependency Project="Modules/WindowsAppPackage/WindowsAppPackage/WindowsAppPackage/WindowsAppPackage.csproj" />
+      <BuildDependency Project="Modules/WpfHexaEditor/HexaEditor/HexaEditor.csproj" />
+      <Platform Project="x64" />
     </Project>
   </Folder>
   <Folder Name="/src/Shared/">
     <Project Path="src/Shared/SevenZip/SevenZip.csproj" />
     <Project Path="src/Shared/SqliteUtil/SqliteUtil.csproj" Id="b3c5332d-c645-4f31-9ae3-e34f8c316fc1">
-      <Platform Solution="*|x64" Project="x64" />
+      <Platform Project="x64" />
     </Project>
     <Project Path="src/Shared/Util/Util.csproj" Id="224d5274-644c-4367-a415-be803b69a289">
-      <Platform Solution="*|x64" Project="x64" />
+      <Platform Project="x64" />
     </Project>
   </Folder>
 </Solution>
