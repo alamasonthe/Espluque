@@ -1,6 +1,4 @@
-﻿using Espluque.Contracts.Ports;
-
-namespace Espluque.Contracts.Orchestrators
+﻿namespace Espluque.Contracts.Orchestrators
 {
     public interface IOrchestratorFactory
     {

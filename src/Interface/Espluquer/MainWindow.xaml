@@ -60,6 +60,7 @@
                             </MenuItem>
 
                             <MenuItem Header="Modules">
+                                <MenuItem Header="Contributions" Tag="Modules.Contributions" Click="MainMenuItem_Click" />
                                 <MenuItem Header="Diagnostics" Tag="Modules.Diagnostics" Click="MainMenuItem_Click" />
                                 <MenuItem Header="Log catalog" Tag="Modules.LogCatalog" Click="MainMenuItem_Click" />
                             </MenuItem>

@@ -1,4 +1,5 @@
-﻿using Espluque.Contracts.Enums;
+﻿using Espluque.Contracts.Entities;
+using Espluque.Contracts.Enums;
 using Espluque.Contracts.Interfaces;
 using Espluque.Contracts.MessageInterfaces;
 using Espluque.Contracts.ModuleInterfaces.Contributions;
@@ -30,14 +31,14 @@ namespace WindowsAppPackage
             _entityFactory = entityFactory;
         }
 
-        public Task<List<KeyValuePair<string, string>>> Grab(string filePath)
+        public Task<List<KeyValuePair<string, string>>> Grab(AnalysisContext analysisContext)
         {
             List<KeyValuePair<string, string>> properties = [];
 
-            Result<string> manifestResult = SevenZipService.ExtractEntryToString(filePath, @"AppxMetadata\AppxBundleManifest.xml");
+            Result<string> manifestResult = SevenZipService.ExtractEntryToString(analysisContext.FilePath, @"AppxMetadata\AppxBundleManifest.xml");
             if (!manifestResult.IsSuccess)
             {
-                _logger.Log(LogLevel.Error, $"{Path.GetFileName(filePath)}\t{manifestResult.Error.Code} {manifestResult.Error.Message}");
+                _logger.Log(LogLevel.Error, $"{Path.GetFileName(analysisContext.FilePath)}\t{manifestResult.Error.Code} {manifestResult.Error.Message}");
                 return Task.FromResult(properties);
             }
 
@@ -103,7 +104,7 @@ namespace WindowsAppPackage
             }
             catch (Exception ex)
             {
-                _logger.Log(LogLevel.Error, $"{Path.GetFileName(filePath)}\tFailed to parse AppxBundleManifest.xml: {ex.Message}");
+                _logger.Log(LogLevel.Error, $"{Path.GetFileName(analysisContext.FilePath)}\tFailed to parse AppxBundleManifest.xml: {ex.Message}");
                 return Task.FromResult(properties);
             }
         }

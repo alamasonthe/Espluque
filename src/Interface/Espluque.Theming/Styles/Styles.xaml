@@ -17,7 +17,7 @@
         <ResourceDictionary Source="TabControl.xaml" />
         <ResourceDictionary Source="ComponentTabControl.xaml" />
         <ResourceDictionary Source="TreeView.xaml" />
-        <!-- <ResourceDictionary Source="AnalysisViewMenu.xaml" /> -->
+        <ResourceDictionary Source="RadioButton.xaml" />
         <ResourceDictionary Source="DataGrid.xaml" />
         <ResourceDictionary Source="ComboBox.xaml" />
         <ResourceDictionary Source="Expander.xaml" />

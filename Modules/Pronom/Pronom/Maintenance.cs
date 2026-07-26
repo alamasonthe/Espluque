@@ -25,7 +25,7 @@ namespace Pronom
             _entityFactory = entityFactory;
         }
 
-        public async Task<object?> GetWpfMaintenance(string filePath)
+        public async Task<object?> GetWpfMaintenance()
         {
             return new UserControls.MaintenanceUC(_logger, _settingsService);
         }

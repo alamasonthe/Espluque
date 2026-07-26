@@ -1,4 +1,5 @@
-﻿using Espluque.Contracts.Interfaces;
+﻿using Espluque.Contracts.Entities;
+using Espluque.Contracts.Interfaces;
 using Espluque.Contracts.MessageInterfaces;
 using Espluque.Contracts.ModuleInterfaces.Contributions;
 using Espluque.Contracts.Ports;
@@ -44,9 +45,9 @@ namespace WindowsAppPackage
             _entityFactory = entityFactory;
         }
 
-        public Task<IFileFormat> Detect(string filePath)
+        public Task<IFileFormat> Detect(AnalysisContext analysisContext)
         {
-            var formattedFileName = Path.GetFileName(filePath).PadRight(35);
+            var formattedFileName = Path.GetFileName(analysisContext.FilePath).PadRight(35);
 
             IFileFormat fileFormat = _entityFactory.CreateFileFormat(
                 _referentiel,
@@ -56,13 +57,13 @@ namespace WindowsAppPackage
 
             try
             {
-                if (IsPackage(filePath))
+                if (IsPackage(analysisContext.FilePath))
                 {
                     fileFormat.Label = "Windows App Package";
                     return Task.FromResult(fileFormat);
                 }
 
-                if (IsBundle(filePath))
+                if (IsBundle(analysisContext.FilePath))
                 {
                     fileFormat.Label = "Windows App Bundle";
                 }

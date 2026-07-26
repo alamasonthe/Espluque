@@ -1,8 +1,9 @@
-﻿using Espluque.Contracts.Interfaces;
+﻿using Espluque.Contracts.Entities;
+using Espluque.Contracts.Interfaces;
 using Espluque.Contracts.MessageInterfaces;
+using Espluque.Contracts.ModuleInterfaces.Contributions;
 using Espluque.Contracts.Ports;
 using Microsoft.Win32;
-using Espluque.Contracts.ModuleInterfaces.Contributions;
 
 namespace AnyFile
 {
@@ -24,15 +25,15 @@ namespace AnyFile
             _entityFactory = entityFactory;
         }
 
-        public async Task<List<KeyValuePair<string, string>>> Grab(string filePath)
+        public async Task<List<KeyValuePair<string, string>>> Grab(AnalysisContext analysisContext)
         {
             try
             {
-                FileInfo fileInfo = new FileInfo(filePath);
+                FileInfo fileInfo = new FileInfo(analysisContext.FilePath);
 
                 List<KeyValuePair<string, string>> infos = new List<KeyValuePair<string, string>>
                 {
-                    new KeyValuePair<string, string>("Name", System.IO.Path.GetFileName(filePath)),
+                    new KeyValuePair<string, string>("Name", System.IO.Path.GetFileName(analysisContext.FilePath)),
                     new KeyValuePair<string, string>("Creation Time", fileInfo.CreationTime.ToString()),
                     new KeyValuePair<string, string>("IsReadOnly", fileInfo.IsReadOnly.ToString()),
                     new KeyValuePair<string, string>("LastAccessTime", fileInfo.LastAccessTime.ToString()),
@@ -40,7 +41,7 @@ namespace AnyFile
                     new KeyValuePair<string, string>("Length", fileInfo.Length.ToString())
                 };
 
-                string ext = System.IO.Path.GetExtension(filePath).ToLowerInvariant();
+                string ext = System.IO.Path.GetExtension(analysisContext.FilePath).ToLowerInvariant();
                 string defaultDescription = string.IsNullOrWhiteSpace(ext)
                     ? "file"
                     : $"{ext.Substring(1)} file";

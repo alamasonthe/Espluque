@@ -1,0 +1,21 @@
+{
+  "name": "TinyHTML.Wpf module",
+  "version": "0.0.1",
+  "assembly": "TinyHtml.dll",
+  "contributions": [
+    {
+      "interfaceType": "IWpfViewer",
+      "label": "TinyHTML Viewer",
+      "className": "TinyHtml.WpfViewer",
+      "tags": [ "TinyHTML" ],
+      "active": true
+    },
+    {
+      "interfaceType": "IManagedDependencies",
+      "label": "TinyHTML dependency list",
+      "className": "TinyHtml.WpfViewer",
+      "tags": [],
+      "active": true
+    }
+  ]
+}

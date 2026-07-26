@@ -26,9 +26,9 @@ namespace detectorTemplate
             _entityFactory = entityFactory;
         }
 
-        public Task<IFileFormat> Detect(string filePath)
+        public Task<IFileFormat> Detect(AnalysisContext analysisContext)
         {
-            var formattedFileName = Path.GetFileName(filePath).PadRight(35);
+            var formattedFileName = Path.GetFileName(analysisContext.FilePath).PadRight(35);
 
             IFileFormat fileFormat = _entityFactory.CreateFileFormat(
                 _referentiel,
@@ -39,7 +39,7 @@ namespace detectorTemplate
             try
             {
 
-                if (File.Exists(filePath))
+                if (File.Exists(analysisContext.FilePath))
                 {
                     fileFormat.Label = "ThisIsAFile";
                     fileFormat.Version = string.Empty;

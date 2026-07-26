@@ -24,7 +24,7 @@ namespace GrabberTemplate
             _entityFactory = entityFactory;
         }
 
-        public Task<List<KeyValuePair<string, string>>> Grab(string filePath)
+        public Task<List<KeyValuePair<string, string>>> Grab(AnalysisContext analysisContext)
         {
             List<KeyValuePair<string, string>> infos = new List<KeyValuePair<string, string>>
                 {

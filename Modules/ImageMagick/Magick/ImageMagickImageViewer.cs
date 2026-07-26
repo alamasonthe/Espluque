@@ -1,4 +1,5 @@
-﻿using Espluque.Contracts.Interfaces;
+﻿using Espluque.Contracts.Entities;
+using Espluque.Contracts.Interfaces;
 using Espluque.Contracts.MessageInterfaces;
 using Espluque.Contracts.ModuleInterfaces.Contributions;
 using Espluque.Contracts.Ports;
@@ -24,9 +25,9 @@ namespace Magick
             _entityFactory = entityFactory;
         }
 
-        public async Task<object?> GetViewer(string filePath)
+        public async Task<object?> GetViewer(AnalysisContext analysisContext)
         {
-            var uc = new ImageViewerUC(filePath);
+            var uc = new ImageViewerUC(analysisContext.FilePath);
             return uc;
         }
     }

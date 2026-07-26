@@ -1,4 +1,5 @@
-﻿using Espluque.Contracts.Interfaces;
+﻿using Espluque.Contracts.Entities;
+using Espluque.Contracts.Interfaces;
 using Espluque.Contracts.MessageInterfaces;
 using Espluque.Contracts.ModuleInterfaces.Contributions;
 using Espluque.Contracts.Ports;
@@ -27,9 +28,9 @@ namespace LibMagic
             _entityFactory = entityFactory;
         }
 
-        public async Task<IFileFormat> Detect(string filePath)
+        public async Task<IFileFormat> Detect(AnalysisContext analysisContext)
         {
-            var formattedFileName = Path.GetFileName(filePath).PadRight(35);
+            var formattedFileName = Path.GetFileName(analysisContext.FilePath).PadRight(35);
             _logger.Log(LogLevel.Debug, $"{formattedFileName}\tLibmagic detection start");
 
             IFileFormat fileFormat = _entityFactory.CreateFileFormat(
@@ -44,8 +45,8 @@ namespace LibMagic
 
                 using Magic magic = new(MagicOpenFlags.MAGIC_NONE);
 
-                string label = magic.Read(filePath);
-                string mimeType = MimeGuesser.GuessMimeType(filePath);
+                string label = magic.Read(analysisContext.FilePath);
+                string mimeType = MimeGuesser.GuessMimeType(analysisContext.FilePath);
 
                 fileFormat = _entityFactory.CreateFileFormat(
                     _referentiel,
