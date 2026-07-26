@@ -20,6 +20,8 @@ namespace Espluquer.UserControls.Components
         private ContributionGraphUC? _contributionGraphUC;
         private string _selectedContributionType = "Viewer";
 
+        private bool _isReloading;
+
         public ModuleContributionsUC(IThesaurusService thesaurusService, IEntityFactory entityFactory, List<ICatalogEntry> catalog)
         {
             _thesaurusService = thesaurusService;
@@ -28,19 +30,47 @@ namespace Espluquer.UserControls.Components
 
             InitializeComponent();
 
-            Loaded += ModuleContributionsUC_Loaded;
+            IsVisibleChanged += UC_IsVisibleChanged;
         }
 
-        private async void ModuleContributionsUC_Loaded(object sender, RoutedEventArgs e)
+        private async void UC_IsVisibleChanged( object sender, DependencyPropertyChangedEventArgs e)
         {
-            Loaded -= ModuleContributionsUC_Loaded;
+            if (!IsVisible || _isReloading)
+            {
+                return;
+            }
 
+            _isReloading = true;
+
+            try
+            {
+                await ReloadAsync();
+            }
+            finally
+            {
+                _isReloading = false;
+            }
+        }
+
+        private async Task ReloadAsync()
+        {
             await LoadNodesAsync();
 
-            var graphUC = new ContributionGraphUC(_tree, _catalog, _selectedContributionType);
-            _contributionGraphUC = graphUC;
-            GraphHost.Content = graphUC;
-            graphUC.ThesaurusConceptSelected += ThesaurusConceptSelected;
+            if (_contributionGraphUC is not null)
+            {
+                _contributionGraphUC.ThesaurusConceptSelected -= ThesaurusConceptSelected;
+            }
+
+            ContributionHost.Content = null;
+
+            _contributionGraphUC = new ContributionGraphUC(
+                _tree,
+                _catalog,
+                _selectedContributionType);
+
+            _contributionGraphUC.ThesaurusConceptSelected += ThesaurusConceptSelected;
+
+            GraphHost.Content = _contributionGraphUC;
         }
 
         private async Task LoadNodesAsync()
