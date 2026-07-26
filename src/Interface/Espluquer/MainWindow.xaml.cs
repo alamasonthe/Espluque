@@ -32,13 +32,15 @@ namespace Espluquer
         private readonly LogUC _logUC;
         private readonly ThesaurusExplorerUC _thesaurusExplorerUC;
         private readonly ModuleDiagnosticUC _moduleDiagnosticUC;
+        private readonly ModuleContributionsUC _moduleContributionsUC;
         private readonly List<ICatalogEntry> _catalog;
 
         private readonly List<string> _recentFiles = [];
 
         string _startingTag = "AnyFile";
 
-        public MainWindow(LogUC logUC, ThesaurusExplorerUC thesaurusExplorerUC, ModuleDiagnosticUC moduleDiagnosticUC, Espluque.Contracts.Ports.ILogger logger, IOrchestratorFactory orchestratorFactory, ISettingsService settingsService, IMessageCenter messageCenter, List<ICatalogEntry> catalog, IModuleAdministrationService moduleAdministration)
+        public MainWindow(LogUC logUC, ThesaurusExplorerUC thesaurusExplorerUC, ModuleDiagnosticUC moduleDiagnosticUC, Espluque.Contracts.Ports.ILogger logger, IOrchestratorFactory orchestratorFactory, ISettingsService settingsService, IMessageCenter messageCenter, List<ICatalogEntry> catalog, 
+            IModuleAdministrationService moduleAdministration, ModuleContributionsUC moduleContributionsUC)
         {
             _logger = logger;
             _settingsService = settingsService;
@@ -49,6 +51,7 @@ namespace Espluquer
             _logUC = logUC;
             _thesaurusExplorerUC = thesaurusExplorerUC;
             _moduleDiagnosticUC = moduleDiagnosticUC;
+            _moduleContributionsUC = moduleContributionsUC;
 
             InitializeComponent();
 
@@ -294,6 +297,10 @@ namespace Espluquer
 
                 case "RecentFiles":
                     // ShowRecentFiles();
+                    return;
+
+                case "Modules.Contributions":
+                    AddTab("Module Contributions", _moduleContributionsUC);
                     return;
 
                 case "Modules.Diagnostics":
