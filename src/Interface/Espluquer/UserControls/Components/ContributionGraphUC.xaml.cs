@@ -16,8 +16,8 @@ namespace Espluquer.UserControls.Components
 
         private string _selectedContribution;
 
-        private readonly double _horizontalSpacing = 200;
-        private readonly double _verticalSpacing = 80;
+        private readonly double _horizontalSpacing = 170;
+        private readonly double _verticalSpacing = 70;
 
         public ContributionGraphUC(TreeNode<IThesaurusConcept>? tree, List<ICatalogEntry> catalog, string? selectedContribution)
         {
