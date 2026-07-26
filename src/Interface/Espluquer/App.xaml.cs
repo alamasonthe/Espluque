@@ -27,6 +27,7 @@ namespace Espluquer
             services.AddSingleton<LogUC>();
             services.AddSingleton<ThesaurusExplorerUC>();
             services.AddSingleton<ModuleDiagnosticUC>();
+            services.AddSingleton<ModuleContributionsUC>();
 
             services.AddSingleton<WebView2Configuration>();
             services.AddSingleton<SqliteConfiguration>();

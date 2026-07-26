@@ -147,6 +147,19 @@ namespace Espluquer.UserControls.FileViews
             _logger.Log(Microsoft.Extensions.Logging.LogLevel.Debug, $"{formattedFileName}\tViewer Task done");
         }
 
+        private async Task<object?> CreateViewerAsync( IWpfViewer viewer, AssemblyLoadContext? loadContext)
+        {
+            if (loadContext is null)
+            {
+                return await viewer.GetViewer(_analysisContext);
+            }
+
+            using (loadContext.EnterContextualReflection())
+            {
+                return await viewer.GetViewer(_analysisContext);
+            }
+        }
+
         #endregion
 
 
