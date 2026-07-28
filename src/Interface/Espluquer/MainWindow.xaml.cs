@@ -332,7 +332,8 @@ namespace Espluquer
 
                 // Espluque
                 case "Espluque.Settings":
-                    // TODO
+                    var espluqueSettingsUC = new EspluqueSettingsUC(_logger, _settingsService);
+                    AddTab("Espluque Settings", espluqueSettingsUC);
                     return;
 
                 case "Espluque.Documentation":
