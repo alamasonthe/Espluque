@@ -8,15 +8,16 @@ using Espluque.Contracts.Ports;
 using Espluque.Theming.Services;
 using Espluquer.UserControls.Components;
 using Espluquer.UserControls.FileViews;
+using Espluquer.UserControls.Parameters;
 using Espluquer.UserControls.Views;
 using Microsoft.Extensions.Logging;
 using Microsoft.Win32;
+using System.Diagnostics;
 using System.Drawing;
 using System.IO;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
-using Espluquer.UserControls.Parameters;
 
 namespace Espluquer
 {
@@ -323,31 +324,6 @@ namespace Espluquer
                     var maintenanceUC = new ModuleToolsUC(_logger, _moduleAdministrationService, _catalog, "IWpfMaintenance");
                     AddTab("Module Maintenance", maintenanceUC);
                     return;
-                /*
-                {
-                    ICatalogEntry? maintenanceEntry = _catalog.FirstOrDefault(entry =>
-                        entry.ModuleName == "Pronom module"
-                        && entry.InterfaceType == "IWpfMaintenance"
-                        && entry.ClassName == "Pronom.Maintenance");
-
-                    if (maintenanceEntry is null) return;
-
-                    (string label, object instance)? instancePack =
-                        await _moduleAdministration.CreateAdminInstance(maintenanceEntry);
-
-                    if (instancePack?.instance is not IWpfMaintenance maintenance) return;
-
-                    object? content = await maintenance.GetWpfMaintenance();
-
-                    if (content is UserControl userControl)
-                    {
-                        AddTab(instancePack.Value.label, userControl);
-                    }
-
-                    return;
-
-                }
-                */
 
                 //Debug
                 case "Debug.LogCatalog":
@@ -360,7 +336,11 @@ namespace Espluquer
                     return;
 
                 case "Espluque.Documentation":
-                    // TODO
+                    Process.Start(new ProcessStartInfo
+                    {
+                        FileName = "https://github.com/alamasonthe/Espluque/blob/master/docs/README.md",
+                        UseShellExecute = true
+                    });
                     return;
 
                 case "Espluque.About":
