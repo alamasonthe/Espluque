@@ -10,20 +10,16 @@
 		<RuntimeIdentifier>win-x64</RuntimeIdentifier>
 		<Platforms>x64</Platforms>
 		<DisableFastUpToDateCheck>true</DisableFastUpToDateCheck>
+		<Version>0.1.0</Version>
 	</PropertyGroup>
 
 	<ItemGroup>
 		<ModuleProject Include="$(MSBuildProjectDirectory)\..\..\..\Modules\**\*.csproj" />
 	</ItemGroup>
 
-	<Target Name="BuildAndDeployModules"
-			AfterTargets="Build"
-			Condition="'$(DesignTimeBuild)' != 'true'">
+	<Target Name="BuildAndDeployModules" AfterTargets="Build" Condition="'$(DesignTimeBuild)' != 'true'">
 
-		<MSBuild Projects="@(ModuleProject)"
-				 Targets="Build"
-				 BuildInParallel="true"
-				 Properties="Configuration=$(Configuration);Platform=$(Platform);BuildProjectReferences=true" />
+		<MSBuild Projects="@(ModuleProject)" Targets="Build" BuildInParallel="true" Properties="Configuration=$(Configuration);Platform=$(Platform);BuildProjectReferences=true" />
 	</Target>
 
 	<PropertyGroup Condition="'$(Configuration)' == 'Release'">
@@ -31,12 +27,16 @@
 	</PropertyGroup>
 
 	<ItemGroup>
-		<Content Include="Espluquer.ico" />
+		<Resource Include="Espluquer.ico" />
 	</ItemGroup>
 
 	<ItemGroup>
 		<PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="10.0.10" />
 		<PackageReference Include="Microsoft.Web.WebView2" Version="1.0.4078.44" />
+		<PackageReference Include="Nerdbank.GitVersioning" Version="3.10.91" PrivateAssets="all">
+		  <PrivateAssets>all</PrivateAssets>
+		  <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+		</PackageReference>
 	</ItemGroup>
 
 	<ItemGroup>
