@@ -364,7 +364,8 @@ namespace Espluquer
                     return;
 
                 case "Espluque.About":
-                    // TODO
+                    var aboutUC = new AboutUC();
+                    AddTab("About", aboutUC);
                     return;
 
                 // Exit
