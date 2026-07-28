@@ -50,22 +50,35 @@
 
                     <Button.ContextMenu>
                         <ContextMenu x:Name="MainMenu" StaysOpen="False">
-                            <MenuItem Header="Open file" Tag="OpenFile" Click="MainMenuItem_Click" />
+                            <MenuItem Header="Open file" Tag="OpenFiles" Click="MainMenuItem_Click" />
                             <MenuItem x:Name="RecentFilesMenu" Header="Recent files" />
+
                             <Separator />
 
-                            <MenuItem Header="Parameters">
-                                <MenuItem Header="Pronom / DROID" Tag="Parameters.PronomDroid" Click="MainMenuItem_Click" />
-                                <MenuItem Header="Thesaurus" Tag="Parameters.Thesaurus" Click="MainMenuItem_Click" />
+                            <MenuItem Header="Thesaurus">
+                                <MenuItem Header="Reference" Tag="Thesaurus.Reference" Click="MainMenuItem_Click"/>
+                                <MenuItem Header="Concepts" Tag="Thesaurus.Concepts" Click="MainMenuItem_Click" />
+                                <MenuItem Header="Contribution Map" Tag="Thesaurus.ContributionMap" Click="MainMenuItem_Click" />
                             </MenuItem>
 
                             <MenuItem Header="Modules">
-                                <MenuItem Header="Contributions" Tag="Modules.Contributions" Click="MainMenuItem_Click" />
-                                <MenuItem Header="Diagnostics" Tag="Modules.Diagnostics" Click="MainMenuItem_Click" />
-                                <MenuItem Header="Log catalog" Tag="Modules.LogCatalog" Click="MainMenuItem_Click" />
+                                <MenuItem Header="Administration" Tag="Modules.Administration" Click="MainMenuItem_Click" />
+                                <MenuItem Header="Settings" Tag="Modules.Settings"  Click="MainMenuItem_Click" />
+                                <MenuItem Header="Maintenance" Tag="Modules.Maintenance" Click="MainMenuItem_Click" />
+                            </MenuItem>
+
+                            <MenuItem Header="Debug">
+                                <MenuItem Header="Log Catalog" Tag="Debug.LogCatalog" Click="MainMenuItem_Click" />
+                            </MenuItem>
+
+                            <MenuItem Header="Espluque">
+                                <MenuItem Header="Settings" Tag="Espluque.Settings" Click="MainMenuItem_Click"/>
+                                <MenuItem Header="Documentation" Tag="Espluque.Documentation" Click="MainMenuItem_Click"/>
+                                <MenuItem Header="About" Tag="Espluque.About" Click="MainMenuItem_Click"/>
                             </MenuItem>
 
                             <Separator />
+
                             <MenuItem Header="Exit" Tag="Exit" Click="MainMenuItem_Click" />
                         </ContextMenu>
                     </Button.ContextMenu>

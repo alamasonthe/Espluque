@@ -61,7 +61,7 @@ namespace Espluquer.UserControls.Components
                 _contributionGraphUC.ThesaurusConceptSelected -= ThesaurusConceptSelected;
             }
 
-            ContributionHost.Content = null;
+            SetContributionDetailsVisible(false);
 
             _contributionGraphUC = new ContributionGraphUC(
                 _tree,
@@ -95,8 +95,14 @@ namespace Espluquer.UserControls.Components
 
         }
 
-        private void ThesaurusConceptSelected(int id, string label)
+        private void ThesaurusConceptSelected(int? id, string? label)
         {
+            if (id is null)
+            {
+                SetContributionDetailsVisible(false);
+                return;
+            }
+
             if (_tree is null)
             {
                 return;
@@ -132,7 +138,33 @@ namespace Espluquer.UserControls.Components
             ConceptDto conceptDto = ConceptAdapter.FromDomain(selectedConcept, _entityFactory);
 
             var detailsUC = new ContributionDetailsUC(conceptDto, _catalog);
+
             ContributionHost.Content = detailsUC;
+            SetContributionDetailsVisible(true);
+        }
+
+        private void SetContributionDetailsVisible(bool isVisible)
+        {
+            ContributionSplitterColumn.Width = isVisible
+                ? new GridLength(3)
+                : new GridLength(0);
+
+            ContributionColumn.Width = isVisible
+                ? new GridLength(1, GridUnitType.Star)
+                : new GridLength(0);
+
+            ContributionSplitter.Visibility = isVisible
+                ? Visibility.Visible
+                : Visibility.Collapsed;
+
+            ContributionHost.Visibility = isVisible
+                ? Visibility.Visible
+                : Visibility.Collapsed;
+
+            if (!isVisible)
+            {
+                ContributionHost.Content = null;
+            }
         }
     }
 }

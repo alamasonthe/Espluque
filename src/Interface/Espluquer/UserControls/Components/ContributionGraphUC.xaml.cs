@@ -353,8 +353,8 @@ namespace Espluquer.UserControls.Components
 
 
         private async Task LoadGraphAsync(
-    Dictionary<int, List<ContributionGraphNode>> nodesByColumn,
-    List<(int ParentConceptId, int ChildConceptId)> edges)
+            Dictionary<int, List<ContributionGraphNode>> nodesByColumn,
+            List<(int ParentConceptId, int ChildConceptId)> edges)
         {
             List<ContributionGraphNode> nodes = nodesByColumn
                 .OrderBy(column => column.Key)
@@ -577,6 +577,10 @@ window.setContributionType = function(selectedContribution) {
 
 window.graphNetwork.on("click", function(parameters) {
     if (parameters.nodes.length === 0) {
+        window.chrome.webview.postMessage({
+            type: "NodeDeselected"
+        });
+
         return;
     }
 
@@ -620,20 +624,27 @@ window.setContributionType(__SELECTED_CONTRIBUTION__);
             using JsonDocument document = JsonDocument.Parse(e.WebMessageAsJson);
             JsonElement root = document.RootElement;
 
-            if (root.GetProperty("type").GetString() != "NodeSelected")
+            string? messageType = root.GetProperty("type").GetString();
+
+            switch (messageType)
             {
-                return;
+                case "NodeSelected":
+                    int id = root.GetProperty("id").GetInt32();
+                    string label = root.GetProperty("label").GetString() ?? string.Empty;
+
+                    NodeSelected(id, label);
+                    break;
+                case "NodeDeselected":
+                    NodeSelected(null, null);
+                    break;
+                default:
+                    break;
             }
-
-            int id = root.GetProperty("id").GetInt32();
-            string label = root.GetProperty("label").GetString() ?? string.Empty;
-
-            NodeSelected(id, label);
         }
 
-        public event Action<int, string>? ThesaurusConceptSelected;
+        public event Action<int?, string?>? ThesaurusConceptSelected;
 
-        private void NodeSelected(int id, string label)
+        private void NodeSelected(int? id, string? label)
         {
             ThesaurusConceptSelected?.Invoke(id, label);
         }

@@ -16,6 +16,7 @@ using System.IO;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
+using Espluquer.UserControls.Parameters;
 
 namespace Espluquer
 {
@@ -27,7 +28,7 @@ namespace Espluquer
         private readonly ISettingsService _settingsService;
         private readonly IOrchestratorFactory _orchestratorFactory;
         private readonly IMessageCenter _messageCenter;
-        private readonly IModuleAdministrationService _moduleAdministration;
+        private readonly IModuleAdministrationService _moduleAdministrationService;
 
         private readonly LogUC _logUC;
         private readonly ThesaurusExplorerUC _thesaurusExplorerUC;
@@ -73,7 +74,7 @@ namespace Espluquer
 
             AddHandler(DragDrop.DragOverEvent, new DragEventHandler(MainWindow_DragOver), true);
             AddHandler(DragDrop.DropEvent, new DragEventHandler(MainWindow_Drop), true);
-            _moduleAdministration = moduleAdministration;
+            _moduleAdministrationService = moduleAdministration;
 
             
 
@@ -275,7 +276,7 @@ namespace Espluquer
 
             switch (menuTag)
             {
-                case "OpenFile":
+                case "OpenFiles":
                     OpenFileDialog openFileDialog = new()
                     {
                         Title = "Open file",
@@ -295,49 +296,78 @@ namespace Espluquer
 
                     return;
 
-                case "RecentFiles":
-                    // ShowRecentFiles();
+                // Thesaurus
+                case "Thesaurus.Reference":
+                    // TODO
                     return;
 
-                case "Modules.Contributions":
-                    AddTab("Module Contributions", _moduleContributionsUC);
+                case "Thesaurus.Concepts":
+                    AddTab("Thesaurus concepts", _thesaurusExplorerUC);
                     return;
 
-                case "Modules.Diagnostics":
-                    AddTab("Module Diagnostics", _moduleDiagnosticUC);
+                case "Thesaurus.ContributionMap":
+                    AddTab("Thesaurus Contribution Map", _moduleContributionsUC);
                     return;
 
-                case "Modules.LogCatalog":
+                // Modules
+                case "Modules.Administration":
+                    AddTab("Module Administration", _moduleDiagnosticUC);
+                    return;
+
+                case "Modules.Settings":
+                    var settingsUC = new ModuleToolsUC(_logger, _moduleAdministrationService, _catalog, "IWpfSettings");
+                    AddTab("Module Settings", settingsUC);
+                    return;
+
+                case "Modules.Maintenance":
+                    var maintenanceUC = new ModuleToolsUC(_logger, _moduleAdministrationService, _catalog, "IWpfMaintenance");
+                    AddTab("Module Maintenance", maintenanceUC);
+                    return;
+                /*
+                {
+                    ICatalogEntry? maintenanceEntry = _catalog.FirstOrDefault(entry =>
+                        entry.ModuleName == "Pronom module"
+                        && entry.InterfaceType == "IWpfMaintenance"
+                        && entry.ClassName == "Pronom.Maintenance");
+
+                    if (maintenanceEntry is null) return;
+
+                    (string label, object instance)? instancePack =
+                        await _moduleAdministration.CreateAdminInstance(maintenanceEntry);
+
+                    if (instancePack?.instance is not IWpfMaintenance maintenance) return;
+
+                    object? content = await maintenance.GetWpfMaintenance();
+
+                    if (content is UserControl userControl)
+                    {
+                        AddTab(instancePack.Value.label, userControl);
+                    }
+
+                    return;
+
+                }
+                */
+
+                //Debug
+                case "Debug.LogCatalog":
                     LogCatalog(_catalog);
                     return;
 
-                case "Parameters.PronomDroid":
-                    {
-                        ICatalogEntry? maintenanceEntry = _catalog.FirstOrDefault(entry =>
-                            entry.ModuleName == "Pronom module"
-                            && entry.InterfaceType == "IWpfMaintenance"
-                            && entry.ClassName == "Pronom.Maintenance");
-
-                        if (maintenanceEntry is null) return;
-
-                        (string label, object instance)? instancePack = await _moduleAdministration.CreateAdminInstance(maintenanceEntry);
-
-                        if (instancePack?.instance is not IWpfMaintenance maintenance) return;
-
-                        object? content = await maintenance.GetWpfMaintenance();
-
-                        if (content is UserControl userControl)
-                        {
-                            AddTab(instancePack.Value.label, userControl);
-                        }
-
-                        return;
-                    }
-
-                case "Parameters.Thesaurus":
-                    AddTab("Thesaurus", _thesaurusExplorerUC);
+                // Espluque
+                case "Espluque.Settings":
+                    // TODO
                     return;
 
+                case "Espluque.Documentation":
+                    // TODO
+                    return;
+
+                case "Espluque.About":
+                    // TODO
+                    return;
+
+                // Exit
                 case "Exit":
                     Close();
                     return;
