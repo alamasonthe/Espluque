@@ -30,5 +30,7 @@ namespace Espluque.Contracts.Ports
         Task<Result<List<(int ParentConceptId, int ChildConceptId)>>> GetDescendantLinks(int conceptId);
 
         Task<Result<List<string>>> GetReferences();
+
+        Task<Result<List<IReferenceTerm>>> GetReferenceTerms( string referenceName, string referenceTermScope);
     }
 }

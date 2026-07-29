@@ -379,7 +379,7 @@ namespace Espluquer.UserControls.Components
             foreach (TreeNode<IThesaurusConcept> childNode in parentNode.Children)
             {
                 string childName = childNode.Data?.Terms
-                    .FirstOrDefault(term => term.IsPrefered)?
+                    .FirstOrDefault(term => term.IsPreferred)?
                     .Term ?? childNode.Name;
 
                 if (!string.IsNullOrWhiteSpace(childName))
@@ -454,7 +454,7 @@ namespace Espluquer.UserControls.Components
                 return;
             }
 
-            IThesaurusTerm? preferredTerm = editedConcept.Terms.FirstOrDefault(term => term.IsPrefered);
+            IThesaurusTerm? preferredTerm = editedConcept.Terms.FirstOrDefault(term => term.IsPreferred);
 
             if (preferredTerm is null)
             {

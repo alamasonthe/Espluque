@@ -308,14 +308,14 @@ namespace EspluqueSqlite.Thesaurus
     INSERT INTO "ThesaurusTerm" (
         "ConceptId",
         "ReferenceName",
-        "IsPrefered",
+        "IsPreferred",
         "Term",
         "NormalizedTerm"
     )
     VALUES (
         @conceptId,
         @referenceName,
-        @isPrefered,
+        @isPreferred,
         @term,
         @normalizedTerm
     );
@@ -330,7 +330,7 @@ namespace EspluqueSqlite.Thesaurus
                 command.CommandText = sql;
                 command.Parameters.AddWithValue("@conceptId", conceptId);
                 command.Parameters.AddWithValue("@referenceName", (object?)referenceName ?? DBNull.Value);
-                command.Parameters.AddWithValue("@isPrefered", term.IsPrefered);
+                command.Parameters.AddWithValue("@isPreferred", term.IsPreferred);
                 command.Parameters.AddWithValue("@term", term.Term);
                 command.Parameters.AddWithValue("@normalizedTerm", term.NormalizedTerm);
 

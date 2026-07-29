@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace EspluqueSqlite.Dtos
+﻿namespace EspluqueSqlite.Dtos
 {
     internal class ThesaurusConceptDto
     {

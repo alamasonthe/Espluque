@@ -70,7 +70,7 @@ namespace Espluque.Application.Thesaurus.Services
                 return null;
             }
 
-            IThesaurusTerm? preferredTerm = concept.Terms.FirstOrDefault(term => term.IsPrefered);
+            IThesaurusTerm? preferredTerm = concept.Terms.FirstOrDefault(term => term.IsPreferred);
             _logger.Log( LogLevel.Information, $"SAVE_CONCEPT_SUCCESS: concept ({saveConceptResult.Value} {preferredTerm?.Term}) saved.");
 
             return saveConceptResult.Value;
@@ -206,7 +206,7 @@ namespace Espluque.Application.Thesaurus.Services
             }
             var descendants = descendantsResult.Value;
 
-            IThesaurusTerm? selectedConceptMainTerm = selectedConcept.Terms.FirstOrDefault(term => term.IsPrefered);
+            IThesaurusTerm? selectedConceptMainTerm = selectedConcept.Terms.FirstOrDefault(term => term.IsPreferred);
 
             List<(int ConceptId, string MainTerm, string Relation)> nodes = [];
 
@@ -311,6 +311,42 @@ namespace Espluque.Application.Thesaurus.Services
             return conceptPathExistsResult.Value;
         }
 
+        public async Task<List<IReferenceTerm>> GetReferenceTerms(string referenceName)
+        {
+            var referenceTermsResult = await _thesaurusSource.GetReferenceTerms(
+                referenceName,
+                "Reference");
+
+            if (!referenceTermsResult.IsSuccess)
+            {
+                _logger.Log(
+                    LogLevel.Error,
+                    $"{referenceTermsResult.Error.Code} {referenceTermsResult.Error.Message}");
+
+                return [];
+            }
+
+            return referenceTermsResult.Value!;
+        }
+
+        public async Task<List<IReferenceTerm>> GetAlternateTerms(string referenceName)
+        {
+            var alternateTermsResult = await _thesaurusSource.GetReferenceTerms(
+                referenceName,
+                "Alternate");
+
+            if (!alternateTermsResult.IsSuccess)
+            {
+                _logger.Log(
+                    LogLevel.Error,
+                    $"{alternateTermsResult.Error.Code} {alternateTermsResult.Error.Message}");
+
+                return [];
+            }
+
+            return alternateTermsResult.Value!;
+        }
+
         #region Helpers
 
         private static Result<List<(string Path, bool IsLeaf, IThesaurusConcept Data)>> CreateFlatTreeItems(List<IThesaurusConcept> concepts)
@@ -358,7 +394,7 @@ namespace Espluque.Application.Thesaurus.Services
 
             foreach (IThesaurusTerm term in concept.Terms)
             {
-                if (term.IsPrefered)
+                if (term.IsPreferred)
                 {
                     normalizedTerm = term.NormalizedTerm;
                     break;

@@ -169,5 +169,19 @@ namespace EspluqueSqlite.Thesaurus
 
         #endregion
 
+
+        #region reference
+
+        public async Task<Result<List<IReferenceTerm>>> GetReferenceTerms( string referenceName, string referenceTermScope)
+        {
+            var referenceTermsResult = await DbReader.GetReferenceTerms(
+                DbFilepath,
+                referenceName,
+                referenceTermScope);
+
+            return referenceTermsResult;
+        }
+
+        #endregion
     }
 }

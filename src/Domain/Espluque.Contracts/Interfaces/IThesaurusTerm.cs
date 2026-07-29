@@ -2,7 +2,7 @@
 {
     public interface IThesaurusTerm
     {
-        bool IsPrefered { get; set; }
+        bool IsPreferred { get; set; }
         string? NormalizedTerm { get; set; }
         string? ReferenceName { get; set; }
         string? Term { get; set; }

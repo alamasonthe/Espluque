@@ -26,6 +26,7 @@ namespace Espluquer
         private string _themeTag = "Light";
 
         private readonly Espluque.Contracts.Ports.ILogger _logger;
+        private readonly ReferenceUC _referenceUC;
         private readonly ISettingsService _settingsService;
         private readonly IOrchestratorFactory _orchestratorFactory;
         private readonly IMessageCenter _messageCenter;
@@ -41,10 +42,20 @@ namespace Espluquer
 
         string _startingTag = "AnyFile";
 
-        public MainWindow(LogUC logUC, ThesaurusExplorerUC thesaurusExplorerUC, ModuleDiagnosticUC moduleDiagnosticUC, Espluque.Contracts.Ports.ILogger logger, IOrchestratorFactory orchestratorFactory, ISettingsService settingsService, IMessageCenter messageCenter, List<ICatalogEntry> catalog, 
-            IModuleAdministrationService moduleAdministration, ModuleContributionsUC moduleContributionsUC)
+        public MainWindow(LogUC logUC,
+            ReferenceUC referenceUC,
+            ThesaurusExplorerUC thesaurusExplorerUC, 
+            ModuleDiagnosticUC moduleDiagnosticUC, 
+            Espluque.Contracts.Ports.ILogger logger, 
+            IOrchestratorFactory orchestratorFactory, 
+            ISettingsService settingsService, 
+            IMessageCenter messageCenter, 
+            List<ICatalogEntry> catalog, 
+            IModuleAdministrationService moduleAdministration, 
+            ModuleContributionsUC moduleContributionsUC)
         {
             _logger = logger;
+            _referenceUC = referenceUC;
             _settingsService = settingsService;
             _orchestratorFactory = orchestratorFactory;
             _messageCenter = messageCenter;
@@ -298,12 +309,12 @@ namespace Espluquer
                     return;
 
                 // Thesaurus
-                case "Thesaurus.Reference":
-                    // TODO
+                case "Thesaurus.References":
+                    AddTab("Thesaurus References", _referenceUC);
                     return;
 
                 case "Thesaurus.Concepts":
-                    AddTab("Thesaurus concepts", _thesaurusExplorerUC);
+                    AddTab("Thesaurus Concepts", _thesaurusExplorerUC);
                     return;
 
                 case "Thesaurus.ContributionMap":

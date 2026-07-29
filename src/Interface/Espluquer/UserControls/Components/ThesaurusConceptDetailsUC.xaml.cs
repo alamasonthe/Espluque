@@ -84,7 +84,7 @@ namespace Espluquer.UserControls.Components
 
         private static int TermsQuickSort(IThesaurusTerm left, IThesaurusTerm right)
         {
-            int preferredComparison = right.IsPrefered.CompareTo(left.IsPrefered);
+            int preferredComparison = right.IsPreferred.CompareTo(left.IsPreferred);
 
             if (preferredComparison != 0)
             {
@@ -115,7 +115,7 @@ namespace Espluquer.UserControls.Components
                     ReferenceName = string.IsNullOrWhiteSpace(term.ReferenceName)
                         ? null
                         : term.ReferenceName.Trim(),
-                    IsPrefered = term.IsPrefered
+                    IsPreferred = term.IsPreferred
                 });
             }
 
@@ -128,7 +128,7 @@ namespace Espluquer.UserControls.Components
             {
                 Term = string.Empty,
                 NormalizedTerm = string.Empty,
-                IsPrefered = false,
+                IsPreferred = false,
                 ReferenceName = null
             };
 
@@ -151,7 +151,7 @@ namespace Espluquer.UserControls.Components
                 return;
             }
 
-            if (term.IsPrefered)
+            if (term.IsPreferred)
             {
                 return;
             }
@@ -181,7 +181,7 @@ namespace Espluquer.UserControls.Components
 
             foreach (IThesaurusTerm term in _conceptDto.Terms)
             {
-                term.IsPrefered = ReferenceEquals(term, selectedTerm);
+                term.IsPreferred = ReferenceEquals(term, selectedTerm);
             }
 
             _conceptDto.NotifyTermChanged();

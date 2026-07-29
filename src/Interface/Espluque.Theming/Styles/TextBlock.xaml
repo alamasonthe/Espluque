@@ -79,7 +79,7 @@
         <Setter Property="Visibility" Value="Collapsed" />
 
         <Style.Triggers>
-            <DataTrigger Binding="{Binding IsPrefered}" Value="True">
+            <DataTrigger Binding="{Binding IsPreferred}" Value="True">
                 <Setter Property="Visibility" Value="Visible" />
             </DataTrigger>
         </Style.Triggers>

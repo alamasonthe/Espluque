@@ -4,6 +4,7 @@ using Espluquer.UserControls.Views;
 using Microsoft.Extensions.DependencyInjection;
 using Espluquer.Services;
 using System.Windows;
+using Espluquer.UserControls.Parameters;
 
 namespace Espluquer
 {
@@ -28,6 +29,7 @@ namespace Espluquer
             services.AddSingleton<ThesaurusExplorerUC>();
             services.AddSingleton<ModuleDiagnosticUC>();
             services.AddSingleton<ModuleContributionsUC>();
+            services.AddSingleton<ReferenceUC>();
 
             services.AddSingleton<WebView2Configuration>();
             services.AddSingleton<SqliteConfiguration>();

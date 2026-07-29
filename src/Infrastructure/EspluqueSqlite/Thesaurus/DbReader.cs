@@ -327,6 +327,41 @@ namespace EspluqueSqlite.Thesaurus
             }
         }
 
+        public static async Task<Result<List<IReferenceTerm>>> GetReferenceTerms(
+            string dbFilepath,
+            string referenceName,
+            string referenceTermScope)
+        {
+            using SqliteConnection connection =
+                SqliteUtil.DbConnectionFactory.CreateConnection(dbFilepath);
+
+            try
+            {
+                await connection.OpenAsync();
+
+                Result<List<IReferenceTerm>> referenceTermsResult =
+                    await ReadReferenceTerms(
+                        connection,
+                        referenceName,
+                        referenceTermScope);
+
+                if (!referenceTermsResult.IsSuccess)
+                {
+                    return Result<List<IReferenceTerm>>.Failure(
+                        referenceTermsResult.Error!.Code,
+                        referenceTermsResult.Error.Message);
+                }
+
+                return referenceTermsResult;
+            }
+            catch (Exception exception)
+            {
+                return Result<List<IReferenceTerm>>.Failure(
+                    "THESAURUS_REFERENCE_TERMS_READ_FAILED",
+                    exception.Message);
+            }
+        }
+
         #endregion
 
         #region Readers
@@ -374,7 +409,7 @@ namespace EspluqueSqlite.Thesaurus
             SELECT
                 ConceptId,
                 ReferenceName,
-                IsPrefered,
+                IsPreferred,
                 Term,
                 NormalizedTerm
             FROM ThesaurusTerm
@@ -389,7 +424,7 @@ namespace EspluqueSqlite.Thesaurus
                     {
                         ConceptId = reader.IsDBNull(0) ? null : reader.GetInt32(0),
                         ReferenceName = reader.IsDBNull(1) ? null : reader.GetString(1),
-                        IsPrefered = reader.GetBoolean(2),
+                        IsPreferred = reader.GetBoolean(2),
                         Term = reader.GetString(3),
                         NormalizedTerm = reader.GetString(4)
                     });
@@ -510,7 +545,7 @@ namespace EspluqueSqlite.Thesaurus
             FROM AncestorConcepts ancestors
             INNER JOIN ThesaurusTerm term
                 ON term.ConceptId = ancestors.ConceptId
-                AND term.IsPrefered = 1
+                AND term.IsPreferred = 1
             ORDER BY ancestors.ConceptId;
             """;
 
@@ -562,7 +597,7 @@ namespace EspluqueSqlite.Thesaurus
             FROM DescendantConcepts descendants
             INNER JOIN ThesaurusTerm term
                 ON term.ConceptId = descendants.ConceptId
-                AND term.IsPrefered = 1
+                AND term.IsPreferred = 1
             ORDER BY descendants.ConceptId;
             """;
 
@@ -631,12 +666,12 @@ namespace EspluqueSqlite.Thesaurus
             SELECT
                 ConceptId,
                 ReferenceName,
-                IsPrefered,
+                IsPreferred,
                 Term,
                 NormalizedTerm
             FROM ThesaurusTerm
             WHERE ConceptId = $conceptId
-            ORDER BY IsPrefered DESC, ReferenceName, NormalizedTerm;
+            ORDER BY IsPreferred DESC, ReferenceName, NormalizedTerm;
             """;
 
                 command.Parameters.AddWithValue("$conceptId", conceptId);
@@ -649,7 +684,7 @@ namespace EspluqueSqlite.Thesaurus
                     {
                         ConceptId = reader.IsDBNull(0) ? null : reader.GetInt32(0),
                         ReferenceName = reader.IsDBNull(1) ? null : reader.GetString(1),
-                        IsPrefered = reader.GetBoolean(2),
+                        IsPreferred = reader.GetBoolean(2),
                         Term = reader.GetString(3),
                         NormalizedTerm = reader.GetString(4)
                     });
@@ -777,7 +812,7 @@ namespace EspluqueSqlite.Thesaurus
             FROM ThesaurusTerm searchedTerm
             INNER JOIN ThesaurusTerm preferredTerm
                 ON preferredTerm.ConceptId = searchedTerm.ConceptId
-                AND preferredTerm.IsPrefered = 1
+                AND preferredTerm.IsPreferred = 1
             WHERE searchedTerm.ReferenceName = $referenceName
                 AND searchedTerm.ConceptId IS NOT NULL
                 AND (
@@ -836,6 +871,96 @@ namespace EspluqueSqlite.Thesaurus
             }
         }
 
+        private static async Task<Result<List<IReferenceTerm>>> ReadReferenceTerms(
+            SqliteConnection connection,
+            string referenceName,
+            string referenceTermScope)
+        {
+            try
+            {
+                List<IReferenceTerm> referenceTerms = [];
+
+                using SqliteCommand command = connection.CreateCommand();
+
+                switch (referenceTermScope)
+                {
+                    case "Reference":
+                        command.CommandText = """
+            SELECT
+                term.ConceptId,
+                term.ReferenceName,
+                term.IsPreferred,
+                term.Term,
+                term.NormalizedTerm,
+                preferredTerm.Term
+            FROM ThesaurusTerm term
+            LEFT JOIN ThesaurusTerm preferredTerm
+                ON preferredTerm.ConceptId = term.ConceptId
+                AND preferredTerm.IsPreferred = 1
+            WHERE term.ReferenceName = $referenceName
+            ORDER BY term.NormalizedTerm;
+            """;
+                        break;
+
+                    case "Alternate":
+                        command.CommandText = """
+            SELECT
+                term.ConceptId,
+                term.ReferenceName,
+                term.IsPreferred,
+                term.Term,
+                term.NormalizedTerm,
+                preferredTerm.Term
+            FROM ThesaurusTerm term
+            LEFT JOIN ThesaurusTerm preferredTerm
+                ON preferredTerm.ConceptId = term.ConceptId
+                AND preferredTerm.IsPreferred = 1
+            WHERE term.ReferenceName <> $referenceName
+              AND term.ConceptId IN
+              (
+                  SELECT DISTINCT
+                      ConceptId
+                  FROM ThesaurusTerm
+                  WHERE ReferenceName = $referenceName
+                    AND ConceptId IS NOT NULL
+              )
+            ORDER BY term.ConceptId, term.ReferenceName, term.NormalizedTerm;
+            """;
+                        break;
+
+                    default:
+                        return Result<List<IReferenceTerm>>.Failure(
+                            "THESAURUS_REFERENCE_TERM_SCOPE_INVALID",
+                            $"Unknown reference term scope: {referenceTermScope}.");
+                }
+
+                command.Parameters.AddWithValue("$referenceName", referenceName);
+
+                using SqliteDataReader reader = await command.ExecuteReaderAsync();
+
+                while (await reader.ReadAsync())
+                {
+                    referenceTerms.Add(new ReferenceTermDto
+                    {
+                        ConceptId = reader.IsDBNull(0) ? null : reader.GetInt32(0),
+                        ReferenceName = reader.GetString(1),
+                        IsPreferred = reader.GetBoolean(2),
+                        Term = reader.GetString(3),
+                        NormalizedTerm = reader.GetString(4),
+                        PreferredTerm = reader.IsDBNull(5) ? string.Empty : reader.GetString(5)
+                    });
+                }
+
+                return Result<List<IReferenceTerm>>.Success(referenceTerms);
+            }
+            catch (Exception exception)
+            {
+                return Result<List<IReferenceTerm>>.Failure(
+                    "THESAURUS_REFERENCE_TERMS_QUERY_FAILED",
+                    exception.Message);
+            }
+        }
+
         #endregion
 
         #region helpers
@@ -883,7 +1008,7 @@ namespace EspluqueSqlite.Thesaurus
                 terms.Add(entityFactory.CreateThesaurusTerm(
                     termDto.Term,
                     termDto.NormalizedTerm,
-                    termDto.IsPrefered,
+                    termDto.IsPreferred,
                     termDto.ReferenceName));
             }
 
