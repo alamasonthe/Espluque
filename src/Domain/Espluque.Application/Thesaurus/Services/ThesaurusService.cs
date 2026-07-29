@@ -347,6 +347,75 @@ namespace Espluque.Application.Thesaurus.Services
             return alternateTermsResult.Value!;
         }
 
+
+        #region Reference
+
+        public async Task<bool> SaveReference(string name)
+        {
+            var saveReferenceResult =
+                await _thesaurusSource.SaveReference(name);
+
+            if (!saveReferenceResult.IsSuccess)
+            {
+                _logger.Log(
+                    LogLevel.Error,
+                    $"{saveReferenceResult.Error.Code} {saveReferenceResult.Error.Message}");
+
+                return false;
+            }
+
+            _logger.Log(
+                LogLevel.Information,
+                $"SAVE_REFERENCE_SUCCESS: reference {name} saved.");
+
+            return true;
+        }
+
+        public async Task<bool> RenameReference(string oldName, string newName)
+        {
+            var renameReferenceResult =
+                await _thesaurusSource.RenameReference(oldName, newName);
+
+            if (!renameReferenceResult.IsSuccess)
+            {
+                _logger.Log(
+                    LogLevel.Error,
+                    $"{renameReferenceResult.Error.Code} {renameReferenceResult.Error.Message}");
+
+                return false;
+            }
+
+            _logger.Log(
+                LogLevel.Information,
+                $"RENAME_REFERENCE_SUCCESS: reference {oldName} renamed to {newName}.");
+
+            return true;
+        }
+
+        public async Task<bool> DeleteReference(string name)
+        {
+            var deleteReferenceResult =
+                await _thesaurusSource.DeleteReference(name);
+
+            if (!deleteReferenceResult.IsSuccess)
+            {
+                _logger.Log(
+                    LogLevel.Error,
+                    $"{deleteReferenceResult.Error.Code} {deleteReferenceResult.Error.Message}");
+
+                return false;
+            }
+
+            _logger.Log(
+                LogLevel.Information,
+                $"DELETE_REFERENCE_SUCCESS: reference {name} deleted.");
+
+            return true;
+        }
+
+        #endregion
+
+
         #region Helpers
 
         private static Result<List<(string Path, bool IsLeaf, IThesaurusConcept Data)>> CreateFlatTreeItems(List<IThesaurusConcept> concepts)

@@ -1,10 +1,10 @@
 ﻿using Bootstrap;
-using Espluquer.UserControls.Components;
-using Espluquer.UserControls.Views;
+using Espluquer.UserControls.Thesaurus;
+using Espluquer.UserControls.Modules;
+using Espluquer.UserControls.Shell;
 using Microsoft.Extensions.DependencyInjection;
 using Espluquer.Services;
 using System.Windows;
-using Espluquer.UserControls.Parameters;
 
 namespace Espluquer
 {

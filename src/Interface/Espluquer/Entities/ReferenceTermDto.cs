@@ -14,7 +14,16 @@ namespace Espluquer.Entities
 
         public bool IsPreferred { get; set; }
 
-        public string? PreferredTerm { get; set; }
+        private string? _preferredTerm;
+
+        public string? PreferredTerm
+        {
+            get => string.IsNullOrEmpty(Status)
+                ? _preferredTerm
+                : null;
+
+            set => _preferredTerm = value;
+        }
 
         public bool IsLinked => ConceptId.HasValue;
 
@@ -23,12 +32,12 @@ namespace Espluquer.Entities
 
         public string Status =>
             !ConceptId.HasValue
-                ? "Unlinked"
+                ? string.Empty
                 : ConceptTermCount == 1
                     ? "Sole term"
                     : IsPreferred
                         ? "Preferred"
-                        : "Alternative";
+                        : string.Empty;
 
         public string ConceptDisplay =>
             ConceptId.HasValue

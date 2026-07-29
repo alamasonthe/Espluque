@@ -1,6 +1,8 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
 	<PropertyGroup>
+		<RootNamespace>Espluquer</RootNamespace>
+		<AssemblyName>Espluquer</AssemblyName>
 		<OutputType>WinExe</OutputType>
 		<TargetFramework>net10.0-windows</TargetFramework>
 		<Nullable>enable</Nullable>
@@ -49,11 +51,8 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<Compile Update="UserControls\Components\KeyValueListUC.xaml.cs">
-			<SubType>Code</SubType>
-		</Compile>
 
-		<Compile Update="UserControls\Views\LogUC.xaml.cs">
+		<Compile Update="UserControls\Shell\LogUC.xaml.cs">
 			<SubType>Code</SubType>
 		</Compile>
 	</ItemGroup>

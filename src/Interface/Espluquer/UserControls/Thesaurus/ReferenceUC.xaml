@@ -1,0 +1,318 @@
+﻿<local:RefreshableUserControl x:Class="Espluquer.UserControls.Thesaurus.ReferenceUC"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:local="clr-namespace:Espluquer.UserControls"
+             MinWidth="760"
+             MinHeight="450"
+             DataContext="{Binding RelativeSource={RelativeSource Self}}">
+
+    <local:RefreshableUserControl.Resources>
+
+        <Style x:Key="StatLabelStyle"
+               TargetType="TextBlock">
+            <Setter Property="Foreground"
+                    Value="{DynamicResource App.TextMuted}" />
+            <Setter Property="FontSize" Value="12" />
+            <Setter Property="TextAlignment" Value="Center" />
+        </Style>
+
+        <Style x:Key="StatValueStyle"
+               TargetType="TextBlock">
+            <Setter Property="Foreground"
+                    Value="{DynamicResource App.Text}" />
+            <Setter Property="FontSize" Value="24" />
+            <Setter Property="FontWeight" Value="SemiBold" />
+            <Setter Property="TextAlignment" Value="Center" />
+            <Setter Property="Margin" Value="0,4,0,0" />
+        </Style>
+
+    </local:RefreshableUserControl.Resources>
+
+    <Grid Background="{DynamicResource App.Background}">
+
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="210" />
+            <ColumnDefinition Width="3" />
+            <ColumnDefinition Width="*" />
+        </Grid.ColumnDefinitions>
+
+        <!-- References -->
+        <Border Grid.Column="0"
+                Padding="8"
+                Background="{DynamicResource App.Background}"
+                BorderBrush="{DynamicResource App.Border}"
+                BorderThickness="1"
+                CornerRadius="5">
+
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="*" />
+                </Grid.RowDefinitions>
+
+                <ListBox x:Name="ReferencesListBox"
+                         Grid.Row="0"
+                         ItemsSource="{Binding References}"
+                         SelectionChanged="ReferencesListBox_SelectionChanged"
+                         Background="Transparent"
+                         BorderThickness="0"
+                         ScrollViewer.HorizontalScrollBarVisibility="Disabled">
+
+                    <ListBox.ItemTemplate>
+                        <DataTemplate>
+                            <TextBlock Text="{Binding}"
+                                       Foreground="{DynamicResource App.Text}"
+                                       TextTrimming="CharacterEllipsis" />
+                        </DataTemplate>
+                    </ListBox.ItemTemplate>
+                </ListBox>
+
+                <Grid Grid.Row="1">
+
+                    <Button x:Name="AddReferenceButton"
+                        Style="{StaticResource Thesaurus.AddListItemButton}"
+                        Content="&#xF109;"
+                        Click="AddReferenceButton_Click" />
+
+                    <TextBox x:Name="NewReferenceTextBox"
+                         Style="{StaticResource App.StandardTextBox}"
+                         Visibility="Collapsed"
+                         KeyDown="NewReferenceTextBox_KeyDown"
+                         LostKeyboardFocus="NewReferenceTextBox_LostKeyboardFocus" />
+                </Grid>
+            </Grid>
+        </Border>
+
+        <GridSplitter Grid.Column="1"
+              HorizontalAlignment="Stretch"
+              VerticalAlignment="Stretch"
+              Background="{DynamicResource App.Border}"
+              ShowsPreview="True"
+              ResizeDirection="Columns" />
+        
+        <!-- Selected reference -->
+        <Grid Grid.Column="2"  Margin="12">
+
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="*" />
+            </Grid.RowDefinitions>
+                
+            <!-- Rename / delete -->
+            <Grid x:Name="ReferenceHeaderPanel" Grid.Row="0">
+
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="Auto" />
+                </Grid.ColumnDefinitions>
+
+                <TextBox x:Name="ReferenceNameTextBox"
+                     Grid.Column="0"
+                     Height="36"
+                     Style="{StaticResource App.StandardTextBox}"
+                     FontSize="16"
+                     FontWeight="SemiBold"
+                     KeyDown="ReferenceNameTextBox_KeyDown"
+                     LostKeyboardFocus="ReferenceNameTextBox_LostKeyboardFocus" />
+
+                <Button x:Name="DeleteReferenceButton"
+                        Click="DeleteReferenceButton_Click"
+                        Grid.Column="1"
+                        Width="36"
+                        Height="36"
+                        Margin="8,0,0,0"
+                        Style="{StaticResource App.FluentButtonClose}"
+                        FontSize="20"
+                        Content="&#xF34C;" />
+            </Grid>
+
+                <!-- Statistics card -->
+                <Border Margin="0,12,0,12" Grid.Row="1"
+                    Padding="18"
+                    Background="{DynamicResource App.Surface}"
+                    BorderBrush="{DynamicResource App.Border}"
+                    BorderThickness="1"
+                    CornerRadius="5">
+
+                    <StackPanel>
+
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="*" />
+                            </Grid.ColumnDefinitions>
+
+                            <StackPanel Grid.Column="0">
+                                <TextBlock Text="Terms" Style="{StaticResource StatLabelStyle}" />
+                                <TextBlock x:Name="ReferenceTermCountText" Text="0" Style="{StaticResource StatValueStyle}" />
+                            </StackPanel>
+
+                            <StackPanel Grid.Column="1">
+                                <TextBlock Text="Preferred terms" Style="{StaticResource StatLabelStyle}" />
+                                <TextBlock x:Name="PreferredTermCountText" Text="0" Style="{StaticResource StatValueStyle}" />
+                            </StackPanel>
+
+                            <StackPanel Grid.Column="2">
+                                <TextBlock Text="Without alternative" Style="{StaticResource StatLabelStyle}" />
+
+                                <TextBlock x:Name="ConceptWithoutAlternativeCountText" Text="0">
+                                    <TextBlock.Style>
+                                        <Style TargetType="TextBlock" BasedOn="{StaticResource StatValueStyle}">
+                                            <Setter Property="Foreground" Value="{DynamicResource App.Danger}" />
+                                            <Style.Triggers>
+                                                <Trigger Property="Text" Value="0">
+                                                    <Setter Property="Foreground" Value="{DynamicResource App.Text}" />
+                                                </Trigger>
+                                            </Style.Triggers>
+                                        </Style>
+                                    </TextBlock.Style>
+
+                                </TextBlock>
+                            </StackPanel>
+                        </Grid>
+
+                        <Border x:Name="ReferenceWarningBorder"
+                            Margin="0,16,0,0"
+                            Padding="12,9"
+                            Background="{DynamicResource App.Background}"
+                            BorderBrush="{DynamicResource App.Border}"
+                            BorderThickness="1"
+                            CornerRadius="4">
+
+                            <TextBox x:Name="ReferenceWarningText" 
+                                     Style="{StaticResource App.StandardTextBox}"
+                                     Foreground="{DynamicResource App.Text}" 
+                                     TextWrapping="Wrap" />
+                        </Border>
+
+                    </StackPanel>
+                </Border>
+
+                <!-- Terms table -->
+            <ScrollViewer Grid.Row="2"
+              VerticalScrollBarVisibility="Auto"
+              HorizontalScrollBarVisibility="Disabled">
+
+                <Border Background="{DynamicResource App.Surface}"
+                    BorderBrush="{DynamicResource App.Border}"
+                    BorderThickness="1"
+                    CornerRadius="5">
+
+                    <StackPanel>
+
+                        <Grid Margin="12,10">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="3*" />
+                                <ColumnDefinition Width="1.4*" />
+                                <ColumnDefinition Width="2.2*" />
+                                <ColumnDefinition Width="2*" />
+                            </Grid.ColumnDefinitions>
+
+                            <TextBlock Grid.Column="0"
+                               Text="Term"
+                               FontWeight="SemiBold"
+                               Foreground="{DynamicResource App.TextMuted}" />
+
+                            <TextBlock Grid.Column="1"
+                               Text="Status"
+                               FontWeight="SemiBold"
+                               Foreground="{DynamicResource App.TextMuted}" />
+
+                            <TextBlock Grid.Column="2"
+                               Text="Preferred term"
+                               FontWeight="SemiBold"
+                               Foreground="{DynamicResource App.TextMuted}" />
+
+                            <TextBlock Grid.Column="3"
+                               Text="Concept Term Count"
+                               FontWeight="SemiBold"
+                               Foreground="{DynamicResource App.TextMuted}" />
+
+                        </Grid>
+
+                        <Border Height="1" Background="{DynamicResource App.Border}" />
+
+                        <ItemsControl x:Name="ReferenceTermsItemsControl">
+                            <ItemsControl.ItemTemplate>
+                                <DataTemplate>
+
+                                    <StackPanel>
+
+                                        <Grid Margin="12,10">
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="3*" />
+                                                <ColumnDefinition Width="1.4*" />
+                                                <ColumnDefinition Width="2.2*" />
+                                                <ColumnDefinition Width="2*" />
+                                            </Grid.ColumnDefinitions>
+
+                                            <TextBox Grid.Column="0"
+                                               Text="{Binding Term, Mode=OneWay}"
+                                               IsReadOnly="True"
+                                               TextWrapping="NoWrap"
+                                               HorizontalScrollBarVisibility="Hidden"
+                                               Style="{StaticResource App.StandardTextBox}"
+                                               Foreground="{DynamicResource App.Text}" />
+
+                                            <TextBox Grid.Column="1"
+                                                 Text="{Binding Status, Mode=OneWay}"
+                                                 IsReadOnly="True"
+                                                 TextWrapping="NoWrap"
+                                                 HorizontalScrollBarVisibility="Hidden">
+
+                                                <TextBox.Style>
+                                                    <Style TargetType="TextBox" BasedOn="{StaticResource App.StandardTextBox}">
+
+                                                        <Setter Property="Foreground" Value="{DynamicResource App.Text}" />
+
+                                                        <Style.Triggers>
+                                                            <DataTrigger Binding="{Binding Status}" Value="Sole term">
+
+                                                                <Setter Property="Foreground" Value="{DynamicResource App.Danger}" />
+
+                                                            </DataTrigger>
+                                                        </Style.Triggers>
+
+                                                    </Style>
+                                                </TextBox.Style>
+
+                                            </TextBox>
+
+                                            <TextBox Grid.Column="2"
+                                               Text="{Binding PreferredTerm, Mode=OneWay}"
+                                               IsReadOnly="True"
+                                               TextWrapping="NoWrap"
+                                               HorizontalScrollBarVisibility="Hidden"
+                                               Style="{StaticResource App.StandardTextBox}"
+                                               Foreground="{DynamicResource App.Text}" />
+
+                                            <TextBox Grid.Column="3"
+                                               Text="{Binding ConceptTermCount, Mode=OneWay}"
+                                               IsReadOnly="True"
+                                               TextWrapping="NoWrap"
+                                               HorizontalScrollBarVisibility="Hidden"
+                                               Style="{StaticResource App.StandardTextBox}"
+                                               Foreground="{DynamicResource App.Text}" />
+
+                                        </Grid>
+
+                                        <Border Height="1"
+                                Background="{DynamicResource App.Border}" />
+
+                                    </StackPanel>
+
+                                </DataTemplate>
+                            </ItemsControl.ItemTemplate>
+                        </ItemsControl>
+
+                    </StackPanel>
+                </Border>
+
+            </ScrollViewer>
+
+        </Grid>
+    </Grid>
+</local:RefreshableUserControl>

@@ -33,5 +33,9 @@ namespace Espluque.Contracts.Interfaces
         Task<List<IReferenceTerm>> GetReferenceTerms(string referenceName);
 
         Task<List<IReferenceTerm>> GetAlternateTerms(string referenceName);
+
+        Task<bool> SaveReference(string name);
+        Task<bool> RenameReference(string oldName, string newName);
+        Task<bool> DeleteReference(string name);
     }
 }

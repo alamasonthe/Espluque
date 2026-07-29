@@ -182,6 +182,34 @@ namespace EspluqueSqlite.Thesaurus
             return referenceTermsResult;
         }
 
+        public async Task<Result> SaveReference(string name)
+        {
+            var saveReferenceResult = await DbSaver.SaveReference(
+                DbFilepath,
+                name);
+
+            return saveReferenceResult;
+        }
+
+        public async Task<Result> RenameReference(string oldName, string newName)
+        {
+            var renameReferenceResult = await DbSaver.RenameReference(
+                DbFilepath,
+                oldName,
+                newName);
+
+            return renameReferenceResult;
+        }
+
+        public async Task<Result> DeleteReference(string name)
+        {
+            var deleteReferenceResult = await DbSaver.DeleteReference(
+                DbFilepath,
+                name);
+
+            return deleteReferenceResult;
+        }
+
         #endregion
     }
 }
