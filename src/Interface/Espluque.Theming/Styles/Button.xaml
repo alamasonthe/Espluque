@@ -65,7 +65,7 @@
 
     <Style x:Key="Thesaurus.TermActionButton" TargetType="{x:Type Button}" BasedOn="{StaticResource App.FluentButton}">
         <Style.Triggers>
-            <DataTrigger Binding="{Binding IsPrefered}" Value="True">
+            <DataTrigger Binding="{Binding IsPreferred}" Value="True">
                 <Setter Property="Visibility" Value="Hidden" />
             </DataTrigger>
         </Style.Triggers>
@@ -73,7 +73,7 @@
 
     <Style x:Key="Thesaurus.TermDeleteButton" TargetType="{x:Type Button}" BasedOn="{StaticResource App.FluentButtonClose}">
         <Style.Triggers>
-            <DataTrigger Binding="{Binding IsPrefered}" Value="True">
+            <DataTrigger Binding="{Binding IsPreferred}" Value="True">
                 <Setter Property="Visibility" Value="Hidden" />
             </DataTrigger>
         </Style.Triggers>

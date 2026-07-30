@@ -126,7 +126,7 @@
         </Setter>
 
         <Style.Triggers>
-            <DataTrigger Binding="{Binding IsPrefered}" Value="True">
+            <DataTrigger Binding="{Binding IsPreferred}" Value="True">
                 <Setter Property="FontWeight" Value="SemiBold" />
                 <Setter Property="Foreground" Value="{DynamicResource App.Accent}" />
             </DataTrigger>

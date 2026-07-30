@@ -8,7 +8,7 @@ namespace Espluque.Application.Thesaurus.Entities
 
         public string? NormalizedTerm { get; set; }
 
-        public bool IsPrefered { get; set; } = false;
+        public bool IsPreferred { get; set; } = false;
 
         public string? ReferenceName { get; set; }
     }

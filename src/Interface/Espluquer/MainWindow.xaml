@@ -57,7 +57,7 @@
                             <Separator />
 
                             <MenuItem Header="Thesaurus">
-                                <MenuItem Header="Reference" Tag="Thesaurus.Reference" Click="MainMenuItem_Click"/>
+                                <MenuItem Header="References" Tag="Thesaurus.References" Click="MainMenuItem_Click"/>
                                 <MenuItem Header="Concepts" Tag="Thesaurus.Concepts" Click="MainMenuItem_Click" />
                                 <MenuItem Header="Contribution Map" Tag="Thesaurus.ContributionMap" Click="MainMenuItem_Click" />
                             </MenuItem>

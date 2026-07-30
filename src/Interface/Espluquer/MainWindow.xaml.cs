@@ -2,18 +2,16 @@
 using Espluque.Contracts.Enums;
 using Espluque.Contracts.MessageInterfaces;
 using Espluque.Contracts.ModuleInterfaces;
-using Espluque.Contracts.ModuleInterfaces.Contributions;
 using Espluque.Contracts.Orchestrators;
 using Espluque.Contracts.Ports;
 using Espluque.Theming.Services;
-using Espluquer.UserControls.Components;
-using Espluquer.UserControls.FileViews;
-using Espluquer.UserControls.Parameters;
-using Espluquer.UserControls.Views;
+using Espluquer.UserControls.Thesaurus;
+using Espluquer.UserControls.Shell;
+using Espluquer.UserControls.Modules;
+using Espluquer.UserControls.Espluque;
 using Microsoft.Extensions.Logging;
 using Microsoft.Win32;
 using System.Diagnostics;
-using System.Drawing;
 using System.IO;
 using System.Windows;
 using System.Windows.Controls;
@@ -26,34 +24,45 @@ namespace Espluquer
         private string _themeTag = "Light";
 
         private readonly Espluque.Contracts.Ports.ILogger _logger;
+        private readonly ReferenceUC _referenceUC;
         private readonly ISettingsService _settingsService;
         private readonly IOrchestratorFactory _orchestratorFactory;
         private readonly IMessageCenter _messageCenter;
         private readonly IModuleAdministrationService _moduleAdministrationService;
 
         private readonly LogUC _logUC;
-        private readonly ThesaurusExplorerUC _thesaurusExplorerUC;
-        private readonly ModuleDiagnosticUC _moduleDiagnosticUC;
-        private readonly ModuleContributionsUC _moduleContributionsUC;
+        private readonly ConceptUC _conceptUC;
+        private readonly ModuleAdminUC _moduleAdminUC;
+        private readonly ContributionMapUC _contributionMapUC;
         private readonly List<ICatalogEntry> _catalog;
 
         private readonly List<string> _recentFiles = [];
 
         string _startingTag = "AnyFile";
 
-        public MainWindow(LogUC logUC, ThesaurusExplorerUC thesaurusExplorerUC, ModuleDiagnosticUC moduleDiagnosticUC, Espluque.Contracts.Ports.ILogger logger, IOrchestratorFactory orchestratorFactory, ISettingsService settingsService, IMessageCenter messageCenter, List<ICatalogEntry> catalog, 
-            IModuleAdministrationService moduleAdministration, ModuleContributionsUC moduleContributionsUC)
+        public MainWindow(LogUC logUC,
+            ReferenceUC referenceUC,
+            ConceptUC conceptUC,
+            ModuleAdminUC moduleAdminUC, 
+            Espluque.Contracts.Ports.ILogger logger, 
+            IOrchestratorFactory orchestratorFactory, 
+            ISettingsService settingsService, 
+            IMessageCenter messageCenter, 
+            List<ICatalogEntry> catalog, 
+            IModuleAdministrationService moduleAdministration, 
+            ContributionMapUC contributionMapUC)
         {
             _logger = logger;
+            _referenceUC = referenceUC;
             _settingsService = settingsService;
             _orchestratorFactory = orchestratorFactory;
             _messageCenter = messageCenter;
             _catalog = catalog;
 
             _logUC = logUC;
-            _thesaurusExplorerUC = thesaurusExplorerUC;
-            _moduleDiagnosticUC = moduleDiagnosticUC;
-            _moduleContributionsUC = moduleContributionsUC;
+            _conceptUC = conceptUC;
+            _moduleAdminUC = moduleAdminUC;
+            _contributionMapUC = contributionMapUC;
 
             InitializeComponent();
 
@@ -298,21 +307,21 @@ namespace Espluquer
                     return;
 
                 // Thesaurus
-                case "Thesaurus.Reference":
-                    // TODO
+                case "Thesaurus.References":
+                    AddTab("Thesaurus References", _referenceUC);
                     return;
 
                 case "Thesaurus.Concepts":
-                    AddTab("Thesaurus concepts", _thesaurusExplorerUC);
+                    AddTab("Thesaurus Concepts", _conceptUC);
                     return;
 
                 case "Thesaurus.ContributionMap":
-                    AddTab("Thesaurus Contribution Map", _moduleContributionsUC);
+                    AddTab("Thesaurus Contribution Map", _contributionMapUC);
                     return;
 
                 // Modules
                 case "Modules.Administration":
-                    AddTab("Module Administration", _moduleDiagnosticUC);
+                    AddTab("Module Administration", _moduleAdminUC);
                     return;
 
                 case "Modules.Settings":

@@ -1,6 +1,5 @@
 ﻿using Espluque.Contracts.Interfaces;
 using Microsoft.Data.Sqlite;
-using System.Globalization;
 using Util;
 
 namespace EspluqueSqlite.Thesaurus
@@ -166,6 +165,221 @@ namespace EspluqueSqlite.Thesaurus
             }
         }
 
+        public static async Task<Result> SaveReference(string dbFilePath, string name)
+        {
+            if (string.IsNullOrEmpty(name))
+            {
+                return Result.Failure("SAVE_REFERENCE_FAILED", "Thesaurus reference name is missing.");
+            }
+
+            SqliteTransaction? transaction = null;
+            bool commit = false;
+
+            try
+            {
+                transaction = SqliteUtil.DbTransactionFactory.OpenTransaction(dbFilePath);
+                SqliteConnection connection = transaction.Connection!;
+
+                Result<bool> referenceExistsResult = await ReferenceExists(connection, transaction, name);
+                if (!referenceExistsResult.IsSuccess)
+                {
+                    return Result.Failure(referenceExistsResult.Error!.Code, referenceExistsResult.Error.Message);
+                }
+                if (referenceExistsResult.Value)
+                {
+                    return Result.Success();
+                }
+
+                var insReferenceResult = await InsReference(connection, transaction, name);
+                if (!insReferenceResult.IsSuccess)
+                {
+                    return Result.Failure(insReferenceResult.Error!.Code, insReferenceResult.Error.Message);
+                }
+
+                commit = true;
+                return Result.Success();
+            }
+            catch (Exception exception)
+            {
+                return Result.Failure("THESAURUS_REFERENCE_SAVE_FAILED", exception.Message);
+            }
+            finally
+            {
+                if (transaction is not null)
+                {
+                    SqliteUtil.DbTransactionFactory.CloseTransaction(transaction, commit);
+                }
+            }
+        }
+
+        public static async Task<Result> RenameReference(string dbFilePath, string oldName, string newName)
+        {
+            if (string.IsNullOrEmpty(oldName))
+            {
+                return Result.Failure("RENAME_REFERENCE_FAILED", "Thesaurus reference old name is missing.");
+            }
+            if (string.IsNullOrEmpty(newName))
+            {
+                return Result.Failure("RENAME_REFERENCE_FAILED", "Thesaurus reference new name is missing.");
+            }
+            if (oldName == newName)
+            {
+                return Result.Success();
+            }
+
+            SqliteTransaction? transaction = null;
+            bool commit = false;
+
+            try
+            {
+                transaction = SqliteUtil.DbTransactionFactory.OpenTransaction(dbFilePath);
+                SqliteConnection connection = transaction.Connection!;
+
+                Result<bool> oldReferenceExistsResult = await ReferenceExists(connection, transaction, oldName);
+                if (!oldReferenceExistsResult.IsSuccess)
+                {
+                    return Result.Failure(oldReferenceExistsResult.Error!.Code, oldReferenceExistsResult.Error.Message);
+                }
+                if (!oldReferenceExistsResult.Value)
+                {
+                    return Result.Failure("RENAME_REFERENCE_FAILED", $"Thesaurus reference '{oldName}' does not exist.");
+                }
+
+                Result<bool> newReferenceExistsResult = await ReferenceExists(connection, transaction, newName);
+                if (!newReferenceExistsResult.IsSuccess)
+                {
+                    return Result.Failure(newReferenceExistsResult.Error!.Code, newReferenceExistsResult.Error.Message);
+                }
+                if (newReferenceExistsResult.Value)
+                {
+                    return Result.Failure("RENAME_REFERENCE_FAILED", $"Thesaurus reference '{newName}' already exists.");
+                }
+
+                Result referenceUpdateResult = await UpdReference(connection, transaction, oldName, newName);
+                if (!referenceUpdateResult.IsSuccess)
+                {
+                    return Result.Failure(referenceUpdateResult.Error!.Code, referenceUpdateResult.Error.Message);
+                }
+
+                Result termsUpdateResult = await UpdTermsReference(connection, transaction, oldName, newName);
+                if (!termsUpdateResult.IsSuccess)
+                {
+                    return Result.Failure(termsUpdateResult.Error!.Code, termsUpdateResult.Error.Message);
+                }
+
+                commit = true;
+                return Result.Success();
+            }
+            catch (Exception exception)
+            {
+                return Result.Failure("THESAURUS_REFERENCE_RENAME_FAILED", exception.Message);
+            }
+            finally
+            {
+                if (transaction is not null)
+                {
+                    SqliteUtil.DbTransactionFactory.CloseTransaction(transaction, commit);
+                }
+            }
+        }
+
+        public static async Task<Result> DeleteReference(string dbFilePath, string name)
+        {
+            if (string.IsNullOrEmpty(name))
+            {
+                return Result.Failure("DELETE_REFERENCE_FAILED", "Thesaurus reference name is missing.");
+            }
+
+            SqliteTransaction? transaction = null;
+            bool commit = false;
+
+            try
+            {
+                transaction = SqliteUtil.DbTransactionFactory.OpenTransaction(dbFilePath);
+                SqliteConnection connection = transaction.Connection!;
+                
+                Result<List<int>> conceptIdsResult = await GetPreferredTermsOfReference(connection, transaction, name);
+                if (!conceptIdsResult.IsSuccess)
+                {
+                    return Result.Failure(conceptIdsResult.Error!.Code, conceptIdsResult.Error.Message);
+                }
+                var conceptIds = conceptIdsResult.Value;
+
+                foreach (int conceptId in conceptIds)
+                {
+                    Result<bool> otherTermExistsResult = await OtherTermExists(connection, transaction, conceptId, name);
+                    if (!otherTermExistsResult.IsSuccess)
+                    {
+                        return Result.Failure(otherTermExistsResult.Error!.Code, otherTermExistsResult.Error.Message);
+                    }
+
+                    if (!otherTermExistsResult.Value)
+                    {
+                        continue;
+                    }
+
+                    Result unsetPreferredTermResult = await SetPreferredTerm(connection, transaction, conceptId, name, false);
+                    if (!unsetPreferredTermResult.IsSuccess)
+                    {
+                        return Result.Failure(unsetPreferredTermResult.Error!.Code, unsetPreferredTermResult.Error.Message);
+                    }
+
+                    Result setPreferredTermResult = await SetPreferredTerm(connection, transaction, conceptId, name, true);
+                    if (!setPreferredTermResult.IsSuccess)
+                    {
+                        return Result.Failure(setPreferredTermResult.Error!.Code, setPreferredTermResult.Error.Message);
+                    }
+                }
+
+                Result<List<int>> conceptIdsToDeleteResult = await GetPreferredTermsOfReference(connection, transaction, name);
+                if (!conceptIdsToDeleteResult.IsSuccess)
+                {
+                    return Result.Failure(conceptIdsToDeleteResult.Error!.Code, conceptIdsToDeleteResult.Error.Message);
+                }
+
+                foreach (int conceptId in conceptIdsToDeleteResult.Value!)
+                {
+                    Result<bool> deleteConceptLinksResult = await DelLinksOfConcept(connection, transaction, conceptId);
+                    if (!deleteConceptLinksResult.IsSuccess)
+                    {
+                        return Result.Failure(deleteConceptLinksResult.Error!.Code, deleteConceptLinksResult.Error.Message);
+                    }
+
+                    Result<bool> deleteConceptResult = await DelConcept(connection, transaction, conceptId);
+                    if (!deleteConceptResult.IsSuccess)
+                    {
+                        return Result.Failure(deleteConceptResult.Error!.Code, deleteConceptResult.Error.Message);
+                    }
+                }
+
+                Result<bool> deleteTermsResult = await DelTermsOfReference(connection, transaction, name);
+                if (!deleteTermsResult.IsSuccess)
+                {
+                    return Result.Failure(deleteTermsResult.Error!.Code, deleteTermsResult.Error.Message);
+                }
+
+                Result<bool> deleteReferenceResult = await DelReference(connection, transaction, name);
+                if (!deleteReferenceResult.IsSuccess)
+                {
+                    return Result.Failure(deleteReferenceResult.Error!.Code, deleteReferenceResult.Error.Message);
+                }
+
+                commit = true;
+                return Result.Success();
+            }
+            catch (Exception exception)
+            {
+                return Result.Failure("THESAURUS_REFERENCE_DELETE_FAILED", exception.Message);
+            }
+            finally
+            {
+                if (transaction is not null)
+                {
+                    SqliteUtil.DbTransactionFactory.CloseTransaction(transaction, commit);
+                }
+            }
+        }
+
         #region Savers
 
         private static async Task<Result<int>> SaveConceptRow(SqliteConnection connection, SqliteTransaction transaction, int? conceptId)
@@ -308,14 +522,14 @@ namespace EspluqueSqlite.Thesaurus
     INSERT INTO "ThesaurusTerm" (
         "ConceptId",
         "ReferenceName",
-        "IsPrefered",
+        "IsPreferred",
         "Term",
         "NormalizedTerm"
     )
     VALUES (
         @conceptId,
         @referenceName,
-        @isPrefered,
+        @isPreferred,
         @term,
         @normalizedTerm
     );
@@ -330,7 +544,7 @@ namespace EspluqueSqlite.Thesaurus
                 command.CommandText = sql;
                 command.Parameters.AddWithValue("@conceptId", conceptId);
                 command.Parameters.AddWithValue("@referenceName", (object?)referenceName ?? DBNull.Value);
-                command.Parameters.AddWithValue("@isPrefered", term.IsPrefered);
+                command.Parameters.AddWithValue("@isPreferred", term.IsPreferred);
                 command.Parameters.AddWithValue("@term", term.Term);
                 command.Parameters.AddWithValue("@normalizedTerm", term.NormalizedTerm);
 
@@ -421,6 +635,273 @@ namespace EspluqueSqlite.Thesaurus
 
         #endregion
 
+        #region Update
+
+        private static async Task<Result> SetPreferredTerm(SqliteConnection connection, SqliteTransaction transaction, int conceptId, string referenceName, bool isPreferred)
+        {
+            int preferredValue = isPreferred switch
+            {
+                true => 1,
+                false => 0
+            };
+
+            string sql = """
+    UPDATE "ThesaurusTerm"
+    SET "IsPreferred" = @isPreferred
+    WHERE rowid = (
+        SELECT rowid
+        FROM "ThesaurusTerm"
+        WHERE "ConceptId" = @conceptId
+          AND (
+              (@isPreferred = 0 AND "ReferenceName" = @referenceName)
+              OR
+              (@isPreferred = 1 AND "ReferenceName" <> @referenceName)
+          )
+        LIMIT 1
+    );
+    """;
+
+            SqliteCommand? command = null;
+
+            try
+            {
+                command = connection.CreateCommand();
+                command.Transaction = transaction;
+                command.CommandText = sql;
+                command.Parameters.AddWithValue("@conceptId", conceptId);
+                command.Parameters.AddWithValue("@referenceName", referenceName);
+                command.Parameters.AddWithValue("@isPreferred", preferredValue);
+
+                await command.ExecuteNonQueryAsync();
+
+                return Result.Success();
+            }
+            catch (Exception exception)
+            {
+                return Result.Failure("THESAURUS_PREFERRED_TERM_UPDATE_FAILED", exception.Message);
+            }
+            finally
+            {
+                command?.Dispose();
+            }
+        }
+
+
+        #endregion
+
+        #region Savers Reference
+
+        private static async Task<Result<bool>> ReferenceExists(SqliteConnection connection, SqliteTransaction transaction, string name)
+        {
+            string sql = """
+        SELECT COUNT(1)
+        FROM "ThesaurusReference"
+        WHERE "Name" = @name;
+        """;
+
+            SqliteCommand? command = null;
+
+            try
+            {
+                command = connection.CreateCommand();
+                command.Transaction = transaction;
+                command.CommandText = sql;
+                command.Parameters.AddWithValue("@name", name);
+
+                object? result = await command.ExecuteScalarAsync();
+
+                return Result<bool>.Success(Convert.ToInt32(result) > 0);
+            }
+            catch (Exception exception)
+            {
+                return Result<bool>.Failure("THESAURUS_REFERENCE_EXISTS_CHECK_FAILED", exception.Message);
+            }
+            finally
+            {
+                command?.Dispose();
+            }
+        }
+
+        private static async Task<Result> InsReference(SqliteConnection connection, SqliteTransaction transaction, string name)
+        {
+            string sql = """
+        INSERT INTO "ThesaurusReference" ("Name")
+        VALUES (@name);
+        """;
+
+            SqliteCommand? command = null;
+
+            try
+            {
+                command = connection.CreateCommand();
+                command.Transaction = transaction;
+                command.CommandText = sql;
+                command.Parameters.AddWithValue("@name", name);
+
+                await command.ExecuteNonQueryAsync();
+
+                return Result.Success();
+            }
+            catch (Exception exception)
+            {
+                return Result.Failure("THESAURUS_REFERENCE_INSERT_FAILED", exception.Message);
+            }
+            finally
+            {
+                command?.Dispose();
+            }
+        }
+
+        private static async Task<Result> UpdReference(SqliteConnection connection, SqliteTransaction transaction, string oldName, string newName)
+        {
+            string sql = """
+        UPDATE "ThesaurusReference"
+        SET "Name" = @newName
+        WHERE "Name" = @oldName;
+        """;
+
+            SqliteCommand? command = null;
+
+            try
+            {
+                command = connection.CreateCommand();
+                command.Transaction = transaction;
+                command.CommandText = sql;
+                command.Parameters.AddWithValue("@oldName", oldName);
+                command.Parameters.AddWithValue("@newName", newName);
+
+                await command.ExecuteNonQueryAsync();
+
+                return Result.Success();
+            }
+            catch (Exception exception)
+            {
+                return Result.Failure("THESAURUS_REFERENCE_UPDATE_FAILED", exception.Message);
+            }
+            finally
+            {
+                command?.Dispose();
+            }
+        }
+
+        private static async Task<Result> UpdTermsReference(SqliteConnection connection, SqliteTransaction transaction, string oldName, string newName)
+        {
+            string sql = """
+        UPDATE "ThesaurusTerm"
+        SET "ReferenceName" = @newName
+        WHERE "ReferenceName" = @oldName;
+        """;
+
+            SqliteCommand? command = null;
+
+            try
+            {
+                command = connection.CreateCommand();
+                command.Transaction = transaction;
+                command.CommandText = sql;
+                command.Parameters.AddWithValue("@oldName", oldName);
+                command.Parameters.AddWithValue("@newName", newName);
+
+                await command.ExecuteNonQueryAsync();
+
+                return Result.Success();
+            }
+            catch (Exception exception)
+            {
+                return Result.Failure("THESAURUS_TERMS_REFERENCE_UPDATE_FAILED", exception.Message);
+            }
+            finally
+            {
+                command?.Dispose();
+            }
+        }
+
+        #endregion
+
+
+        #region Select Reference
+
+        private static async Task<Result<List<int>>> GetPreferredTermsOfReference(SqliteConnection connection, SqliteTransaction transaction, string referenceName)
+        {
+            string sql = """
+    SELECT "ConceptId"
+    FROM "ThesaurusTerm"
+    WHERE "ReferenceName" = @referenceName
+      AND "IsPreferred" = 1
+      AND "ConceptId" IS NOT NULL;
+    """;
+
+            SqliteCommand? command = null;
+            SqliteDataReader? reader = null;
+
+            try
+            {
+                command = connection.CreateCommand();
+                command.Transaction = transaction;
+                command.CommandText = sql;
+                command.Parameters.AddWithValue("@referenceName", referenceName);
+
+                reader = await command.ExecuteReaderAsync();
+
+                List<int> conceptIds = [];
+
+                while (await reader.ReadAsync())
+                {
+                    conceptIds.Add(reader.GetInt32(0));
+                }
+
+                return Result<List<int>>.Success(conceptIds);
+            }
+            catch (Exception exception)
+            {
+                return Result<List<int>>.Failure("THESAURUS_REFERENCE_PREFERRED_TERMS_READ_FAILED", exception.Message);
+            }
+            finally
+            {
+                reader?.Dispose();
+                command?.Dispose();
+            }
+        }
+
+        private static async Task<Result<bool>> OtherTermExists(SqliteConnection connection, SqliteTransaction transaction, int conceptId, string referenceName)
+        {
+            string sql = """
+    SELECT EXISTS (
+        SELECT 1
+        FROM "ThesaurusTerm"
+        WHERE "ConceptId" = @conceptId
+          AND "ReferenceName" <> @referenceName
+    );
+    """;
+
+            SqliteCommand? command = null;
+
+            try
+            {
+                command = connection.CreateCommand();
+                command.Transaction = transaction;
+                command.CommandText = sql;
+                command.Parameters.AddWithValue("@conceptId", conceptId);
+                command.Parameters.AddWithValue("@referenceName", referenceName);
+
+                object? result = await command.ExecuteScalarAsync();
+
+                return Result<bool>.Success(Convert.ToInt32(result) == 1);
+            }
+            catch (Exception exception)
+            {
+                return Result<bool>.Failure("THESAURUS_OTHER_TERM_EXISTS_CHECK_FAILED", exception.Message);
+            }
+            finally
+            {
+                command?.Dispose();
+            }
+        }
+
+
+        #endregion
+
+
         #region Deleters
 
         private static async Task<Result<bool>> DelConcept(SqliteConnection connection, SqliteTransaction transaction, int conceptId)
@@ -507,6 +988,66 @@ namespace EspluqueSqlite.Thesaurus
             catch (Exception exception)
             {
                 return Result<bool>.Failure("THESAURUS_CONCEPT_LINKS_DELETE_FAILED", exception.Message);
+            }
+            finally
+            {
+                command?.Dispose();
+            }
+        }
+
+        private static async Task<Result<bool>> DelTermsOfReference(SqliteConnection connection, SqliteTransaction transaction, string referenceName)
+        {
+            string sql = """
+    DELETE FROM "ThesaurusTerm"
+    WHERE "ReferenceName" = @referenceName;
+    """;
+
+            SqliteCommand? command = null;
+
+            try
+            {
+                command = connection.CreateCommand();
+                command.Transaction = transaction;
+                command.CommandText = sql;
+                command.Parameters.AddWithValue("@referenceName", referenceName);
+
+                await command.ExecuteNonQueryAsync();
+
+                return Result<bool>.Success(true);
+            }
+            catch (Exception exception)
+            {
+                return Result<bool>.Failure("THESAURUS_REFERENCE_TERMS_DELETE_FAILED", exception.Message);
+            }
+            finally
+            {
+                command?.Dispose();
+            }
+        }
+
+        private static async Task<Result<bool>> DelReference(SqliteConnection connection, SqliteTransaction transaction, string name)
+        {
+            string sql = """
+    DELETE FROM "ThesaurusReference"
+    WHERE "Name" = @name;
+    """;
+
+            SqliteCommand? command = null;
+
+            try
+            {
+                command = connection.CreateCommand();
+                command.Transaction = transaction;
+                command.CommandText = sql;
+                command.Parameters.AddWithValue("@name", name);
+
+                await command.ExecuteNonQueryAsync();
+
+                return Result<bool>.Success(true);
+            }
+            catch (Exception exception)
+            {
+                return Result<bool>.Failure("THESAURUS_REFERENCE_DELETE_FAILED", exception.Message);
             }
             finally
             {

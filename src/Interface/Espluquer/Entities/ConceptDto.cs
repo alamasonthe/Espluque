@@ -24,12 +24,12 @@ namespace Espluquer.Entities
             get
             {
                 return Terms
-                    .FirstOrDefault(term => term.IsPrefered)?
+                    .FirstOrDefault(term => term.IsPreferred)?
                     .Term;
             }
             set
             {
-                IThesaurusTerm? preferredTerm = Terms.FirstOrDefault(term => term.IsPrefered);
+                IThesaurusTerm? preferredTerm = Terms.FirstOrDefault(term => term.IsPreferred);
 
                 if (preferredTerm is null)
                 {
