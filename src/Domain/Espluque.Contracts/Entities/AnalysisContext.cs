@@ -8,6 +8,7 @@ namespace Espluque.Contracts.Entities
         public string? FilePath { get; set; }
         public IFileFormat? CurrentFileFormat { get; set; }
         public List<IFileFormat> FileFormatHistory { get; set; } = [];
+        public List<string> TagHistory { get; set; } = [];
         public string? TempFolderPath { get; set; }
     }
 }

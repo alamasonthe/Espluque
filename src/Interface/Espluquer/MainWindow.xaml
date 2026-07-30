@@ -68,6 +68,12 @@
                                 <MenuItem Header="Maintenance" Tag="Modules.Maintenance" Click="MainMenuItem_Click" />
                             </MenuItem>
 
+                            <MenuItem Header="Result Modeling">
+                                <MenuItem Header="Models" Tag="ResultModeling.Models" Click="MainMenuItem_Click" />
+                            </MenuItem>
+
+                            <Separator />
+
                             <MenuItem Header="Debug">
                                 <MenuItem Header="Log Catalog" Tag="Debug.LogCatalog" Click="MainMenuItem_Click" />
                             </MenuItem>
