@@ -1,6 +1,7 @@
 ﻿using Bootstrap;
-using Espluquer.UserControls.Components;
-using Espluquer.UserControls.Views;
+using Espluquer.UserControls.Thesaurus;
+using Espluquer.UserControls.Modules;
+using Espluquer.UserControls.Shell;
 using Microsoft.Extensions.DependencyInjection;
 using Espluquer.Services;
 using System.Windows;
@@ -25,9 +26,10 @@ namespace Espluquer
             await services.Initialize();
 
             services.AddSingleton<LogUC>();
-            services.AddSingleton<ThesaurusExplorerUC>();
-            services.AddSingleton<ModuleDiagnosticUC>();
-            services.AddSingleton<ModuleContributionsUC>();
+            services.AddSingleton<ConceptUC>();
+            services.AddSingleton<ModuleAdminUC>();
+            services.AddSingleton<ContributionMapUC>();
+            services.AddSingleton<ReferenceUC>();
 
             services.AddSingleton<WebView2Configuration>();
             services.AddSingleton<SqliteConfiguration>();

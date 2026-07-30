@@ -10,7 +10,7 @@ namespace EspluqueSqlite.Dtos
 
         public string? ReferenceName { get; set; }
 
-        public bool IsPrefered { get; set; }
+        public bool IsPreferred { get; set; }
 
         public string Term { get; set; } = string.Empty;
 

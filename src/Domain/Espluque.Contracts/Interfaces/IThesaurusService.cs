@@ -29,5 +29,13 @@ namespace Espluque.Contracts.Interfaces
         Task<List<(int ConceptId, string MainTerm)>?> GetDescendantRefs(int conceptId);
 
         Task<bool?> GetConceptPathExists(int ancestorConceptId, int descendantConceptId);
+
+        Task<List<IReferenceTerm>> GetReferenceTerms(string referenceName);
+
+        Task<List<IReferenceTerm>> GetAlternateTerms(string referenceName);
+
+        Task<bool> SaveReference(string name);
+        Task<bool> RenameReference(string oldName, string newName);
+        Task<bool> DeleteReference(string name);
     }
 }

@@ -70,7 +70,7 @@ namespace Espluque.Application.Thesaurus.Services
                 return null;
             }
 
-            IThesaurusTerm? preferredTerm = concept.Terms.FirstOrDefault(term => term.IsPrefered);
+            IThesaurusTerm? preferredTerm = concept.Terms.FirstOrDefault(term => term.IsPreferred);
             _logger.Log( LogLevel.Information, $"SAVE_CONCEPT_SUCCESS: concept ({saveConceptResult.Value} {preferredTerm?.Term}) saved.");
 
             return saveConceptResult.Value;
@@ -206,7 +206,7 @@ namespace Espluque.Application.Thesaurus.Services
             }
             var descendants = descendantsResult.Value;
 
-            IThesaurusTerm? selectedConceptMainTerm = selectedConcept.Terms.FirstOrDefault(term => term.IsPrefered);
+            IThesaurusTerm? selectedConceptMainTerm = selectedConcept.Terms.FirstOrDefault(term => term.IsPreferred);
 
             List<(int ConceptId, string MainTerm, string Relation)> nodes = [];
 
@@ -311,6 +311,111 @@ namespace Espluque.Application.Thesaurus.Services
             return conceptPathExistsResult.Value;
         }
 
+        public async Task<List<IReferenceTerm>> GetReferenceTerms(string referenceName)
+        {
+            var referenceTermsResult = await _thesaurusSource.GetReferenceTerms(
+                referenceName,
+                "Reference");
+
+            if (!referenceTermsResult.IsSuccess)
+            {
+                _logger.Log(
+                    LogLevel.Error,
+                    $"{referenceTermsResult.Error.Code} {referenceTermsResult.Error.Message}");
+
+                return [];
+            }
+
+            return referenceTermsResult.Value!;
+        }
+
+        public async Task<List<IReferenceTerm>> GetAlternateTerms(string referenceName)
+        {
+            var alternateTermsResult = await _thesaurusSource.GetReferenceTerms(
+                referenceName,
+                "Alternate");
+
+            if (!alternateTermsResult.IsSuccess)
+            {
+                _logger.Log(
+                    LogLevel.Error,
+                    $"{alternateTermsResult.Error.Code} {alternateTermsResult.Error.Message}");
+
+                return [];
+            }
+
+            return alternateTermsResult.Value!;
+        }
+
+
+        #region Reference
+
+        public async Task<bool> SaveReference(string name)
+        {
+            var saveReferenceResult =
+                await _thesaurusSource.SaveReference(name);
+
+            if (!saveReferenceResult.IsSuccess)
+            {
+                _logger.Log(
+                    LogLevel.Error,
+                    $"{saveReferenceResult.Error.Code} {saveReferenceResult.Error.Message}");
+
+                return false;
+            }
+
+            _logger.Log(
+                LogLevel.Information,
+                $"SAVE_REFERENCE_SUCCESS: reference {name} saved.");
+
+            return true;
+        }
+
+        public async Task<bool> RenameReference(string oldName, string newName)
+        {
+            var renameReferenceResult =
+                await _thesaurusSource.RenameReference(oldName, newName);
+
+            if (!renameReferenceResult.IsSuccess)
+            {
+                _logger.Log(
+                    LogLevel.Error,
+                    $"{renameReferenceResult.Error.Code} {renameReferenceResult.Error.Message}");
+
+                return false;
+            }
+
+            _logger.Log(
+                LogLevel.Information,
+                $"RENAME_REFERENCE_SUCCESS: reference {oldName} renamed to {newName}.");
+
+            return true;
+        }
+
+        public async Task<bool> DeleteReference(string name)
+        {
+            var deleteReferenceResult =
+                await _thesaurusSource.DeleteReference(name);
+
+            if (!deleteReferenceResult.IsSuccess)
+            {
+                _logger.Log(
+                    LogLevel.Error,
+                    $"{deleteReferenceResult.Error.Code} {deleteReferenceResult.Error.Message}");
+
+                return false;
+            }
+
+            _logger.Log(
+                LogLevel.Information,
+                $"DELETE_REFERENCE_SUCCESS: reference {name} deleted.");
+
+            return true;
+        }
+
+        #endregion
+
+
         #region Helpers
 
         private static Result<List<(string Path, bool IsLeaf, IThesaurusConcept Data)>> CreateFlatTreeItems(List<IThesaurusConcept> concepts)
@@ -358,7 +463,7 @@ namespace Espluque.Application.Thesaurus.Services
 
             foreach (IThesaurusTerm term in concept.Terms)
             {
-                if (term.IsPrefered)
+                if (term.IsPreferred)
                 {
                     normalizedTerm = term.NormalizedTerm;
                     break;

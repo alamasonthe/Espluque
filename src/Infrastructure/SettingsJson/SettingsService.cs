@@ -8,7 +8,7 @@ namespace SettingsJson
 {
     public class SettingsService : ISettingsService
     {
-        private string? GetLoadSettingsFilePath()
+        public string? GetSettingsFilePath()
         {
             string appDataPath = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
             string appName = Assembly.GetEntryAssembly()?.GetName().Name ?? Process.GetCurrentProcess().ProcessName;
@@ -22,7 +22,7 @@ namespace SettingsJson
             string appFolderPath = AppContext.BaseDirectory;
 
             string filePathCandidate2 = Path.Combine(appFolderPath, "settings.json");
-            if (File.Exists(filePathCandidate1))
+            if (File.Exists(filePathCandidate2))
             {
                 return filePathCandidate2;
             }
@@ -42,7 +42,7 @@ namespace SettingsJson
         {
             try
             {
-                string? settingsFilePath = GetLoadSettingsFilePath();
+                string? settingsFilePath = GetSettingsFilePath();
 
                 if (string.IsNullOrWhiteSpace(settingsFilePath))
                 {

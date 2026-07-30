@@ -2,16 +2,16 @@
 using Espluque.Contracts.Enums;
 using Espluque.Contracts.MessageInterfaces;
 using Espluque.Contracts.ModuleInterfaces;
-using Espluque.Contracts.ModuleInterfaces.Contributions;
 using Espluque.Contracts.Orchestrators;
 using Espluque.Contracts.Ports;
 using Espluque.Theming.Services;
-using Espluquer.UserControls.Components;
-using Espluquer.UserControls.FileViews;
-using Espluquer.UserControls.Views;
+using Espluquer.UserControls.Thesaurus;
+using Espluquer.UserControls.Shell;
+using Espluquer.UserControls.Modules;
+using Espluquer.UserControls.Espluque;
 using Microsoft.Extensions.Logging;
 using Microsoft.Win32;
-using System.Drawing;
+using System.Diagnostics;
 using System.IO;
 using System.Windows;
 using System.Windows.Controls;
@@ -24,34 +24,45 @@ namespace Espluquer
         private string _themeTag = "Light";
 
         private readonly Espluque.Contracts.Ports.ILogger _logger;
+        private readonly ReferenceUC _referenceUC;
         private readonly ISettingsService _settingsService;
         private readonly IOrchestratorFactory _orchestratorFactory;
         private readonly IMessageCenter _messageCenter;
-        private readonly IModuleAdministrationService _moduleAdministration;
+        private readonly IModuleAdministrationService _moduleAdministrationService;
 
         private readonly LogUC _logUC;
-        private readonly ThesaurusExplorerUC _thesaurusExplorerUC;
-        private readonly ModuleDiagnosticUC _moduleDiagnosticUC;
-        private readonly ModuleContributionsUC _moduleContributionsUC;
+        private readonly ConceptUC _conceptUC;
+        private readonly ModuleAdminUC _moduleAdminUC;
+        private readonly ContributionMapUC _contributionMapUC;
         private readonly List<ICatalogEntry> _catalog;
 
         private readonly List<string> _recentFiles = [];
 
         string _startingTag = "AnyFile";
 
-        public MainWindow(LogUC logUC, ThesaurusExplorerUC thesaurusExplorerUC, ModuleDiagnosticUC moduleDiagnosticUC, Espluque.Contracts.Ports.ILogger logger, IOrchestratorFactory orchestratorFactory, ISettingsService settingsService, IMessageCenter messageCenter, List<ICatalogEntry> catalog, 
-            IModuleAdministrationService moduleAdministration, ModuleContributionsUC moduleContributionsUC)
+        public MainWindow(LogUC logUC,
+            ReferenceUC referenceUC,
+            ConceptUC conceptUC,
+            ModuleAdminUC moduleAdminUC, 
+            Espluque.Contracts.Ports.ILogger logger, 
+            IOrchestratorFactory orchestratorFactory, 
+            ISettingsService settingsService, 
+            IMessageCenter messageCenter, 
+            List<ICatalogEntry> catalog, 
+            IModuleAdministrationService moduleAdministration, 
+            ContributionMapUC contributionMapUC)
         {
             _logger = logger;
+            _referenceUC = referenceUC;
             _settingsService = settingsService;
             _orchestratorFactory = orchestratorFactory;
             _messageCenter = messageCenter;
             _catalog = catalog;
 
             _logUC = logUC;
-            _thesaurusExplorerUC = thesaurusExplorerUC;
-            _moduleDiagnosticUC = moduleDiagnosticUC;
-            _moduleContributionsUC = moduleContributionsUC;
+            _conceptUC = conceptUC;
+            _moduleAdminUC = moduleAdminUC;
+            _contributionMapUC = contributionMapUC;
 
             InitializeComponent();
 
@@ -73,7 +84,7 @@ namespace Espluquer
 
             AddHandler(DragDrop.DragOverEvent, new DragEventHandler(MainWindow_DragOver), true);
             AddHandler(DragDrop.DropEvent, new DragEventHandler(MainWindow_Drop), true);
-            _moduleAdministration = moduleAdministration;
+            _moduleAdministrationService = moduleAdministration;
 
             
 
@@ -275,7 +286,7 @@ namespace Espluquer
 
             switch (menuTag)
             {
-                case "OpenFile":
+                case "OpenFiles":
                     OpenFileDialog openFileDialog = new()
                     {
                         Title = "Open file",
@@ -295,49 +306,59 @@ namespace Espluquer
 
                     return;
 
-                case "RecentFiles":
-                    // ShowRecentFiles();
+                // Thesaurus
+                case "Thesaurus.References":
+                    AddTab("Thesaurus References", _referenceUC);
                     return;
 
-                case "Modules.Contributions":
-                    AddTab("Module Contributions", _moduleContributionsUC);
+                case "Thesaurus.Concepts":
+                    AddTab("Thesaurus Concepts", _conceptUC);
                     return;
 
-                case "Modules.Diagnostics":
-                    AddTab("Module Diagnostics", _moduleDiagnosticUC);
+                case "Thesaurus.ContributionMap":
+                    AddTab("Thesaurus Contribution Map", _contributionMapUC);
                     return;
 
-                case "Modules.LogCatalog":
+                // Modules
+                case "Modules.Administration":
+                    AddTab("Module Administration", _moduleAdminUC);
+                    return;
+
+                case "Modules.Settings":
+                    var settingsUC = new ModuleToolsUC(_logger, _moduleAdministrationService, _catalog, "IWpfSettings");
+                    AddTab("Module Settings", settingsUC);
+                    return;
+
+                case "Modules.Maintenance":
+                    var maintenanceUC = new ModuleToolsUC(_logger, _moduleAdministrationService, _catalog, "IWpfMaintenance");
+                    AddTab("Module Maintenance", maintenanceUC);
+                    return;
+
+                //Debug
+                case "Debug.LogCatalog":
                     LogCatalog(_catalog);
                     return;
 
-                case "Parameters.PronomDroid":
-                    {
-                        ICatalogEntry? maintenanceEntry = _catalog.FirstOrDefault(entry =>
-                            entry.ModuleName == "Pronom module"
-                            && entry.InterfaceType == "IWpfMaintenance"
-                            && entry.ClassName == "Pronom.Maintenance");
-
-                        if (maintenanceEntry is null) return;
-
-                        (string label, object instance)? instancePack = await _moduleAdministration.CreateAdminInstance(maintenanceEntry);
-
-                        if (instancePack?.instance is not IWpfMaintenance maintenance) return;
-
-                        object? content = await maintenance.GetWpfMaintenance();
-
-                        if (content is UserControl userControl)
-                        {
-                            AddTab(instancePack.Value.label, userControl);
-                        }
-
-                        return;
-                    }
-
-                case "Parameters.Thesaurus":
-                    AddTab("Thesaurus", _thesaurusExplorerUC);
+                // Espluque
+                case "Espluque.Settings":
+                    var espluqueSettingsUC = new EspluqueSettingsUC(_logger, _settingsService);
+                    AddTab("Espluque Settings", espluqueSettingsUC);
                     return;
 
+                case "Espluque.Documentation":
+                    Process.Start(new ProcessStartInfo
+                    {
+                        FileName = "https://github.com/alamasonthe/Espluque/blob/master/docs/README.md",
+                        UseShellExecute = true
+                    });
+                    return;
+
+                case "Espluque.About":
+                    var aboutUC = new AboutUC();
+                    AddTab("About", aboutUC);
+                    return;
+
+                // Exit
                 case "Exit":
                     Close();
                     return;

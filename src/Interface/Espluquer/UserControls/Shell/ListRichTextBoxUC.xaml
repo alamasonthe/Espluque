@@ -1,0 +1,21 @@
+﻿<UserControl x:Class="Espluquer.Usercontrols.Shell.ListRichTextBoxUC"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+
+    <Grid Background="{DynamicResource App.Background}">
+        <RichTextBox x:Name="ContentRichTextBox"
+                     IsReadOnly="True"
+                     IsDocumentEnabled="False"
+                     BorderThickness="0"
+                     Background="{DynamicResource App.Background}"
+                     Foreground="{DynamicResource App.Text}"
+                     SelectionBrush="{DynamicResource App.Selection}"
+                     VerticalScrollBarVisibility="Auto"
+                     HorizontalScrollBarVisibility="Disabled"
+                     Padding="0"
+                     FontFamily="Segoe UI"
+                     FontSize="13"
+                     Loaded="ContentRichTextBox_Loaded"
+                     SizeChanged="ContentRichTextBox_SizeChanged" />
+    </Grid>
+</UserControl>

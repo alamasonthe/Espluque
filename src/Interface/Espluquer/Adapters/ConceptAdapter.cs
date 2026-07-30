@@ -76,7 +76,7 @@ namespace Espluquer.Adapters
                 clonedTerms.Add(entityFactory.CreateThesaurusTerm(
                     term.Term,
                     term.NormalizedTerm,
-                    term.IsPrefered,
+                    term.IsPreferred,
                     term.ReferenceName));
             }
 

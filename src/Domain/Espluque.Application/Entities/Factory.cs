@@ -28,14 +28,14 @@ namespace Espluque.Application.Entities
         public IThesaurusTerm CreateThesaurusTerm(
             string? term,
             string? normalizedTerm,
-            bool isPrefered,
+            bool isPreferred,
             string? referenceName)
         {
             return new ThesaurusTerm
             {
                 Term = term,
                 NormalizedTerm = normalizedTerm,
-                IsPrefered = isPrefered,
+                IsPreferred = isPreferred,
                 ReferenceName = referenceName
             };
         }
