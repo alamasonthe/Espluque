@@ -7,7 +7,7 @@ using System.Windows.Threading;
 
 namespace Espluquer.UserControls.Modules
 {
-    public partial class ModuleDiagnosticUC : UserControl
+    public partial class ModuleAdminUC : UserControl
     {
         public List<string> _moduleFilePaths = [];
 
@@ -19,7 +19,7 @@ namespace Espluquer.UserControls.Modules
 
         private readonly ModuleTestDetailUC _moduleTestDetailUC;
 
-        public ModuleDiagnosticUC(IModuleService moduleService, IModuleDiagnosticService moduleDiagnosticService, IEntityFactory entityFactory)
+        public ModuleAdminUC(IModuleService moduleService, IModuleDiagnosticService moduleDiagnosticService, IEntityFactory entityFactory)
         {
             _moduleService = moduleService;
             _moduleDiagnosticService = moduleDiagnosticService;

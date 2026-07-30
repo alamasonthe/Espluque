@@ -10,7 +10,7 @@ using Util;
 namespace Espluquer.UserControls.Thesaurus
 
 {
-    public partial class ModuleContributionsUC : RefreshableUserControl
+    public partial class ContributionMapUC : RefreshableUserControl
     {
         private readonly IEntityFactory _entityFactory;
 
@@ -22,7 +22,7 @@ namespace Espluquer.UserControls.Thesaurus
         private ContributionGraphUC? _contributionGraphUC;
         private string _selectedContributionType = "Viewer";
 
-        public ModuleContributionsUC(IThesaurusService thesaurusService, IEntityFactory entityFactory, List<ICatalogEntry> catalog)
+        public ContributionMapUC(IThesaurusService thesaurusService, IEntityFactory entityFactory, List<ICatalogEntry> catalog)
         {
             _thesaurusService = thesaurusService;
             _entityFactory = entityFactory;

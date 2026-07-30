@@ -31,9 +31,9 @@ namespace Espluquer
         private readonly IModuleAdministrationService _moduleAdministrationService;
 
         private readonly LogUC _logUC;
-        private readonly ThesaurusExplorerUC _thesaurusExplorerUC;
-        private readonly ModuleDiagnosticUC _moduleDiagnosticUC;
-        private readonly ModuleContributionsUC _moduleContributionsUC;
+        private readonly ConceptUC _conceptUC;
+        private readonly ModuleAdminUC _moduleAdminUC;
+        private readonly ContributionMapUC _contributionMapUC;
         private readonly List<ICatalogEntry> _catalog;
 
         private readonly List<string> _recentFiles = [];
@@ -42,15 +42,15 @@ namespace Espluquer
 
         public MainWindow(LogUC logUC,
             ReferenceUC referenceUC,
-            ThesaurusExplorerUC thesaurusExplorerUC, 
-            ModuleDiagnosticUC moduleDiagnosticUC, 
+            ConceptUC conceptUC,
+            ModuleAdminUC moduleAdminUC, 
             Espluque.Contracts.Ports.ILogger logger, 
             IOrchestratorFactory orchestratorFactory, 
             ISettingsService settingsService, 
             IMessageCenter messageCenter, 
             List<ICatalogEntry> catalog, 
             IModuleAdministrationService moduleAdministration, 
-            ModuleContributionsUC moduleContributionsUC)
+            ContributionMapUC contributionMapUC)
         {
             _logger = logger;
             _referenceUC = referenceUC;
@@ -60,9 +60,9 @@ namespace Espluquer
             _catalog = catalog;
 
             _logUC = logUC;
-            _thesaurusExplorerUC = thesaurusExplorerUC;
-            _moduleDiagnosticUC = moduleDiagnosticUC;
-            _moduleContributionsUC = moduleContributionsUC;
+            _conceptUC = conceptUC;
+            _moduleAdminUC = moduleAdminUC;
+            _contributionMapUC = contributionMapUC;
 
             InitializeComponent();
 
@@ -312,16 +312,16 @@ namespace Espluquer
                     return;
 
                 case "Thesaurus.Concepts":
-                    AddTab("Thesaurus Concepts", _thesaurusExplorerUC);
+                    AddTab("Thesaurus Concepts", _conceptUC);
                     return;
 
                 case "Thesaurus.ContributionMap":
-                    AddTab("Thesaurus Contribution Map", _moduleContributionsUC);
+                    AddTab("Thesaurus Contribution Map", _contributionMapUC);
                     return;
 
                 // Modules
                 case "Modules.Administration":
-                    AddTab("Module Administration", _moduleDiagnosticUC);
+                    AddTab("Module Administration", _moduleAdminUC);
                     return;
 
                 case "Modules.Settings":

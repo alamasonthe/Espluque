@@ -1,5 +1,6 @@
 # Espluque
-[![Build](https://github.com/alamasonthe/Espluque/actions/workflows/build.yml/badge.svg)](https://github.com/alamasonthe/Espluque/actions/workflows/build.yml)
+[![Build](https://github.com/alamasonthe/Espluque/actions/workflows/build.yml/badge.svg?branch=master)](https://github.com/alamasonthe/Espluque/actions/workflows/build.yml) [![License: MIT](https://img.shields.io/github/license/alamasonthe/Espluque)](LICENSE)
+![.NET](https://img.shields.io/badge/.NET-10.0-512BD4?logo=dotnet) ![WPF](https://img.shields.io/badge/UI-WPF-5C2D91) ![Platform](https://img.shields.io/badge/platform-Windows-0078D4) [![Last commit](https://img.shields.io/github/last-commit/alamasonthe/Espluque)](https://github.com/alamasonthe/Espluque/commits/master)
 
 > A modular, thesaurus-driven file analysis engine built with WPF and .NET.
 

@@ -11,7 +11,7 @@ using Util;
 
 namespace Espluquer.UserControls.Thesaurus
 {
-    public partial class ThesaurusExplorerUC : RefreshableUserControl
+    public partial class ConceptUC : RefreshableUserControl
     {
         private readonly IThesaurusService _thesaurusService;
         private readonly IEntityFactory _entityFactory;
@@ -20,7 +20,7 @@ namespace Espluquer.UserControls.Thesaurus
         private ConceptDto? _selectedConceptDto;
         private Point? _dragStartPoint;
 
-        public ThesaurusExplorerUC(IThesaurusService thesaurusService, IEntityFactory entityFactory)
+        public ConceptUC(IThesaurusService thesaurusService, IEntityFactory entityFactory)
         {
             _thesaurusService = thesaurusService;
             _entityFactory = entityFactory;
