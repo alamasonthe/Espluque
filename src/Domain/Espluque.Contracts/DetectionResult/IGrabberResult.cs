@@ -1,4 +1,4 @@
-﻿namespace Espluque.Contracts.Result
+﻿namespace Espluque.Contracts.DetectionResult
 {
     public interface IGrabberResult
     {

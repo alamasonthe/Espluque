@@ -6,13 +6,13 @@ using Espluque.Contracts.MessageInterfaces;
 using Espluque.Contracts.ModuleInterfaces;
 using Espluque.Contracts.Ports;
 using Espluque.Application.ModuleManager.Services;
-using Espluque.Contracts.Orchestrators;
+using Espluque.Contracts.Detection;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Espluque.Contracts.ModuleInterfaces.Contributions;
 using Espluque.Contracts.Entities;
 
-namespace Espluque.Application.Orchestrators
+namespace Espluque.Application.Detection
 {
     public class Engine: IEngine
     {

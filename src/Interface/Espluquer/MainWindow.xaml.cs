@@ -2,7 +2,8 @@
 using Espluque.Contracts.Enums;
 using Espluque.Contracts.MessageInterfaces;
 using Espluque.Contracts.ModuleInterfaces;
-using Espluque.Contracts.Orchestrators;
+using Espluque.Contracts.Detection;
+using Espluque.Contracts.Workflow;
 using Espluque.Contracts.Ports;
 using Espluque.Theming.Services;
 using Espluquer.UserControls.Thesaurus;
@@ -253,11 +254,8 @@ namespace Espluquer
                 TempFolderPath = tempFolderPath,
                 StartingTag = _startingTag
             };
-            
 
-            IEngine engine = _orchestratorFactory.CreateEngine();
-
-            AnalysisViewUC analysisView = new AnalysisViewUC(engine, _logger, analysisContext);
+            AnalysisViewUC analysisView = new AnalysisViewUC(_orchestratorFactory, _logger, analysisContext, _catalog);
 
             AddTab(Path.GetFileName(filePath), analysisView);
             AddRecentFile(filePath);

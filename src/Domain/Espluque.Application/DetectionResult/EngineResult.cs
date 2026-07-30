@@ -1,7 +1,7 @@
 ﻿using Espluque.Contracts.Entities;
-using Espluque.Contracts.Result;
+using Espluque.Contracts.DetectionResult;
 
-namespace Espluque.Application.Result
+namespace Espluque.Application.DetectionResult
 {
     public class EngineResult : IEngineResult
     {

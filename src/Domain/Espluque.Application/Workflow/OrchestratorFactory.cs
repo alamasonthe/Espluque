@@ -1,7 +1,8 @@
-﻿using Espluque.Contracts.Orchestrators;
+﻿using Espluque.Application.Detection;
+using Espluque.Contracts.Workflow;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace Espluque.Application.Orchestrators
+namespace Espluque.Application.Workflow
 {
     public sealed class OrchestratorFactory : IOrchestratorFactory
     {
@@ -12,9 +13,9 @@ namespace Espluque.Application.Orchestrators
             _serviceProvider = serviceProvider;
         }
 
-        public IEngine CreateEngine()
+        public IOrchestrator CreateOrchestrator()
         {
-            return _serviceProvider.GetRequiredService<Engine>();
+            return _serviceProvider.GetRequiredService<Orchestrator>();
         }
     }
 }

@@ -30,8 +30,8 @@ namespace Bootstrap
 
             services.AddSingleton<IModuleAdministrationService, ModuleAdministrationService>();
 
-            services.AddTransient<Espluque.Application.Orchestrators.Engine>();
-            services.AddSingleton<Espluque.Contracts.Orchestrators.IOrchestratorFactory, Espluque.Application.Orchestrators.OrchestratorFactory>();
+            services.AddTransient<Espluque.Application.Workflow.Orchestrator>();
+            services.AddSingleton<Espluque.Contracts.Workflow.IOrchestratorFactory, Espluque.Application.Workflow.OrchestratorFactory>();
 
             services.AddSingleton<Espluque.Contracts.Ports.IThesaurusSource, ThesaurusRepository>();
             services.AddSingleton<IThesaurusService, ThesaurusService>();

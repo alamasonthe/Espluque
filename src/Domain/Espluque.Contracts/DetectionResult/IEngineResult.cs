@@ -1,6 +1,6 @@
 ﻿using Espluque.Contracts.Entities;
 
-namespace Espluque.Contracts.Result
+namespace Espluque.Contracts.DetectionResult
 {
     public interface IEngineResult
     {

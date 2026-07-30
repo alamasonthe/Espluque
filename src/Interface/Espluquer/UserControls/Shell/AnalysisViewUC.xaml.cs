@@ -1,29 +1,31 @@
 ﻿using Espluque.Application.Entities;
+using Espluque.Contracts.Detection;
 using Espluque.Contracts.Entities;
 using Espluque.Contracts.Enums;
 using Espluque.Contracts.Interfaces;
-using Espluque.Contracts.Orchestrators;
+using Espluque.Contracts.ModuleInterfaces;
+using Espluque.Contracts.ModuleInterfaces.Contributions;
 using Espluque.Contracts.Ports;
+using Espluque.Contracts.Workflow;
 using Espluquer.Usercontrols.Shell;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
+using System.Runtime.Loader;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
 using System.Windows.Media.Animation;
 using System.Windows.Threading;
-using System.Runtime.Loader;
-using Espluque.Contracts.ModuleInterfaces.Contributions;
 
 namespace Espluquer.UserControls.Shell
 {
     public partial class AnalysisViewUC : UserControl, IDisposable
     {
         private AnalysisContext _analysisContext;
-        private List<KeyValuePair<string, string>>? _fileProperties;
-        private readonly List<TaskRequest> _taskRequests = [];
 
-        private readonly IEngine _engine;
+        private readonly List<ICatalogEntry> _catalog = [];
+
+        private readonly IOrchestrator _orchestrator;
         private readonly ILogger _logger;
         private bool _isDisposed;
 
@@ -32,11 +34,12 @@ namespace Espluquer.UserControls.Shell
 
         #region Lifecycle
 
-        public AnalysisViewUC(IEngine engine, ILogger logger, AnalysisContext analysisContext)
+        public AnalysisViewUC(IOrchestratorFactory orchestratorFactory, ILogger logger, AnalysisContext analysisContext, List<ICatalogEntry> catalog)
         {
-            _engine = engine;
             _logger = logger;
             _analysisContext = analysisContext;
+            _orchestrator = orchestratorFactory.CreateOrchestrator();
+            _catalog = catalog;
 
             InitializeComponent();
             FilePathTextbox.Text = analysisContext.FilePath;
@@ -77,11 +80,11 @@ namespace Espluquer.UserControls.Shell
 
         private async Task AnalyzeFileAsync(AnalysisContext analysisContext)
         {
-            _engine.AnalyserMessageEvent += ReceiveAnalyserMessage;
+            _orchestrator.AnalyserMessageEvent += ReceiveAnalyserMessage;
 
             StartAnalysisProgressAnimation();
 
-            await Task.Run(() => _engine.AnalyzeFileAsync(analysisContext));
+            await Task.Run(() => _orchestrator.ProcessAsync(_catalog, analysisContext));
         }
 
         private async void ReceiveAnalyserMessage(IAnalysisMessage message)
@@ -93,7 +96,7 @@ namespace Espluquer.UserControls.Shell
                     switch (message.MessageType)
                     {
                         case AnalysisMessageTypeEnum.AnalysisCompleted:
-                            _engine.AnalyserMessageEvent -= ReceiveAnalyserMessage;
+                            _orchestrator.AnalyserMessageEvent -= ReceiveAnalyserMessage;
                             StopAnalysisProgressAnimation();
                             await ProcessViewerBacklogAsync();
                             break;
@@ -145,19 +148,6 @@ namespace Espluquer.UserControls.Shell
             _viewerQueue.Clear();
             
             _logger.Log(Microsoft.Extensions.Logging.LogLevel.Debug, $"{formattedFileName}\tViewer Task done");
-        }
-
-        private async Task<object?> CreateViewerAsync( IWpfViewer viewer, AssemblyLoadContext? loadContext)
-        {
-            if (loadContext is null)
-            {
-                return await viewer.GetViewer(_analysisContext);
-            }
-
-            using (loadContext.EnterContextualReflection())
-            {
-                return await viewer.GetViewer(_analysisContext);
-            }
         }
 
         #endregion
