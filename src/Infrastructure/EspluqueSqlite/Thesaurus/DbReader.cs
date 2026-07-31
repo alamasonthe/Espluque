@@ -11,7 +11,7 @@ namespace EspluqueSqlite.Thesaurus
 
         public static async Task<Result<List<IThesaurusConcept>>> GetConcepts( string dbFilepath, IEntityFactory entityFactory)
         {
-            using SqliteConnection connection = SqliteUtil.DbConnectionFactory.CreateConnection(dbFilepath);
+            using SqliteConnection connection = SqliteUtil.DbSession.CreateConnection(dbFilepath);
 
             try
             {
@@ -53,7 +53,7 @@ namespace EspluqueSqlite.Thesaurus
 
         public static async Task<Result<IThesaurusConcept>> GetConceptById(string dbFilepath, int conceptId, IEntityFactory entityFactory)
         {
-            using SqliteConnection connection = SqliteUtil.DbConnectionFactory.CreateConnection(dbFilepath);
+            using SqliteConnection connection = SqliteUtil.DbSession.CreateConnection(dbFilepath);
 
             try
             {
@@ -97,7 +97,7 @@ namespace EspluqueSqlite.Thesaurus
 
         public static async Task<Result<bool>> GetConceptPathExists( string dbFilepath, int ancestorConceptId, int descendantConceptId)
         {
-            using SqliteConnection connection = SqliteUtil.DbConnectionFactory.CreateConnection(dbFilepath);
+            using SqliteConnection connection = SqliteUtil.DbSession.CreateConnection(dbFilepath);
 
             try
             {
@@ -123,7 +123,7 @@ namespace EspluqueSqlite.Thesaurus
 
         public static async Task<Result<List<(int ConceptId, string MainTerm)>>> GetAncestorConcepts( string dbFilepath, int conceptId)
         {
-            using SqliteConnection connection = SqliteUtil.DbConnectionFactory.CreateConnection(dbFilepath);
+            using SqliteConnection connection = SqliteUtil.DbSession.CreateConnection(dbFilepath);
 
             try
             {
@@ -148,7 +148,7 @@ namespace EspluqueSqlite.Thesaurus
 
         public static async Task<Result<List<(int ConceptId, string MainTerm)>>> GetDescendantConcepts( string dbFilepath, int conceptId)
         {
-            using SqliteConnection connection = SqliteUtil.DbConnectionFactory.CreateConnection(dbFilepath);
+            using SqliteConnection connection = SqliteUtil.DbSession.CreateConnection(dbFilepath);
 
             try
             {
@@ -173,7 +173,7 @@ namespace EspluqueSqlite.Thesaurus
 
         public static async Task<Result<List<(int ParentConceptId, int ChildConceptId)>>> GetAncestorLinks( string dbFilepath, int conceptId)
         {
-            using SqliteConnection connection = SqliteUtil.DbConnectionFactory.CreateConnection(dbFilepath);
+            using SqliteConnection connection = SqliteUtil.DbSession.CreateConnection(dbFilepath);
 
             try
             {
@@ -198,7 +198,7 @@ namespace EspluqueSqlite.Thesaurus
 
         public static async Task<Result<List<(int ParentConceptId, int ChildConceptId)>>> GetDescendantLinks( string dbFilepath, int conceptId)
         {
-            using SqliteConnection connection = SqliteUtil.DbConnectionFactory.CreateConnection(dbFilepath);
+            using SqliteConnection connection = SqliteUtil.DbSession.CreateConnection(dbFilepath);
 
             try
             {
@@ -223,7 +223,7 @@ namespace EspluqueSqlite.Thesaurus
 
         public static async Task<Result<List<string>?>> GetAncestorPreferredTerms( string dbFilepath, string referenceName, string term)
         {
-            using SqliteConnection connection = SqliteUtil.DbConnectionFactory.CreateConnection(dbFilepath);
+            using SqliteConnection connection = SqliteUtil.DbSession.CreateConnection(dbFilepath);
 
             try
             {
@@ -275,7 +275,7 @@ namespace EspluqueSqlite.Thesaurus
 
         public static async Task<Result<List<string>>> GetReferences(string dbFilepath)
         {
-            using SqliteConnection connection = SqliteUtil.DbConnectionFactory.CreateConnection(dbFilepath);
+            using SqliteConnection connection = SqliteUtil.DbSession.CreateConnection(dbFilepath);
 
             try
             {
@@ -301,7 +301,7 @@ namespace EspluqueSqlite.Thesaurus
             string referenceName,
             string term)
         {
-            using SqliteConnection connection = SqliteUtil.DbConnectionFactory.CreateConnection(dbFilepath);
+            using SqliteConnection connection = SqliteUtil.DbSession.CreateConnection(dbFilepath);
 
             try
             {
@@ -332,8 +332,7 @@ namespace EspluqueSqlite.Thesaurus
             string referenceName,
             string referenceTermScope)
         {
-            using SqliteConnection connection =
-                SqliteUtil.DbConnectionFactory.CreateConnection(dbFilepath);
+            using SqliteConnection connection = SqliteUtil.DbSession.CreateConnection(dbFilepath);
 
             try
             {

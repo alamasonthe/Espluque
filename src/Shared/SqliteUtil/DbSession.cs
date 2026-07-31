@@ -2,11 +2,21 @@
 
 namespace SqliteUtil
 {
-    public class DbTransactionFactory
+    public static class DbSession
     {
+        public static SqliteConnection CreateConnection(string dbFilePath)
+        {
+            string connectionString = new SqliteConnectionStringBuilder
+            {
+                DataSource = dbFilePath
+            }.ToString();
+
+            return new SqliteConnection(connectionString);
+        }
+
         public static SqliteTransaction OpenTransaction(string dbFilePath)
         {
-            var connection = DbConnectionFactory.CreateConnection(dbFilePath);
+            var connection = CreateConnection(dbFilePath);
             connection.Open();
             return connection.BeginTransaction();
         }
@@ -32,5 +42,6 @@ namespace SqliteUtil
                 connection?.Dispose();
             }
         }
+
     }
 }

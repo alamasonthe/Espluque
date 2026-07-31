@@ -2,13 +2,13 @@
 using Espluque.Contracts.Enums;
 using Espluque.Contracts.MessageInterfaces;
 using Espluque.Contracts.ModuleInterfaces;
-using Espluque.Contracts.Detection;
 using Espluque.Contracts.Workflow;
 using Espluque.Contracts.Ports;
 using Espluque.Theming.Services;
 using Espluquer.UserControls.Thesaurus;
 using Espluquer.UserControls.Shell;
 using Espluquer.UserControls.Modules;
+using Espluquer.UserControls.ResultModeling;
 using Espluquer.UserControls.Espluque;
 using Microsoft.Extensions.Logging;
 using Microsoft.Win32;
@@ -35,6 +35,7 @@ namespace Espluquer
         private readonly ConceptUC _conceptUC;
         private readonly ModuleAdminUC _moduleAdminUC;
         private readonly ContributionMapUC _contributionMapUC;
+        private readonly ResultModelsUC _resultModelsUC;
         private readonly List<ICatalogEntry> _catalog;
 
         private readonly List<string> _recentFiles = [];
@@ -335,7 +336,7 @@ namespace Espluquer
 
                 //Result Modeling
                 case "ResultModeling.Models":
-                    // TODO
+                    AddTab("Result Models", _resultModelsUC);
                     return;
 
                 //Debug

@@ -2,6 +2,7 @@
 {
     public interface IResultModelDefinition
     {
+        int? Id { get; set; }
         string Name { get; set; }
         List<string> Properties { get; set; }
         List<ResultPropertyLink> PropertyLinks { get; set; }

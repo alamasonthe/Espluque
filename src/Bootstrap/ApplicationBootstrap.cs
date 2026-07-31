@@ -2,10 +2,13 @@
 using Espluque.Application.MessageBus.Services;
 using Espluque.Application.ModuleManager.Services;
 using Espluque.Application.Thesaurus.Services;
+using Espluque.Application.DetectionResult.Services;
 using Espluque.Contracts.Interfaces;
 using Espluque.Contracts.MessageInterfaces;
 using Espluque.Contracts.ModuleInterfaces;
+using Espluque.Contracts.DetectionResult;
 using EspluqueSqlite.Thesaurus;
+using EspluqueSqlite.DetectionResult;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace Bootstrap
@@ -35,6 +38,9 @@ namespace Bootstrap
 
             services.AddSingleton<Espluque.Contracts.Ports.IThesaurusSource, ThesaurusRepository>();
             services.AddSingleton<IThesaurusService, ThesaurusService>();
+
+            services.AddSingleton<IResultSource, ResultRepository>();
+            services.AddSingleton<IResultService, ResultService>();
 
             services.AddSingleton<Espluque.Contracts.ModuleInterfaces.IModuleService, ModuleService>();
             services.AddSingleton<Espluque.Contracts.ModuleInterfaces.IModuleDiagnosticService, ModuleDiagnosticService>();

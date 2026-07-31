@@ -4,6 +4,7 @@ namespace Espluque.Application.DetectionResult
 {
     public class ResultModelDefinition : IResultModelDefinition
     {
+        public int? Id { get; set; }
         public string Name { get; set; }
         public string ThesaurusTag { get; set; }
         public List<string> Properties { get; set; } = [];

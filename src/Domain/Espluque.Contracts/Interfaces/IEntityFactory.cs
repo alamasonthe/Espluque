@@ -1,4 +1,5 @@
-﻿using Espluque.Contracts.Enums;
+﻿using Espluque.Contracts.DetectionResult;
+using Espluque.Contracts.Enums;
 using Espluque.Contracts.MessageInterfaces;
 using Espluque.Contracts.ModuleInterfaces;
 using System.Reflection.Emit;
@@ -14,4 +15,5 @@ public interface IEntityFactory
     IFileInformationPack CreateFileInformationPack( string? label, List<KeyValuePair<string, string>>? information);
     IModuleDiagnostic CreateModuleDiagnostic( string filePath, string name);
     IMessage CreateMessage( MessageTypeEnum messageType, string messageLabel, List<KeyValuePair<string, string>> payload);
+    IResultModelDefinition CreateResultModelDefinition(int? id, string name, string thesaurusTag, List<string>? properties, List<ResultPropertyLink>? propertyLinks);
 }

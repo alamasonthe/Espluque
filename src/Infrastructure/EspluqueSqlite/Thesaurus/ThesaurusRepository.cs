@@ -18,7 +18,7 @@ namespace EspluqueSqlite.Thesaurus
             _logger = logger;
             _entityFactory = entityFactory;
 
-            GetDbFilePath(settingsService);
+            DbFilepath = DbFile.GetDbFilePath(settingsService);
 
             _logger.Log(Microsoft.Extensions.Logging.LogLevel.Debug, $"Espluque DB filepath: {DbFilepath}");
         }
@@ -121,54 +121,6 @@ namespace EspluqueSqlite.Thesaurus
         }
 
         #endregion
-
-
-        #region Internal infrastructure
-
-        private void GetDbFilePath(ISettingsService settingsService)
-        {
-            string appDataPath = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
-            string appName = Assembly.GetEntryAssembly()?.GetName().Name ?? Process.GetCurrentProcess().ProcessName;
-            string appDirectoryPath = Path.Combine(appDataPath, appName);
-
-            string? settingsDbFileName = settingsService.GetSetting("Db").GetAwaiter().GetResult();
-
-            if (string.IsNullOrWhiteSpace(settingsDbFileName))
-            {
-                settingsDbFileName = $"espluque.db";
-            }
-
-            string configuredDbFilePath = Path.IsPathRooted(settingsDbFileName)
-                ? settingsDbFileName
-                : Path.Combine(appDirectoryPath, settingsDbFileName);
-
-            string applicationDbFilePath = Path.Combine(
-                AppContext.BaseDirectory,
-                Path.GetFileName(settingsDbFileName));
-
-            if (System.IO.File.Exists(configuredDbFilePath))
-            {
-                DbFilepath = configuredDbFilePath;
-            }
-            else if (System.IO.File.Exists(applicationDbFilePath))
-            {
-                DbFilepath = applicationDbFilePath;
-            }
-            else
-            {
-                DbFilepath = configuredDbFilePath;
-            }
-
-            string? directoryPath = Path.GetDirectoryName(DbFilepath);
-
-            if (!string.IsNullOrWhiteSpace(directoryPath))
-            {
-                Directory.CreateDirectory(directoryPath);
-            }
-        }
-
-        #endregion
-
 
         #region reference
 

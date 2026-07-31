@@ -36,7 +36,7 @@ namespace Espluque.Application.Workflow
 
             try
             {
-                var engineResult = await engine.AnalyzeFileAsync(analysisContext, viewerType);
+                IEngineResult engineResult = await engine.AnalyzeFileAsync(analysisContext, viewerType);
 
                 // TODO search ResultModelDefinition & execute
 

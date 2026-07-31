@@ -1,6 +1,8 @@
-﻿using Espluque.Application.MessageBus.Entities;
+﻿using Espluque.Application.DetectionResult;
+using Espluque.Application.MessageBus.Entities;
 using Espluque.Application.ModuleManager.Entities;
 using Espluque.Application.Thesaurus.Entities;
+using Espluque.Contracts.DetectionResult;
 using Espluque.Contracts.Enums;
 using Espluque.Contracts.Interfaces;
 using Espluque.Contracts.MessageInterfaces;
@@ -105,6 +107,22 @@ namespace Espluque.Application.Entities
                 MessageType = messageType,
                 MessageLabel = messageLabel,
                 Payload = payload
+            };
+        }
+
+        public IResultModelDefinition CreateResultModelDefinition(
+            int? id,
+            string name,
+            string thesaurusTag,
+            List<string>? properties,
+            List<ResultPropertyLink>? propertyLinks)
+        {
+            return new ResultModelDefinition
+            {
+                Name = name,
+                ThesaurusTag = thesaurusTag,
+                Properties = properties ?? [],
+                PropertyLinks = propertyLinks ?? []
             };
         }
     }

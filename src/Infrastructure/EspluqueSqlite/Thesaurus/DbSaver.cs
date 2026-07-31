@@ -13,7 +13,7 @@ namespace EspluqueSqlite.Thesaurus
 
             try
             {
-                transaction = SqliteUtil.DbTransactionFactory.OpenTransaction(dbFilePath);
+                transaction = SqliteUtil.DbSession.OpenTransaction(dbFilePath);
                 SqliteConnection connection = transaction.Connection!;
 
                 Result<int> conceptIdResult = await SaveConceptRow(connection, transaction, thesaurusConcept.Id);
@@ -84,7 +84,7 @@ namespace EspluqueSqlite.Thesaurus
             {
                 if (transaction is not null)
                 {
-                    SqliteUtil.DbTransactionFactory.CloseTransaction(transaction, commit);
+                    SqliteUtil.DbSession.CloseTransaction(transaction, commit);
                 }
             }
         }
@@ -96,7 +96,7 @@ namespace EspluqueSqlite.Thesaurus
 
             try
             {
-                transaction = SqliteUtil.DbTransactionFactory.OpenTransaction(dbFilePath);
+                transaction = SqliteUtil.DbSession.OpenTransaction(dbFilePath);
                 SqliteConnection connection = transaction.Connection!;
 
                 Result<bool> deleteTermsResult = await DelTermsOfConcept(connection, transaction, conceptId);
@@ -128,7 +128,7 @@ namespace EspluqueSqlite.Thesaurus
             {
                 if (transaction is not null)
                 {
-                    SqliteUtil.DbTransactionFactory.CloseTransaction(transaction, commit);
+                    SqliteUtil.DbSession.CloseTransaction(transaction, commit);
                 }
             }
         }
@@ -140,7 +140,7 @@ namespace EspluqueSqlite.Thesaurus
 
             try
             {
-                transaction = SqliteUtil.DbTransactionFactory.OpenTransaction(dbFilePath);
+                transaction = SqliteUtil.DbSession.OpenTransaction(dbFilePath);
                 SqliteConnection connection = transaction.Connection!;
 
                 Result<bool> insertLinkResult = await InsConceptLink(connection, transaction, parentConceptId, childConceptId);
@@ -160,7 +160,7 @@ namespace EspluqueSqlite.Thesaurus
             {
                 if (transaction is not null)
                 {
-                    SqliteUtil.DbTransactionFactory.CloseTransaction(transaction, commit);
+                    SqliteUtil.DbSession.CloseTransaction(transaction, commit);
                 }
             }
         }
@@ -177,7 +177,7 @@ namespace EspluqueSqlite.Thesaurus
 
             try
             {
-                transaction = SqliteUtil.DbTransactionFactory.OpenTransaction(dbFilePath);
+                transaction = SqliteUtil.DbSession.OpenTransaction(dbFilePath);
                 SqliteConnection connection = transaction.Connection!;
 
                 Result<bool> referenceExistsResult = await ReferenceExists(connection, transaction, name);
@@ -207,7 +207,7 @@ namespace EspluqueSqlite.Thesaurus
             {
                 if (transaction is not null)
                 {
-                    SqliteUtil.DbTransactionFactory.CloseTransaction(transaction, commit);
+                    SqliteUtil.DbSession.CloseTransaction(transaction, commit);
                 }
             }
         }
@@ -232,7 +232,7 @@ namespace EspluqueSqlite.Thesaurus
 
             try
             {
-                transaction = SqliteUtil.DbTransactionFactory.OpenTransaction(dbFilePath);
+                transaction = SqliteUtil.DbSession.OpenTransaction(dbFilePath);
                 SqliteConnection connection = transaction.Connection!;
 
                 Result<bool> oldReferenceExistsResult = await ReferenceExists(connection, transaction, oldName);
@@ -278,7 +278,7 @@ namespace EspluqueSqlite.Thesaurus
             {
                 if (transaction is not null)
                 {
-                    SqliteUtil.DbTransactionFactory.CloseTransaction(transaction, commit);
+                    SqliteUtil.DbSession.CloseTransaction(transaction, commit);
                 }
             }
         }
@@ -295,7 +295,7 @@ namespace EspluqueSqlite.Thesaurus
 
             try
             {
-                transaction = SqliteUtil.DbTransactionFactory.OpenTransaction(dbFilePath);
+                transaction = SqliteUtil.DbSession.OpenTransaction(dbFilePath);
                 SqliteConnection connection = transaction.Connection!;
                 
                 Result<List<int>> conceptIdsResult = await GetPreferredTermsOfReference(connection, transaction, name);
@@ -375,7 +375,7 @@ namespace EspluqueSqlite.Thesaurus
             {
                 if (transaction is not null)
                 {
-                    SqliteUtil.DbTransactionFactory.CloseTransaction(transaction, commit);
+                    SqliteUtil.DbSession.CloseTransaction(transaction, commit);
                 }
             }
         }
