@@ -84,7 +84,7 @@ namespace Espluquer.UserControls.Shell
 
             StartAnalysisProgressAnimation();
 
-            await Task.Run(() => _orchestrator.ProcessAsync(_catalog, analysisContext));
+            await Task.Run(() => _orchestrator.ProcessAsync(_catalog, analysisContext, "IWpfViewer"));
         }
 
         private async void ReceiveAnalyserMessage(IAnalysisMessage message)

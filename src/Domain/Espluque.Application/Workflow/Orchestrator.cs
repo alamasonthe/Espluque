@@ -7,7 +7,6 @@ using Espluque.Contracts.ModuleInterfaces;
 using Espluque.Contracts.Ports;
 using Espluque.Contracts.Workflow;
 using Microsoft.Extensions.DependencyInjection;
-using Espluque.Application.DetectionResult;
 
 namespace Espluque.Application.Workflow
 {
@@ -28,7 +27,7 @@ namespace Espluque.Application.Workflow
             _logger = serviceProvider.GetRequiredService<Espluque.Contracts.Ports.ILogger>();
             _settingsService = serviceProvider.GetRequiredService<ISettingsService>();
         }
-        public async Task<IEngineResult> ProcessAsync(List<ICatalogEntry> catalog, AnalysisContext analysisContext)
+        public async Task<IEngineResult> ProcessAsync(List<ICatalogEntry> catalog, AnalysisContext analysisContext, string? viewerType)
         {
 
             IEngine engine = new Engine(_serviceProvider, catalog);
@@ -37,16 +36,11 @@ namespace Espluque.Application.Workflow
 
             try
             {
-                await engine.AnalyzeFileAsync(analysisContext);
+                var engineResult = await engine.AnalyzeFileAsync(analysisContext, viewerType);
 
+                // TODO search ResultModelDefinition & execute
 
-                IEngineResult result = new EngineResult
-                {
-                    AnalysisContext = analysisContext,
-                    GrabberResults = new List<IGrabberResult>()
-                };
-
-                return result;
+                return engineResult;
             }
             finally
             {

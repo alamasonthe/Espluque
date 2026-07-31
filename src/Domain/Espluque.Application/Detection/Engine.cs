@@ -1,10 +1,12 @@
 ﻿using Util;
 using Espluque.Application.Entities;
+using Espluque.Application.DetectionResult;
 using Espluque.Contracts.Enums;
 using Espluque.Contracts.Interfaces;
 using Espluque.Contracts.MessageInterfaces;
 using Espluque.Contracts.ModuleInterfaces;
 using Espluque.Contracts.Ports;
+using Espluque.Contracts.DetectionResult;
 using Espluque.Application.ModuleManager.Services;
 using Espluque.Contracts.Detection;
 using Microsoft.Extensions.DependencyInjection;
@@ -32,9 +34,7 @@ namespace Espluque.Application.Detection
         private List<TaskRequest> _grabberBacklog;
         private List<string> _doneDetectors = [];
 
-        // private IFileFormat _currentFormat;
-
-        private AnalysisContext _analysisContext;
+        private IEngineResult _engineResult = new EngineResult();
 
         public Engine(IServiceProvider serviceProvider, List<ICatalogEntry> catalog)
         {
@@ -51,7 +51,7 @@ namespace Espluque.Application.Detection
 
         private void InitializeAnalyze(AnalysisContext analysisContext)
         {
-            _analysisContext = analysisContext;
+            _engineResult.AnalysisContext = analysisContext;
 
             _viewerBacklog = new()
             {
@@ -63,22 +63,22 @@ namespace Espluque.Application.Detection
                 new TaskRequest { Tag = "AnyFile" }
             };
 
-            _analysisContext.CurrentFileFormat = _entityFactory.CreateFileFormat("Espluque", "AnyFile", null, null);
+            _engineResult.AnalysisContext.CurrentFileFormat = _entityFactory.CreateFileFormat("Espluque", "AnyFile", null, null);
         }
 
-        public async Task AnalyzeFileAsync(AnalysisContext analysisContext)
+        public async Task<IEngineResult> AnalyzeFileAsync(AnalysisContext analysisContext, string? viewerType = null)
         {
             InitializeAnalyze(analysisContext);
 
-            _logger.Log(LogLevel.Information, $"{FormattedFileName()}\t--------------- Analysis started --------------- : {_analysisContext.FilePath}");
+            _logger.Log(LogLevel.Information, $"{FormattedFileName()}\t--------------- Analysis started --------------- : {_engineResult.AnalysisContext.FilePath}");
 
-            Result<bool> canOpenReadResult = Util.File.CanOpenRead(_analysisContext.FilePath);
+            Result<bool> canOpenReadResult = Util.File.CanOpenRead(_engineResult.AnalysisContext.FilePath);
 
             if (!canOpenReadResult.IsSuccess)
             {
                 _logger.Log(LogLevel.Error, $"{FormattedFileName()}\tFile check failed: {canOpenReadResult.Error?.Code} - {canOpenReadResult.Error?.Message}");
                 _logger.Log(LogLevel.Information, $"{FormattedFileName()}\t--------------- Analysis finished --------------- ");
-                return;
+                return _engineResult;
             }
 
             var detectorsToExecute = await GetDetectorsToExecuteAsync();
@@ -87,7 +87,8 @@ namespace Espluque.Application.Detection
                 | _grabberBacklog.Any(taskRequest => taskRequest.Status == TaskStatusEnum.ToDo)
                 | detectorsToExecute.Count > 0)
             {
-                await ExecuteViewerTaskAsync();
+
+                await ExecuteViewerTaskAsync(viewerType);
                 await ExecuteGrabberTaskAsync();
                 List<IFileFormat> detectedFileFormats =  await ExecuteDetectorsAsync(detectorsToExecute);
                 await UpdateCurrentFormatAsync(detectedFileFormats);
@@ -97,17 +98,19 @@ namespace Espluque.Application.Detection
 
             AnalyserMessageEvent?.Invoke(new Factory().CreateAnalysisMessage(AnalysisMessageTypeEnum.AnalysisCompleted, true, null, null, null, null));
 
-            _logger.Log( LogLevel.Information, $"{FormattedFileName()}\tCurrent format: Referentiel={_analysisContext.CurrentFileFormat.Referentiel}, Label={_analysisContext.CurrentFileFormat.Label}, Version={_analysisContext.CurrentFileFormat.Version}, MIMEType={_analysisContext.CurrentFileFormat.MIMEType}");
+            _logger.Log( LogLevel.Information, $"{FormattedFileName()}\tCurrent format: Referentiel={_engineResult.AnalysisContext.CurrentFileFormat.Referentiel}, Label={_engineResult.AnalysisContext.CurrentFileFormat.Label}, Version={_engineResult.AnalysisContext.CurrentFileFormat.Version}, MIMEType={_engineResult.AnalysisContext.CurrentFileFormat.MIMEType}");
             _logger.Log(LogLevel.Information, $"{FormattedFileName()}\t--------------- Analysis finished --------------- ");
+
+            return _engineResult;
         }
 
-        private async Task ExecuteViewerTaskAsync()
+        private async Task ExecuteViewerTaskAsync(string? viewerType = null)
         {
             TaskRequest? viewerTaskRequest = _viewerBacklog.FirstOrDefault(x => x.Status == TaskStatusEnum.ToDo);
             if (viewerTaskRequest is not null)
             {
-                _logger.Log(LogLevel.Debug, $"{FormattedFileName()}\tCatalog viewers for {viewerTaskRequest.Tag}: {string.Join(", ", _catalog.Where(entry => entry.InterfaceType == "IWpfViewer" && entry.Tags.Any(tag => string.Equals(tag, viewerTaskRequest.Tag, StringComparison.OrdinalIgnoreCase))).Select(entry => $"{entry.Label} [{entry.ClassName}]"))}");
-                await foreach ((string label, object instance) in InstanceBuilder.CreateInstancesAsync(_catalog, "IWpfViewer", viewerTaskRequest!.Tag, _messageCenter, _logger, _settingsService, _entityFactory))
+                _logger.Log(LogLevel.Debug, $"{FormattedFileName()}\tCatalog viewers for {viewerTaskRequest.Tag}: {string.Join(", ", _catalog.Where(entry => entry.InterfaceType == viewerType && entry.Tags.Any(tag => string.Equals(tag, viewerTaskRequest.Tag, StringComparison.OrdinalIgnoreCase))).Select(entry => $"{entry.Label} [{entry.ClassName}]"))}");
+                await foreach ((string label, object instance) in InstanceBuilder.CreateInstancesAsync(_catalog, viewerType, viewerTaskRequest!.Tag, _messageCenter, _logger, _settingsService, _entityFactory))
                 {
                     if (string.IsNullOrEmpty(label) || instance is null)
                     {
@@ -130,15 +133,40 @@ namespace Espluque.Application.Detection
             TaskRequest? grabberTaskRequest = _grabberBacklog.FirstOrDefault(x => x.Status == TaskStatusEnum.ToDo);
             if (grabberTaskRequest is not null)
             {
-                await foreach ((string label, object instance) in InstanceBuilder.CreateInstancesAsync(_catalog, "IGrabber", grabberTaskRequest.Tag, _messageCenter, _logger, _settingsService, _entityFactory))
+                List<ICatalogEntry> grabberEntries = CatalogService.FilterCatalog(_catalog, "IGrabber", grabberTaskRequest.Tag);
+
+                foreach (ICatalogEntry grabberEntry in grabberEntries)
                 {
+                    (string label, object instance)? contribution = InstanceBuilder.CreateInstance(
+                        grabberEntry,
+                        _messageCenter,
+                        _logger,
+                        _settingsService,
+                        _entityFactory);
+
+                    if (contribution is null)
+                    {
+                        continue;
+                    }
+
+                    (string label, object instance) = contribution.Value;
+
                     if (instance is not IGrabber grabber)
                     {
                         _logger.Log(LogLevel.Error, $"{FormattedFileName()}\tTask grabber {label} invalid instance type: {instance.GetType().FullName}");
                         continue;
                     }
 
-                    List<KeyValuePair<string, string>> keyValueList = await grabber.Grab(_analysisContext);
+                    List<KeyValuePair<string, string>> keyValueList = await grabber.Grab(_engineResult.AnalysisContext);
+
+                    GrabberResult grabberResult = new()
+                    {
+                        ModuleName = grabberEntry.ModuleName,
+                        ContributionLabel = label,
+                        GrabbedInformation = keyValueList
+                    };
+                    _engineResult.GrabberResults.Add(grabberResult);
+
                     IFileInformationPack fileInformationPack = _entityFactory.CreateFileInformationPack(label, keyValueList);
 
                     IAnalysisMessage message = new Factory().CreateAnalysisMessage(AnalysisMessageTypeEnum.GrabberResult, false, null, fileInformationPack, label, instance);
@@ -155,14 +183,16 @@ namespace Espluque.Application.Detection
         {
             List<ICatalogEntry> detectorsToExecute = [];
 
-            (int conceptId, string mainTerm)? conceptMainTerm = await _thesaurusService.GetConceptMainTermByTerm(_analysisContext.CurrentFileFormat.Referentiel!, _analysisContext.CurrentFileFormat.Label!);
-            if (conceptMainTerm is null && !string.IsNullOrWhiteSpace(_analysisContext.CurrentFileFormat.MIMEType))
+            (int conceptId, string mainTerm)? conceptMainTerm = await _thesaurusService.GetConceptMainTermByTerm(_engineResult.AnalysisContext.CurrentFileFormat.Referentiel!, _engineResult.AnalysisContext.CurrentFileFormat.Label!);
+            if (conceptMainTerm is null && !string.IsNullOrWhiteSpace(_engineResult.AnalysisContext.CurrentFileFormat.MIMEType))
             {
-                conceptMainTerm = await _thesaurusService.GetConceptMainTermByTerm("MIMEType", _analysisContext.CurrentFileFormat.MIMEType);
+                conceptMainTerm = await _thesaurusService.GetConceptMainTermByTerm("MIMEType", _engineResult.AnalysisContext.CurrentFileFormat.MIMEType);
             }
             if (conceptMainTerm is null) return detectorsToExecute;
 
-            _logger.Log(LogLevel.Debug, $"Detector search: {_analysisContext.CurrentFileFormat.Referentiel} / {_analysisContext.CurrentFileFormat.Label} => thesaurus tag \"{conceptMainTerm.Value.mainTerm}\"");
+            _engineResult.AnalysisContext.TagHistory.Add(conceptMainTerm.Value.mainTerm);
+
+            _logger.Log(LogLevel.Debug, $"Detector search: {_engineResult.AnalysisContext.CurrentFileFormat.Referentiel} / {_engineResult.AnalysisContext.CurrentFileFormat.Label} => thesaurus tag \"{conceptMainTerm.Value.mainTerm}\"");
 
             detectorsToExecute = _catalog
                 .Where(entry =>
@@ -241,7 +271,7 @@ namespace Espluque.Application.Detection
 
                 IDetector detector = (IDetector)instance;
 
-                IFileFormat? fileFormat = await detector.Detect(_analysisContext);
+                IFileFormat? fileFormat = await detector.Detect(_engineResult.AnalysisContext);
 
                 if (fileFormat is null)
                 {
@@ -272,8 +302,8 @@ namespace Espluque.Application.Detection
                     return;
 
                 case 1:
-                    _analysisContext.FileFormatHistory.Add(_analysisContext.CurrentFileFormat);
-                    _analysisContext.CurrentFileFormat = detectedFileFormats[0];
+                    _engineResult.AnalysisContext.FileFormatHistory.Add(_engineResult.AnalysisContext.CurrentFileFormat);
+                    _engineResult.AnalysisContext.CurrentFileFormat = detectedFileFormats[0];
                     return;
             }
 
@@ -301,10 +331,10 @@ namespace Espluque.Application.Detection
 
             foreach (IFileFormat format in detectedFileFormats)
             {
-                _analysisContext.FileFormatHistory.Add(format);
+                _engineResult.AnalysisContext.FileFormatHistory.Add(format);
             }
 
-            _analysisContext.CurrentFileFormat = detectedFileFormats[0];
+            _engineResult.AnalysisContext.CurrentFileFormat = detectedFileFormats[0];
         }
 
         private async Task<bool> IsSecondFormatMoreSpecificAsync( IFileFormat firstFormat, IFileFormat secondFormat)
@@ -355,7 +385,7 @@ namespace Espluque.Application.Detection
 
         private async Task UpdateBacklogsAsync()
         {
-            List<string>? taskTags = await _thesaurusService.GetAncestorPreferredTerms(_analysisContext.CurrentFileFormat);
+            List<string>? taskTags = await _thesaurusService.GetAncestorPreferredTerms(_engineResult.AnalysisContext.CurrentFileFormat);
 
             if (taskTags is null)
             {
@@ -423,7 +453,7 @@ namespace Espluque.Application.Detection
 
         private string FormattedFileName()
         {
-            return Path.GetFileName(_analysisContext.FilePath).PadRight(35);
+            return Path.GetFileName(_engineResult.AnalysisContext.FilePath).PadRight(35);
         }
 
         #endregion
