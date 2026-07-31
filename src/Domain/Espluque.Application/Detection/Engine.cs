@@ -18,8 +18,6 @@ namespace Espluque.Application.Detection
 {
     public class Engine: IEngine
     {
-        private readonly IServiceProvider _serviceProvider;
-
         private readonly IMessageCenter _messageCenter;
         private readonly Espluque.Contracts.Ports.ILogger _logger;
         private readonly ISettingsService _settingsService;
@@ -38,13 +36,11 @@ namespace Espluque.Application.Detection
 
         public Engine(IServiceProvider serviceProvider, List<ICatalogEntry> catalog)
         {
-            _serviceProvider = serviceProvider;
-
-            _messageCenter = _serviceProvider.GetRequiredService<IMessageCenter>();
-            _logger = _serviceProvider.GetRequiredService<Espluque.Contracts.Ports.ILogger>();
-            _settingsService = _serviceProvider.GetRequiredService<ISettingsService>();
-            _entityFactory = _serviceProvider.GetRequiredService<IEntityFactory>();
-            _thesaurusService = _serviceProvider.GetRequiredService<IThesaurusService>();
+            _messageCenter = serviceProvider.GetRequiredService<IMessageCenter>();
+            _logger = serviceProvider.GetRequiredService<Espluque.Contracts.Ports.ILogger>();
+            _settingsService = serviceProvider.GetRequiredService<ISettingsService>();
+            _entityFactory = serviceProvider.GetRequiredService<IEntityFactory>();
+            _thesaurusService = serviceProvider.GetRequiredService<IThesaurusService>();
 
             _catalog = catalog;
         }
@@ -189,8 +185,6 @@ namespace Espluque.Application.Detection
                 conceptMainTerm = await _thesaurusService.GetConceptMainTermByTerm("MIMEType", _engineResult.AnalysisContext.CurrentFileFormat.MIMEType);
             }
             if (conceptMainTerm is null) return detectorsToExecute;
-
-            _engineResult.AnalysisContext.TagHistory.Add(conceptMainTerm.Value.mainTerm);
 
             _logger.Log(LogLevel.Debug, $"Detector search: {_engineResult.AnalysisContext.CurrentFileFormat.Referentiel} / {_engineResult.AnalysisContext.CurrentFileFormat.Label} => thesaurus tag \"{conceptMainTerm.Value.mainTerm}\"");
 
