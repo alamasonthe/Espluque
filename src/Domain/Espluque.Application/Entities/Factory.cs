@@ -113,12 +113,13 @@ namespace Espluque.Application.Entities
         public IResultModelDefinition CreateResultModelDefinition(
             int? id,
             string name,
-            string thesaurusTag,
+            string? thesaurusTag,
             List<string>? properties,
             List<ResultPropertyLink>? propertyLinks)
         {
             return new ResultModelDefinition
             {
+                Id = id,
                 Name = name,
                 ThesaurusTag = thesaurusTag,
                 Properties = properties ?? [],

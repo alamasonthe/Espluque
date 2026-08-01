@@ -28,7 +28,7 @@ namespace EspluqueSqlite.DetectionResult
                     reader => entityFactory.CreateResultModelDefinition(
                         reader.GetInt32(0),
                         reader.GetString(1),
-                        reader.GetString(2),
+                        reader.IsDBNull(2) ? null : reader.GetString(2),
                         [],
                         []));
 

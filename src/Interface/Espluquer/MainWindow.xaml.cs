@@ -44,6 +44,7 @@ namespace Espluquer
 
         public MainWindow(LogUC logUC,
             ReferenceUC referenceUC,
+            ResultModelsUC resultModelsUC,
             ConceptUC conceptUC,
             ModuleAdminUC moduleAdminUC, 
             Espluque.Contracts.Ports.ILogger logger, 
@@ -56,6 +57,7 @@ namespace Espluquer
         {
             _logger = logger;
             _referenceUC = referenceUC;
+            _resultModelsUC = resultModelsUC;
             _settingsService = settingsService;
             _orchestratorFactory = orchestratorFactory;
             _messageCenter = messageCenter;
