@@ -1,6 +1,7 @@
 ﻿using Espluque.Application.MessageBus.Entities;
 using Espluque.Application.ModuleManager.Entities;
 using Espluque.Application.Thesaurus.Entities;
+using Espluque.Contracts.Entities;
 using Espluque.Contracts.Enums;
 using Espluque.Contracts.Interfaces;
 using Espluque.Contracts.MessageInterfaces;
@@ -105,6 +106,23 @@ namespace Espluque.Application.Entities
                 MessageType = messageType,
                 MessageLabel = messageLabel,
                 Payload = payload
+            };
+        }
+
+        public IAssertion CreateAssertion(
+            string sourceModule,
+            string sourceContribution,
+            string assertionType,
+            string claimJson,
+            List<KeyValuePair<string, string>>? summary)
+        {
+            return new Assertion
+            {
+                SourceModule = sourceModule,
+                SourceContribution = sourceContribution,
+                AssertionType = assertionType,
+                ClaimJson = claimJson,
+                Summary = summary ?? []
             };
         }
     }

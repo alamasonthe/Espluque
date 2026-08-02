@@ -1,12 +1,11 @@
-﻿using Espluque.Application.Entities;
-using Espluque.Contracts.Detection;
-using Espluque.Contracts.Entities;
+﻿using Espluque.Contracts.Entities;
 using Espluque.Contracts.Enums;
 using Espluque.Contracts.Interfaces;
 using Espluque.Contracts.ModuleInterfaces;
 using Espluque.Contracts.ModuleInterfaces.Contributions;
 using Espluque.Contracts.Ports;
 using Espluque.Contracts.Workflow;
+using Espluquer.Services;
 using Espluquer.Usercontrols.Shell;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
@@ -109,7 +108,18 @@ namespace Espluquer.UserControls.Shell
                             {
                                 AddTabItem(
                                     message.Information.Label,
-                                    new ListRichTextBoxUC(message.Information.Information));
+                                    new ListRichTextBoxUC(message.Information.Information),
+                                    "IGrabber");
+                            }
+                            break;
+
+                        case AnalysisMessageTypeEnum.FusionerSummary:
+                            if (message.Information is not null)
+                            {
+                                AddTabItem(
+                                    message.Information.Label,
+                                    new ListRichTextBoxUC(message.Information.Information),
+                                    "IFusioner");
                             }
                             break;
 
@@ -187,7 +197,7 @@ namespace Espluquer.UserControls.Shell
                     return;
                 }
 
-                AddTabItem(label, userControl);
+                AddTabItem(label, userControl, "IWpfViewer");
             }
             catch (Exception ex)
             {
@@ -196,11 +206,34 @@ namespace Espluquer.UserControls.Shell
 
         }
 
-        private void AddTabItem(string label, object content)
+        private void AddTabItem(string label, object content, string interfaceType)
         {
+            TextBlock icon = new()
+            {
+                Text = ModuleTestService.GetContributionIcon(interfaceType),
+                FontSize = 16,
+                Margin = new Thickness(0, 0, 8, 0),
+                VerticalAlignment = VerticalAlignment.Center
+            };
+
+            icon.SetResourceReference(TextBlock.FontFamilyProperty, "FluentIcons");
+
+            StackPanel header = new()
+            {
+                Orientation = Orientation.Horizontal,
+                VerticalAlignment = VerticalAlignment.Center
+            };
+
+            header.Children.Add(icon);
+            header.Children.Add(new TextBlock
+            {
+                Text = label,
+                VerticalAlignment = VerticalAlignment.Center
+            });
+
             _analysisTabItems.Add(new TabItem
             {
-                Header = label,
+                Header = header,
                 Content = content
             });
 

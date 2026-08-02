@@ -14,5 +14,6 @@
         public bool HasViewer { get; set; }
         public bool HasGrabber { get; set; }
         public bool HasDetector { get; set; }
+        public bool HasFusioner { get; set; }
     }
 }

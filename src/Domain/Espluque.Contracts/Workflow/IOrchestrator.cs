@@ -9,6 +9,6 @@ namespace Espluque.Contracts.Workflow
     {
         event Action<IAnalysisMessage>? AnalyserMessageEvent;
 
-        Task<IEngineResult> ProcessAsync(List<ICatalogEntry> catalog, AnalysisContext analysisContext, string? viewerType);
+        Task<AnalysisContext> ProcessAsync(List<ICatalogEntry> catalog, AnalysisContext analysisContext, string? viewerType);
     }
 }

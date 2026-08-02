@@ -1,0 +1,38 @@
+[
+  {
+    "targetPropertyName": "Manufacturer",
+    "moduleName": "Windows App Package",
+    "contributionLabel": "Windows App Package infos",
+    "grabbedInformationKey": "PublisherDisplayName"
+  },
+  {
+    "targetPropertyName": "ProductName",
+    "moduleName": "Windows App Package",
+    "contributionLabel": "Windows App Package infos",
+    "grabbedInformationKey": "DisplayName"
+  },
+  {
+    "targetPropertyName": "ProductVersion",
+    "moduleName": "Windows App Package",
+    "contributionLabel": "Windows App Package infos",
+    "grabbedInformationKey": "Version"
+  },
+  {
+    "targetPropertyName": "Manufacturer",
+    "moduleName": "Inf File module",
+    "contributionLabel": "Inf Version Section",
+    "grabbedInformationKey": "Provider"
+  },
+  {
+    "targetPropertyName": "ProductName",
+    "moduleName": "Inf File module",
+    "contributionLabel": "Inf Version Section",
+    "grabbedInformationKey": "Class"
+  },
+  {
+    "targetPropertyName": "ProductVersion",
+    "moduleName": "Inf File module",
+    "contributionLabel": "Inf Version Section",
+    "grabbedInformationKey": "DriverVer"
+  }
+]

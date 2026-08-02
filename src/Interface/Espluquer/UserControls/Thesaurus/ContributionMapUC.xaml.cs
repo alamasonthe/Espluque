@@ -67,17 +67,17 @@ namespace Espluquer.UserControls.Thesaurus
         private void ContributionType_Checked(object sender, RoutedEventArgs e)
         {
             if (sender is not RadioButton radioButton ||
-                radioButton.Content is not string selectedContribution)
+                radioButton.Tag is not string selectedContribution)
             {
                 return;
             }
 
             _selectedContributionType = selectedContribution;
+
             if (_contributionGraphUC is not null)
             {
                 _contributionGraphUC.SetContributionTypeAsync(_selectedContributionType);
             }
-
         }
 
         private void ThesaurusConceptSelected(int? id, string? label)

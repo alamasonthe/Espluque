@@ -13,26 +13,60 @@
             Margin="5,8,0,8"
             Orientation="Horizontal">
 
-            <RadioButton Content="Viewer"
+            <RadioButton Tag="Detector"
                  GroupName="ContributionType"
                  IsChecked="True"
                  Checked="ContributionType_Checked"
-                 Style="{StaticResource App.Controls.FilterRadioButton}"
-                 Margin="0,0,8,0" />
+                 Style="{StaticResource App.Controls.FilterRadioButton}">
+                <StackPanel Orientation="Horizontal">
+                    <TextBlock Style="{StaticResource App.FluentIconTextBlock}"
+                       Text="&#xF690;" />
+                    <TextBlock Style="{StaticResource App.TextBlock}"
+                       Text="Detector" />
+                </StackPanel>
+            </RadioButton>
 
-            <RadioButton Content="Grabber"
+            <RadioButton Tag="Grabber"
                  GroupName="ContributionType"
                  Checked="ContributionType_Checked"
                  Style="{StaticResource App.Controls.FilterRadioButton}"
-                 Margin="0,0,8,0" />
+                 Margin="0,0,8,0">
+                <StackPanel Orientation="Horizontal">
+                    <TextBlock Style="{StaticResource App.FluentIconTextBlock}"
+                       Text="&#xE350;" />
+                    <TextBlock Style="{StaticResource App.TextBlock}"
+                       Text="Grabber" />
+                </StackPanel>
+            </RadioButton>
 
-            <RadioButton Content="Detector"
+            <RadioButton Tag="Viewer"
                  GroupName="ContributionType"
                  Checked="ContributionType_Checked"
-                 Style="{StaticResource App.Controls.FilterRadioButton}" />
+                 Style="{StaticResource App.Controls.FilterRadioButton}"
+                 Margin="0,0,8,0">
+                <StackPanel Orientation="Horizontal">
+                    <TextBlock Style="{StaticResource App.FluentIconTextBlock}"
+                       Text="&#xE5F3;" />
+                    <TextBlock Style="{StaticResource App.TextBlock}"
+                       Text="Viewer" />
+                </StackPanel>
+            </RadioButton>
+
+            <RadioButton Tag="Fusioner"
+                 GroupName="ContributionType"
+                 Checked="ContributionType_Checked"
+                 Style="{StaticResource App.Controls.FilterRadioButton}"
+                 Margin="0,0,8,0">
+                <StackPanel Orientation="Horizontal">
+                    <TextBlock Style="{StaticResource App.FluentIconTextBlock}"
+                       Text="&#xF53E;" />
+                    <TextBlock Style="{StaticResource App.TextBlock}"
+                       Text="Fusioner" />
+                </StackPanel>
+            </RadioButton>
 
         </StackPanel>
-
+        
         <Grid Grid.Row="1">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="2*" />

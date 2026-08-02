@@ -36,6 +36,9 @@
   <Folder Name="/Modules/Shortcut/">
     <Project Path="Modules/Shortcut/Shortcut/Shortcut.csproj" Id="40af2b05-8492-42c1-8b7b-d07338392333" />
   </Folder>
+  <Folder Name="/Modules/SoftwarePackage/">
+    <Project Path="Modules/SoftwarePackage/SoftwarePackage/SoftwarePackage/SoftwarePackage.csproj" Id="e1a11426-656f-4cbd-b6f8-626400fb7150" />
+  </Folder>
   <Folder Name="/Modules/TinyHtml/">
     <Project Path="Modules/TinyHtml/TinyHtml/TinyHtml/TinyHtml.csproj" Id="88047e04-03ed-457c-8a54-b2e16e36127e" />
   </Folder>

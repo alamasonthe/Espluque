@@ -1,0 +1,14 @@
+{
+  "name": "Software Package module",
+  "version": "0.0.1",
+  "assembly": "SoftwarePackage.dll",
+  "contributions": [
+    {
+      "interfaceType": "IFusioner",
+      "label": "Package Fusioner",
+      "className": "SoftwarePackage.Fusioner",
+      "tags": [ "Software Package" ],
+      "active": true
+    }
+  ]
+}

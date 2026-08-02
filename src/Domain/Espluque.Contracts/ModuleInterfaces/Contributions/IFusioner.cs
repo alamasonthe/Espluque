@@ -4,6 +4,6 @@ namespace Espluque.Contracts.ModuleInterfaces.Contributions
 {
     public interface IFusioner
     {
-        Task<List<KeyValuePair<string, string>>> Fuse(AnalysisContext analysisContext);
+        Task<IAssertion> Fuse(AnalysisContext analysisContext);
     }
 }

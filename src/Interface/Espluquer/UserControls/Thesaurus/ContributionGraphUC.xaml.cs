@@ -258,12 +258,10 @@ namespace Espluquer.UserControls.Thesaurus
             {
                 Action<ContributionGraphNode>? markContribution = catalogEntry.InterfaceType switch
                 {
-                    "IDetector" => node => { node.HasDetector = true; }
-                    ,
-                    "IGrabber" => node => { node.HasGrabber = true; }
-                    ,
-                    "IWpfViewer" => node => { node.HasViewer = true; }
-                    ,
+                    "IDetector" => node => { node.HasDetector = true; } ,
+                    "IGrabber" => node => { node.HasGrabber = true; } ,
+                    "IWpfViewer" => node => { node.HasViewer = true; } ,
+                    "IFusioner" => node => { node.HasFusioner = true; } ,
                     _ => null
                 };
 
@@ -370,7 +368,8 @@ namespace Espluquer.UserControls.Thesaurus
                 @fixed = true,
                 hasDetector = node.HasDetector,
                 hasGrabber = node.HasGrabber,
-                hasViewer = node.HasViewer
+                hasViewer = node.HasViewer,
+                hasFusioner = node.HasFusioner
             });
 
             var visEdges = edges
@@ -497,7 +496,18 @@ namespace Espluquer.UserControls.Thesaurus
                         border: "#C62828"
                     }
                 }
+            },
+
+            Fusioner: {
+            color: {
+                background: "#C8E6C9",
+                border: "#2E7D32",
+                highlight: {
+                    background: "#FFCDD2",
+                    border: "#C62828"
+                }
             }
+        }
         }
         """;
 
@@ -559,7 +569,8 @@ window.setContributionType = function(selectedContribution) {
         .filter(node =>
             (selectedContribution === "Detector" && node.hasDetector) ||
             (selectedContribution === "Grabber" && node.hasGrabber) ||
-            (selectedContribution === "Viewer" && node.hasViewer))
+            (selectedContribution === "Viewer" && node.hasViewer) ||
+            (selectedContribution === "Fusioner" && node.hasFusioner))
         .map(node => ({
             id: node.id,
             group: selectedContribution

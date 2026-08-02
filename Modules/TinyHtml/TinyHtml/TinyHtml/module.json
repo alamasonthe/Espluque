@@ -7,7 +7,7 @@
       "interfaceType": "IWpfViewer",
       "label": "TinyHTML Viewer",
       "className": "TinyHtml.WpfViewer",
-      "tags": [ "TinyHTML" ],
+      "tags": [ "HTML file" ],
       "active": true
     },
     {

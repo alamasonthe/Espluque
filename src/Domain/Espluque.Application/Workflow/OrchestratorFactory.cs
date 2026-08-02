@@ -1,5 +1,4 @@
-﻿using Espluque.Application.Detection;
-using Espluque.Contracts.Workflow;
+﻿using Espluque.Contracts.Workflow;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace Espluque.Application.Workflow

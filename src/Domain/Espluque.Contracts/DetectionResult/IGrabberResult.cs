@@ -2,8 +2,8 @@
 {
     public interface IGrabberResult
     {
+        string ModuleName { get; set; }
         string ContributionLabel { get; set; }
         List<KeyValuePair<string, string>> GrabbedInformation { get; set; }
-        string ModuleName { get; set; }
     }
 }

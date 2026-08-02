@@ -122,36 +122,36 @@ namespace Espluque.Application.Thesaurus.Services
 
         public async Task<List<string>?> GetAncestorPreferredTerms(IFileFormat fileFormat)
         {
-            string? referenceName;
-            string? term;
-
-            if (!string.IsNullOrWhiteSpace(fileFormat.MIMEType))
+            if (!string.IsNullOrWhiteSpace(fileFormat.Referentiel) && !string.IsNullOrWhiteSpace(fileFormat.Label))
             {
-                referenceName = "MIMEType";
-                term = fileFormat.MIMEType;
-            }
-            else
-            {
-                referenceName = fileFormat.Referentiel;
-                term = fileFormat.Label;
+                var referenceResult = await _thesaurusSource.GetAncestorPreferredTerms(fileFormat.Referentiel, fileFormat.Label);
+
+                if (!referenceResult.IsSuccess)
+                {
+                    _logger.Log(LogLevel.Error, $"{referenceResult.Error.Code} {referenceResult.Error.Message}");
+                    return null;
+                }
+
+                if (referenceResult.Value is { Count: > 0 })
+                {
+                    return referenceResult.Value;
+                }
             }
 
-            if (string.IsNullOrWhiteSpace(referenceName) || string.IsNullOrWhiteSpace(term))
+            if (string.IsNullOrWhiteSpace(fileFormat.MIMEType))
             {
                 return null;
             }
 
-            var ancestorPreferredTermsResult = await _thesaurusSource.GetAncestorPreferredTerms(
-                referenceName,
-                term);
+            var mimeResult = await _thesaurusSource.GetAncestorPreferredTerms("MIMEType", fileFormat.MIMEType);
 
-            if (!ancestorPreferredTermsResult.IsSuccess)
+            if (!mimeResult.IsSuccess)
             {
-                _logger.Log(LogLevel.Error, $"{ancestorPreferredTermsResult.Error.Code} {ancestorPreferredTermsResult.Error.Message}");
+                _logger.Log(LogLevel.Error, $"{mimeResult.Error.Code} {mimeResult.Error.Message}");
                 return null;
             }
 
-            return ancestorPreferredTermsResult.Value;
+            return mimeResult.Value;
         }
 
         public async Task<List<string>> GetReferences()

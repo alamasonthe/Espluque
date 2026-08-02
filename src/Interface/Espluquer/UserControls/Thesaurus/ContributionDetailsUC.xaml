@@ -55,9 +55,9 @@
                         </Expander.Header>
 
                         <Border Background="{DynamicResource App.Background}"
-                        BorderBrush="{DynamicResource App.Border}"
-                        BorderThickness="1"
-                        Padding="12">
+                            BorderBrush="{DynamicResource App.Border}"
+                            BorderThickness="1"
+                            Padding="12">
 
                             <Grid>
                                 <Grid.ColumnDefinitions>

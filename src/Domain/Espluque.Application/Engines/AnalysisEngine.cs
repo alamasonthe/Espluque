@@ -6,7 +6,6 @@ using Espluque.Contracts.Interfaces;
 using Espluque.Contracts.MessageInterfaces;
 using Espluque.Contracts.ModuleInterfaces;
 using Espluque.Contracts.Ports;
-using Espluque.Contracts.DetectionResult;
 using Espluque.Application.ModuleManager.Services;
 using Espluque.Contracts.Detection;
 using Microsoft.Extensions.DependencyInjection;
@@ -14,9 +13,9 @@ using Microsoft.Extensions.Logging;
 using Espluque.Contracts.ModuleInterfaces.Contributions;
 using Espluque.Contracts.Entities;
 
-namespace Espluque.Application.Detection
+namespace Espluque.Application.Engines
 {
-    public class Engine: IEngine
+    public class AnalysisEngine: IAnalysisEngine
     {
         private readonly IMessageCenter _messageCenter;
         private readonly Espluque.Contracts.Ports.ILogger _logger;
@@ -32,9 +31,9 @@ namespace Espluque.Application.Detection
         private List<TaskRequest> _grabberBacklog;
         private List<string> _doneDetectors = [];
 
-        private IEngineResult _engineResult = new EngineResult();
+        private AnalysisContext _analysisContext;
 
-        public Engine(IServiceProvider serviceProvider, List<ICatalogEntry> catalog)
+        public AnalysisEngine(IServiceProvider serviceProvider, List<ICatalogEntry> catalog)
         {
             _messageCenter = serviceProvider.GetRequiredService<IMessageCenter>();
             _logger = serviceProvider.GetRequiredService<Espluque.Contracts.Ports.ILogger>();
@@ -47,7 +46,7 @@ namespace Espluque.Application.Detection
 
         private void InitializeAnalyze(AnalysisContext analysisContext)
         {
-            _engineResult.AnalysisContext = analysisContext;
+            _analysisContext = analysisContext;
 
             _viewerBacklog = new()
             {
@@ -59,22 +58,22 @@ namespace Espluque.Application.Detection
                 new TaskRequest { Tag = "AnyFile" }
             };
 
-            _engineResult.AnalysisContext.CurrentFileFormat = _entityFactory.CreateFileFormat("Espluque", "AnyFile", null, null);
+            _analysisContext.CurrentFileFormat = _entityFactory.CreateFileFormat("Espluque", "AnyFile", null, null);
         }
 
-        public async Task<IEngineResult> AnalyzeFileAsync(AnalysisContext analysisContext, string? viewerType = null)
+        public async Task<AnalysisContext> AnalyzeFileAsync(AnalysisContext analysisContext, string? viewerType = null)
         {
             InitializeAnalyze(analysisContext);
 
-            _logger.Log(LogLevel.Information, $"{FormattedFileName()}\t--------------- Analysis started --------------- : {_engineResult.AnalysisContext.FilePath}");
+            _logger.Log(LogLevel.Information, $"{FormattedFileName()}\t--------------- Analysis started --------------- : {_analysisContext.FilePath}");
 
-            Result<bool> canOpenReadResult = Util.File.CanOpenRead(_engineResult.AnalysisContext.FilePath);
+            Result<bool> canOpenReadResult = Util.File.CanOpenRead(_analysisContext.FilePath);
 
             if (!canOpenReadResult.IsSuccess)
             {
                 _logger.Log(LogLevel.Error, $"{FormattedFileName()}\tFile check failed: {canOpenReadResult.Error?.Code} - {canOpenReadResult.Error?.Message}");
                 _logger.Log(LogLevel.Information, $"{FormattedFileName()}\t--------------- Analysis finished --------------- ");
-                return _engineResult;
+                return _analysisContext;
             }
 
             var detectorsToExecute = await GetDetectorsToExecuteAsync();
@@ -92,12 +91,12 @@ namespace Espluque.Application.Detection
                 detectorsToExecute = await GetDetectorsToExecuteAsync();
             }
 
-            AnalyserMessageEvent?.Invoke(new Factory().CreateAnalysisMessage(AnalysisMessageTypeEnum.AnalysisCompleted, true, null, null, null, null));
+            // AnalyserMessageEvent?.Invoke(new Factory().CreateAnalysisMessage(AnalysisMessageTypeEnum.AnalysisCompleted, true, null, null, null, null));
 
-            _logger.Log( LogLevel.Information, $"{FormattedFileName()}\tCurrent format: Referentiel={_engineResult.AnalysisContext.CurrentFileFormat.Referentiel}, Label={_engineResult.AnalysisContext.CurrentFileFormat.Label}, Version={_engineResult.AnalysisContext.CurrentFileFormat.Version}, MIMEType={_engineResult.AnalysisContext.CurrentFileFormat.MIMEType}");
+            _logger.Log( LogLevel.Information, $"{FormattedFileName()}\tCurrent format: Referentiel={_analysisContext.CurrentFileFormat.Referentiel}, Label={_analysisContext.CurrentFileFormat.Label}, Version={_analysisContext.CurrentFileFormat.Version}, MIMEType={_analysisContext.CurrentFileFormat.MIMEType}");
             _logger.Log(LogLevel.Information, $"{FormattedFileName()}\t--------------- Analysis finished --------------- ");
 
-            return _engineResult;
+            return _analysisContext;
         }
 
         private async Task ExecuteViewerTaskAsync(string? viewerType = null)
@@ -153,7 +152,7 @@ namespace Espluque.Application.Detection
                         continue;
                     }
 
-                    List<KeyValuePair<string, string>> keyValueList = await grabber.Grab(_engineResult.AnalysisContext);
+                    List<KeyValuePair<string, string>> keyValueList = await grabber.Grab(_analysisContext);
 
                     GrabberResult grabberResult = new()
                     {
@@ -161,11 +160,11 @@ namespace Espluque.Application.Detection
                         ContributionLabel = label,
                         GrabbedInformation = keyValueList
                     };
-                    _engineResult.GrabberResults.Add(grabberResult);
+                    _analysisContext.ObservedData.Add(grabberResult);
 
                     IFileInformationPack fileInformationPack = _entityFactory.CreateFileInformationPack(label, keyValueList);
 
-                    IAnalysisMessage message = new Factory().CreateAnalysisMessage(AnalysisMessageTypeEnum.GrabberResult, false, null, fileInformationPack, label, instance);
+                    IAnalysisMessage message = new Factory().CreateAnalysisMessage(AnalysisMessageTypeEnum.GrabberResult, false, null, fileInformationPack, null, null);
 
                     AnalyserMessageEvent?.Invoke(message);
                 }
@@ -179,14 +178,15 @@ namespace Espluque.Application.Detection
         {
             List<ICatalogEntry> detectorsToExecute = [];
 
-            (int conceptId, string mainTerm)? conceptMainTerm = await _thesaurusService.GetConceptMainTermByTerm(_engineResult.AnalysisContext.CurrentFileFormat.Referentiel!, _engineResult.AnalysisContext.CurrentFileFormat.Label!);
-            if (conceptMainTerm is null && !string.IsNullOrWhiteSpace(_engineResult.AnalysisContext.CurrentFileFormat.MIMEType))
+            (int conceptId, string mainTerm)? conceptMainTerm = await _thesaurusService.GetConceptMainTermByTerm(_analysisContext.CurrentFileFormat.Referentiel!, _analysisContext.CurrentFileFormat.Label!);
+            if (conceptMainTerm is null && !string.IsNullOrWhiteSpace(_analysisContext.CurrentFileFormat.MIMEType))
             {
-                conceptMainTerm = await _thesaurusService.GetConceptMainTermByTerm("MIMEType", _engineResult.AnalysisContext.CurrentFileFormat.MIMEType);
+                conceptMainTerm = await _thesaurusService.GetConceptMainTermByTerm("MIMEType", _analysisContext.CurrentFileFormat.MIMEType);
             }
             if (conceptMainTerm is null) return detectorsToExecute;
 
-            _logger.Log(LogLevel.Debug, $"Detector search: {_engineResult.AnalysisContext.CurrentFileFormat.Referentiel} / {_engineResult.AnalysisContext.CurrentFileFormat.Label} => thesaurus tag \"{conceptMainTerm.Value.mainTerm}\"");
+            _analysisContext.TagHistory.Add(conceptMainTerm.Value.mainTerm);
+            _logger.Log(LogLevel.Debug, $"Detector search: {_analysisContext.CurrentFileFormat.Referentiel} / {_analysisContext.CurrentFileFormat.Label} => thesaurus tag \"{conceptMainTerm.Value.mainTerm}\"");
 
             detectorsToExecute = _catalog
                 .Where(entry =>
@@ -265,7 +265,7 @@ namespace Espluque.Application.Detection
 
                 IDetector detector = (IDetector)instance;
 
-                IFileFormat? fileFormat = await detector.Detect(_engineResult.AnalysisContext);
+                IFileFormat? fileFormat = await detector.Detect(_analysisContext);
 
                 if (fileFormat is null)
                 {
@@ -296,8 +296,8 @@ namespace Espluque.Application.Detection
                     return;
 
                 case 1:
-                    _engineResult.AnalysisContext.FileFormatHistory.Add(_engineResult.AnalysisContext.CurrentFileFormat);
-                    _engineResult.AnalysisContext.CurrentFileFormat = detectedFileFormats[0];
+                    _analysisContext.FileFormatHistory.Add(_analysisContext.CurrentFileFormat);
+                    _analysisContext.CurrentFileFormat = detectedFileFormats[0];
                     return;
             }
 
@@ -325,29 +325,24 @@ namespace Espluque.Application.Detection
 
             foreach (IFileFormat format in detectedFileFormats)
             {
-                _engineResult.AnalysisContext.FileFormatHistory.Add(format);
+                _analysisContext.FileFormatHistory.Add(format);
             }
 
-            _engineResult.AnalysisContext.CurrentFileFormat = detectedFileFormats[0];
+            _analysisContext.CurrentFileFormat = detectedFileFormats[0];
         }
 
         private async Task<bool> IsSecondFormatMoreSpecificAsync( IFileFormat firstFormat, IFileFormat secondFormat)
         {
-            string firstReferenceName = !string.IsNullOrWhiteSpace(firstFormat.MIMEType) ? "MIMEType" : firstFormat.Referentiel!;
-            string firstTerm = !string.IsNullOrWhiteSpace(firstFormat.MIMEType) ? firstFormat.MIMEType! : firstFormat.Label!;
-            (int ConceptId, string MainTerm)? firstConcept = await _thesaurusService.GetConceptMainTermByTerm( firstReferenceName, firstTerm);
-
-            string secondReferenceName = !string.IsNullOrWhiteSpace(secondFormat.MIMEType) ? "MIMEType" : secondFormat.Referentiel!;
-            string secondTerm = !string.IsNullOrWhiteSpace(secondFormat.MIMEType) ? secondFormat.MIMEType! : secondFormat.Label!;
-            (int ConceptId, string MainTerm)? secondConcept = await _thesaurusService.GetConceptMainTermByTerm( secondReferenceName, secondTerm);
+            (int ConceptId, string MainTerm)? firstConcept = await FindConceptAsync(firstFormat);
+            (int ConceptId, string MainTerm)? secondConcept = await FindConceptAsync(secondFormat);
 
             switch (firstConcept, secondConcept)
             {
                 case (null, _):
-                    _logger.Log( LogLevel.Warning, $"Format is missing in thesaurus: {firstReferenceName} - {firstTerm}");
+                    _logger.Log(LogLevel.Warning, $"Format is missing in thesaurus: {firstFormat.Referentiel} - {firstFormat.Label}");
                     return false;
                 case (_, null):
-                    _logger.Log( LogLevel.Warning, $"Format is missing in thesaurus: {secondReferenceName} - {secondTerm}");
+                    _logger.Log( LogLevel.Warning, $"Format is missing in thesaurus: {secondFormat.Referentiel} - {secondFormat.Label}");
                     return false;
             }
 
@@ -377,9 +372,26 @@ namespace Espluque.Application.Detection
             return false;
         }
 
+        private async Task<(int ConceptId, string MainTerm)?> FindConceptAsync(IFileFormat fileFormat)
+        {
+            (int ConceptId, string MainTerm)? concept = null;
+
+            if (!string.IsNullOrWhiteSpace(fileFormat.Referentiel) && !string.IsNullOrWhiteSpace(fileFormat.Label))
+            {
+                concept = await _thesaurusService.GetConceptMainTermByTerm(fileFormat.Referentiel, fileFormat.Label);
+            }
+
+            if (concept is null && !string.IsNullOrWhiteSpace(fileFormat.MIMEType))
+            {
+                concept = await _thesaurusService.GetConceptMainTermByTerm("MIMEType", fileFormat.MIMEType);
+            }
+
+            return concept;
+        }
+
         private async Task UpdateBacklogsAsync()
         {
-            List<string>? taskTags = await _thesaurusService.GetAncestorPreferredTerms(_engineResult.AnalysisContext.CurrentFileFormat);
+            List<string>? taskTags = await _thesaurusService.GetAncestorPreferredTerms(_analysisContext.CurrentFileFormat);
 
             if (taskTags is null)
             {
@@ -447,7 +459,7 @@ namespace Espluque.Application.Detection
 
         private string FormattedFileName()
         {
-            return Path.GetFileName(_engineResult.AnalysisContext.FilePath).PadRight(35);
+            return Path.GetFileName(_analysisContext.FilePath).PadRight(35);
         }
 
         #endregion

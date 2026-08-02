@@ -14,6 +14,7 @@ namespace Espluquer.Services
             {
                 ["IDetector"] = "ic_fluent_search_24_regular",
                 ["IGrabber"] = "ic_fluent_clipboard_data_bar_24_regular",
+                ["IFusioner"] = "ic_fluent_merge_24_regular",
                 ["IWpfViewer"] = "ic_fluent_eye_24_regular",
                 ["IWpfSettings"] = "ic_fluent_settings_24_regular",
                 ["IWpfMaintenance"] = "ic_fluent_wrench_screwdriver_24_regular",

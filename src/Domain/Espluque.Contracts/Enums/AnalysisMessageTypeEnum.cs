@@ -5,6 +5,7 @@
         AnalysisCompleted,
         DetectorResult,
         GrabberResult,
+        FusionerSummary,
         ViewerUC
     }
 }
