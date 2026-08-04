@@ -1,0 +1,50 @@
+[
+  {
+    "FormatTag": "Windows Installer — MSI",
+	  "FavoriteObservedDataList": "MSI infos",
+    "InstallCommand": "msiexec.exe",
+    "InstallArguments": "/i \"{InstallerFilePath}\" /qn /norestart",
+    "UninstallCommand": "msiexec.exe",
+    "UninstallArguments": "/x \"{ProductCode}\" /qn /norestart"
+  },
+  {
+    "FormatTag": "Windows Installer Patch — MSP",
+	  "FavoriteObservedDataList": "MSI infos",
+    "InstallCommand": "msiexec.exe",
+    "InstallArguments": "/update \"{InstallerFilePath}\" /quiet /norestart",
+    "UninstallCommand": "msiexec.exe",
+    "UninstallArguments": "/uninstall \"{PatchPath}\" /package \"{ProductMsiPath}\" /quiet /norestart"
+  },
+  {
+    "FormatTag": "Windows Installer Transform — MST",
+	  "FavoriteObservedDataList": "MSI infos",
+    "InstallCommand": "msiexec.exe",
+    "InstallArguments": "/i \"{PackagePath}\" TRANSFORMS=\"{InstallerFilePath}\" /qn /norestart",
+    "UninstallCommand": "msiexec.exe",
+    "UninstallArguments": "/x \"{ProductCode}\" /qn /norestart"
+  },
+  {
+    "FormatTag": "Windows App Package",
+	  "FavoriteObservedDataList": "Windows App Package infos",
+    "InstallCommand": "powershell.exe",
+    "InstallArguments": "-NoProfile -NonInteractive -Command \"Add-AppxPackage -Path '{InstallerFilePath}'\"",
+    "UninstallCommand": "powershell.exe",
+    "UninstallArguments": "-NoProfile -NonInteractive -Command \"Get-AppxPackage -Name '{PackageFullName}' | Remove-AppxPackage\""
+  },
+  {
+    "FormatTag": "Windows App Bundle",
+	  "FavoriteObservedDataList": "Windows App Package Bundle infos",
+    "InstallCommand": "powershell.exe",
+    "InstallArguments": "-NoProfile -NonInteractive -Command \"Add-AppxPackage -Path '{InstallerFilePath}'\"",
+    "UninstallCommand": "powershell.exe",
+    "UninstallArguments": "-NoProfile -NonInteractive -Command \"Get-AppxPackage -Name 'PackageFullName' | Remove-AppxPackage\""
+  },
+  {
+    "FormatTag": "Nullsoft Installer",
+	  "FavoriteObservedDataList": "Nullsoft Installer infos",
+    "InstallCommand": "{InstallerFilePath}",
+    "InstallArguments": "/S",
+    "UninstallCommand": "{UninstallerPath}",
+    "UninstallArguments": "/S"
+  }
+]

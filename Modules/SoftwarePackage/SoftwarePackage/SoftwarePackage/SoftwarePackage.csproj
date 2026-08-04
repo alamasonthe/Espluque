@@ -16,6 +16,9 @@
   </ItemGroup>
 
   <ItemGroup>
+    <None Update="commandlines.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Update="module.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
@@ -35,6 +38,7 @@
 	<Copy SourceFiles="$(ProjectDir)module.json" DestinationFolder="$(HostModuleDirectory)" />
 	  
 	<Copy SourceFiles="$(ProjectDir)mappings.json" DestinationFolder="$(HostModuleDirectory)" />
+	<Copy SourceFiles="$(ProjectDir)commandlines.json" DestinationFolder="$(HostModuleDirectory)" />
 
   </Target>
 

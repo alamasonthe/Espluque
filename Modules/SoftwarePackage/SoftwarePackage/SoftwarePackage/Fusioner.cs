@@ -3,9 +3,11 @@ using Espluque.Contracts.Interfaces;
 using Espluque.Contracts.MessageInterfaces;
 using Espluque.Contracts.ModuleInterfaces.Contributions;
 using Espluque.Contracts.Ports;
-using SoftwarePackage.Mapper;
-using System.Text.Json;
 using SoftwarePackage.Entities;
+using SoftwarePackage.Mapper;
+using SoftwarePackage.Services;
+using System.IO;
+using System.Text.Json;
 
 namespace SoftwarePackage
 {
@@ -34,12 +36,27 @@ namespace SoftwarePackage
 
         public async Task<IAssertion> Fuse(AnalysisContext analysisContext)
         {
+            string filename = Path.GetFileName(analysisContext.FilePath);
+            string formattedFilename = filename.PadRight(35);
+
             List<MapLine> mappings = await MapSource.Load();
             Package package = FusionMapper<Package>.Map(analysisContext, mappings, _logger);
 
-            package.InstallerType = analysisContext.TagHistory.LastOrDefault();
+            string? formatTag = analysisContext.TagHistory.LastOrDefault();
+            package.InstallerType = formatTag;
 
-            // TODO: renseigner Package InstallerCommand, InstallerParameters, UninstallerCommand, UninstallerParameters 
+            CommandCompletion commandCompletion = new(_logger);
+
+            CommandLineTemplate? commandLineTemplate = await commandCompletion.GetTemplate(filename, formatTag);
+
+            if (commandLineTemplate != null)
+            {
+                package.InstallCommand = commandCompletion.ReplaceVariables(commandLineTemplate.InstallCommand, analysisContext, "Windows App Package infos");
+                package.InstallArguments = commandCompletion.ReplaceVariables(commandLineTemplate.InstallArguments, analysisContext, "Windows App Package infos");
+                package.UninstallCommand = commandCompletion.ReplaceVariables(commandLineTemplate.UninstallCommand, analysisContext, "Windows App Package infos");
+                package.UninstallArguments = commandCompletion.ReplaceVariables(commandLineTemplate.UninstallArguments, analysisContext, "Windows App Package infos");
+
+            }
 
             var assertion = _entityFactory.CreateAssertion(
                 "Software Package module",
