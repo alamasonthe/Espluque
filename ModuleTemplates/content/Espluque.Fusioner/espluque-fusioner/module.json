@@ -1,0 +1,14 @@
+{
+  "name": "Fuse module",
+  "version": "0.0.1",
+  "assembly": "Espluque.Fusioner.dll",
+  "contributions": [
+    {
+      "interfaceType": "IFusioner",
+      "label": "Package Fusioner",
+      "className": "Espluque.Fusioner.Fusioner",
+      "tags": [ "AnyFile" ],
+      "active": true
+    }
+  ]
+}

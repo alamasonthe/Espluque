@@ -1,0 +1,12 @@
+{
+  "$schema": "http://json.schemastore.org/template",
+  "identity": "Espluque.Templates.Fusioner",
+  "name": "Espluque Fusioner Module",
+  "shortName": "espluque-fusioner",
+  "sourceName": "fusionerTemplate",
+  "preferNameDirectory": true,
+  "tags": {
+    "language": "C#",
+    "type": "project"
+  }
+}
