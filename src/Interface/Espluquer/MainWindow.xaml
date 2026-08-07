@@ -76,6 +76,7 @@
 
                             <MenuItem Header="Debug">
                                 <MenuItem Header="Log Catalog" Tag="Debug.LogCatalog" Click="MainMenuItem_Click" />
+                                <MenuItem Header="Search Concept" Tag="Debug.SearchConcept" Click="MainMenuItem_Click" />
                             </MenuItem>
 
                             <MenuItem Header="Espluque">

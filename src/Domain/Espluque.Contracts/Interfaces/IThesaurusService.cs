@@ -5,6 +5,7 @@ namespace Espluque.Contracts.Interfaces
     public interface IThesaurusService
     {
         Task<List<IThesaurusConcept>> GetConcepts();
+        Task<IThesaurusConcept?> GetConceptById(int conceptId);
 
         Task<TreeNode<IThesaurusConcept>?> GetConceptsTree();
 

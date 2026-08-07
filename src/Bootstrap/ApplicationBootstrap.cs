@@ -5,7 +5,9 @@ using Espluque.Application.Thesaurus.Services;
 using Espluque.Contracts.Interfaces;
 using Espluque.Contracts.MessageInterfaces;
 using Espluque.Contracts.ModuleInterfaces;
+using Espluque.Contracts.Ports;
 using EspluqueSqlite.Thesaurus;
+using LuceneSearch;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace Bootstrap
@@ -35,6 +37,8 @@ namespace Bootstrap
 
             services.AddSingleton<Espluque.Contracts.Ports.IThesaurusSource, ThesaurusRepository>();
             services.AddSingleton<IThesaurusService, ThesaurusService>();
+
+            services.AddSingleton<ISearchService, SearchService>();
 
             services.AddSingleton<Espluque.Contracts.ModuleInterfaces.IModuleService, ModuleService>();
             services.AddSingleton<Espluque.Contracts.ModuleInterfaces.IModuleDiagnosticService, ModuleDiagnosticService>();

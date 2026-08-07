@@ -29,6 +29,13 @@
 	</PropertyGroup>
 
 	<ItemGroup>
+	  <Compile Remove="UserControls\ResultModeling\**" />
+	  <EmbeddedResource Remove="UserControls\ResultModeling\**" />
+	  <None Remove="UserControls\ResultModeling\**" />
+	  <Page Remove="UserControls\ResultModeling\**" />
+	</ItemGroup>
+
+	<ItemGroup>
 		<Resource Include="Espluquer.ico" />
 	</ItemGroup>
 
@@ -111,10 +118,6 @@
 		<FolderDeletes Include="$(TargetDir)x64" />
 		<FolderDeletes Include="$(TargetDir)x86" />
 		<FolderDeletes Include="$(TargetDir)runtimes" />
-	</ItemGroup>
-
-	<ItemGroup>
-	  <Folder Include="UserControls\ResultModeling\" />
 	</ItemGroup>
 
 	<Target Name="MoveDebugFiles" AfterTargets="CopyFilesToOutputDirectory" Condition="'$(Configuration)' == 'Debug'">
