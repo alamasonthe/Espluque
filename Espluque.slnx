@@ -79,6 +79,7 @@
     <Project Path="src/Infrastructure/EspluqueSqlite/EspluqueSqlite.csproj" Id="98a0c1d9-845d-4c56-9d75-b63a53a3e11e">
       <Platform Project="x64" />
     </Project>
+    <Project Path="src/Infrastructure/LuceneSearch/LuceneSearch.csproj" Id="01792151-beca-482e-82f1-900f87acc31c" />
     <Project Path="src/Infrastructure/MiniFileLogger/MiniFileLogger.csproj" Id="e801c127-4a25-49e9-bd5b-016113a7eb58">
       <Platform Project="x64" />
     </Project>

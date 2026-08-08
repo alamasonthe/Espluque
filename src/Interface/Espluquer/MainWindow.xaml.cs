@@ -35,6 +35,7 @@ namespace Espluquer
         private readonly ConceptUC _conceptUC;
         private readonly ModuleAdminUC _moduleAdminUC;
         private readonly ContributionMapUC _contributionMapUC;
+        private readonly ConceptSearchUC _conceptSearchUC;
         private readonly List<ICatalogEntry> _catalog;
 
         private readonly List<string> _recentFiles = [];
@@ -51,6 +52,7 @@ namespace Espluquer
             IMessageCenter messageCenter, 
             List<ICatalogEntry> catalog, 
             IModuleAdministrationService moduleAdministration, 
+            ConceptSearchUC conceptSearchUC,
             ContributionMapUC contributionMapUC)
         {
             _logger = logger;
@@ -59,6 +61,7 @@ namespace Espluquer
             _orchestratorFactory = orchestratorFactory;
             _messageCenter = messageCenter;
             _catalog = catalog;
+            _conceptSearchUC = conceptSearchUC;
 
             _logUC = logUC;
             _conceptUC = conceptUC;

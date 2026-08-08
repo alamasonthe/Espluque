@@ -32,6 +32,19 @@ namespace Espluque.Application.Thesaurus.Services
             return thesaurusConceptsResult.Value!;
         }
 
+        public async Task<IThesaurusConcept?> GetConceptById(int conceptId)
+        {
+            var thesaurusConceptResult = await _thesaurusSource.GetConceptById(conceptId);
+
+            if (!thesaurusConceptResult.IsSuccess)
+            {
+                _logger.Log(LogLevel.Error, $"{thesaurusConceptResult.Error!.Code} {thesaurusConceptResult.Error.Message}");
+                return null;
+            }
+
+            return thesaurusConceptResult.Value;
+        }
+
         public async Task<TreeNode<IThesaurusConcept>?> GetConceptsTree()
         {
             var thesaurusConceptsResult = await _thesaurusSource.GetConcepts();

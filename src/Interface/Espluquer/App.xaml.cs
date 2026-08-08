@@ -1,9 +1,12 @@
 ﻿using Bootstrap;
-using Espluquer.UserControls.Thesaurus;
+using Espluque.Contracts.Interfaces;
+using Espluque.Contracts.Ports;
+using Espluquer.Services;
 using Espluquer.UserControls.Modules;
 using Espluquer.UserControls.Shell;
+using Espluquer.UserControls.Thesaurus;
+using Espluquer.UserControls.Debug;
 using Microsoft.Extensions.DependencyInjection;
-using Espluquer.Services;
 using System.Windows;
 
 namespace Espluquer
@@ -30,6 +33,7 @@ namespace Espluquer
             services.AddSingleton<ModuleAdminUC>();
             services.AddSingleton<ContributionMapUC>();
             services.AddSingleton<ReferenceUC>();
+            services.AddTransient<ConceptSearchUC>();
 
             services.AddSingleton<WebView2Configuration>();
             services.AddSingleton<SqliteConfiguration>();
@@ -41,6 +45,10 @@ namespace Espluquer
 
             serviceProvider.GetRequiredService<WebView2Configuration>().Configure();
             serviceProvider.GetRequiredService<SqliteConfiguration>().Configure();
+
+            ISearchService searchService = serviceProvider.GetRequiredService<ISearchService>();
+            IThesaurusService thesaurusService = serviceProvider.GetRequiredService<IThesaurusService>();
+            await searchService.Index(thesaurusService);
 
             var mainWindow = serviceProvider.GetRequiredService<MainWindow>();
             mainWindow.Show();

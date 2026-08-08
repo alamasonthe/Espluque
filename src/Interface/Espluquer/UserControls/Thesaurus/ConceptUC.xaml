@@ -4,6 +4,7 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:uc="clr-namespace:Espluquer.UserControls"
+             xmlns:shell="clr-namespace:Espluquer.UserControls.Shell"
              mc:Ignorable="d"
              d:DesignHeight="450"
              d:DesignWidth="800">
@@ -17,31 +18,40 @@
             <ColumnDefinition Width="5*" />
         </Grid.ColumnDefinitions>
 
-        <TreeView x:Name="ConceptTreeView"
-              Grid.Column="0"
-              Style="{DynamicResource App.Controls.TreeView}"
-              ItemContainerStyle="{StaticResource App.Controls.TreeViewItem}"
-              SelectedItemChanged="ConceptTreeView_SelectedItemChanged">
-            <TreeView.ItemTemplate>
-                <HierarchicalDataTemplate ItemsSource="{Binding Children}">
-                    <TextBox Style="{StaticResource App.StandardTextBox}"
-                         Text="{Binding Name, Mode=OneWay}"
-                         IsReadOnly="True"
-                         Focusable="False"
-                         MouseDoubleClick="ConceptNameTextBox_EnterEditMode"
-                         ContextMenuOpening="ConceptTreeView_ContextMenuOpening"
-                         PreviewMouseLeftButtonDown="ConceptSaveDragStartPoint"
-                         PreviewMouseMove="ConceptDragStart"
-                         AllowDrop="True"
-                         PreviewDragOver="ConceptAllowDrop"
-                         PreviewDrop="ConceptDrop">
-                        <TextBox.ContextMenu>
-                            <ContextMenu />
-                        </TextBox.ContextMenu>
-                    </TextBox>
-                </HierarchicalDataTemplate>
-            </TreeView.ItemTemplate>
-        </TreeView>
+        <Grid Grid.Column="0">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="*" />
+            </Grid.RowDefinitions>
+
+            <ContentControl x:Name="ConceptSearchControl" Margin="5"/>
+
+            <TreeView x:Name="ConceptTreeView"
+                  Grid.Row="1"
+                  Style="{DynamicResource App.Controls.TreeView}"
+                  ItemContainerStyle="{StaticResource App.Controls.TreeViewItem}"
+                  SelectedItemChanged="ConceptTreeView_SelectedItemChanged">
+                <TreeView.ItemTemplate>
+                    <HierarchicalDataTemplate ItemsSource="{Binding Children}">
+                        <TextBox Style="{StaticResource App.StandardTextBox}"
+                             Text="{Binding Name, Mode=OneWay}"
+                             IsReadOnly="True"
+                             Focusable="False"
+                             MouseDoubleClick="ConceptNameTextBox_EnterEditMode"
+                             ContextMenuOpening="ConceptTreeView_ContextMenuOpening"
+                             PreviewMouseLeftButtonDown="ConceptSaveDragStartPoint"
+                             PreviewMouseMove="ConceptDragStart"
+                             AllowDrop="True"
+                             PreviewDragOver="ConceptAllowDrop"
+                             PreviewDrop="ConceptDrop">
+                            <TextBox.ContextMenu>
+                                <ContextMenu />
+                            </TextBox.ContextMenu>
+                        </TextBox>
+                    </HierarchicalDataTemplate>
+                </TreeView.ItemTemplate>
+            </TreeView>
+        </Grid>
 
         <GridSplitter Grid.Column="1"
                   Width="3"
