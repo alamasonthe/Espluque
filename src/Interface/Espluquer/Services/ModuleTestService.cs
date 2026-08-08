@@ -29,6 +29,17 @@ namespace Espluquer.Services
                 [ModuleHealthCheckEnum.NotTested] = "App.TextMuted"
             };
 
+        private static readonly List<string> ContributionDisplayOrder =
+            [
+                "IDetector",
+                "IGrabber",
+                "IWpfViewer",
+                "IFusioner",
+                "IExploiter",
+                "IWpfSettings",
+                "IWpfMaintenance"
+            ];
+
         public static string GetContributionIcon(string interfaceType)
         {
             string iconName = DefaultContributionIconName;
@@ -41,6 +52,16 @@ namespace Espluquer.Services
             return IconService.FluentGlyph(iconName);
         }
 
+        public static string GetHealthColorKey(ModuleHealthCheckEnum healthCheck)
+        {
+            if (ContributionColorKeys.TryGetValue(healthCheck, out string? colorKey))
+            {
+                return colorKey;
+            }
+
+            return DefaultContributionColorKey;
+        }
+
         public static string GetContributionColorKey(string interfaceType, ModuleHealthCheckEnum healthCheck)
         {
             if (!ContributionIconNames.ContainsKey(interfaceType))
@@ -48,12 +69,16 @@ namespace Espluquer.Services
                 return UnknownContributionColorKey;
             }
 
-            if (ContributionColorKeys.TryGetValue(healthCheck, out string? colorKey))
-            {
-                return colorKey;
-            }
+            return GetHealthColorKey(healthCheck);
+        }
 
-            return DefaultContributionColorKey;
+        public static int GetContributionDisplayOrder(string interfaceType)
+        {
+            int index = ContributionDisplayOrder.IndexOf(interfaceType);
+
+            return index >= 0
+                ? index
+                : ContributionDisplayOrder.Count;
         }
     }
 }

@@ -25,7 +25,7 @@ namespace Espluque.Application.ModuleManager.Services
                 jsonOptions.Converters.Add(new ModuleContributionJsonConverter());
 
                 ModuleInfo? moduleInfo = JsonSerializer.Deserialize<Application.ModuleManager.Entities.ModuleInfo>(json, jsonOptions);
-
+                moduleInfo.FilePath = moduleInfoPath;
                 return moduleInfo;
             }
             catch (Exception ex)

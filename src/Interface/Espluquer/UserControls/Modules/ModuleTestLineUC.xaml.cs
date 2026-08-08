@@ -9,25 +9,65 @@ namespace Espluquer.UserControls.Modules
     public partial class ModuleTestLineUC : UserControl
     {
         private static int _styleTestIndex;
-
-        public static readonly DependencyProperty ModuleDiagnosticProperty =
+        private IModuleInfo? ModuleInfo => DataContext as IModuleInfo;
+        public static readonly DependencyProperty ContributionHealthsProperty =
             DependencyProperty.Register(
-                nameof(ModuleDiagnostic),
-                typeof(IModuleDiagnostic),
-                typeof(ModuleTestLineUC),
-                new PropertyMetadata(null, ModuleDiagnosticChanged));
+                nameof(ContributionHealths),
+                typeof(List<IContributionHealth>),
+                typeof(ModuleTestLineUC));
 
-        public IModuleDiagnostic? ModuleDiagnostic
+        public List<IContributionHealth> ContributionHealths
         {
-            get => (IModuleDiagnostic?)GetValue(ModuleDiagnosticProperty);
-            set => SetValue(ModuleDiagnosticProperty, value);
+            get => (List<IContributionHealth>)GetValue(ContributionHealthsProperty);
+            set => SetValue(ContributionHealthsProperty, value);
+        }
+
+        private ModuleHealthCheckEnum ModuleHealthCheck
+        {
+            get
+            {
+                if (ModuleInfo is null)
+                {
+                    return ModuleHealthCheckEnum.NotTested;
+                }
+
+                var moduleHealths = ContributionHealths
+                    .Where(health => health.ModuleName == ModuleInfo.Name)
+                    .ToList();
+
+                if (moduleHealths.Count == 0)
+                {
+                    return ModuleHealthCheckEnum.NotTested;
+                }
+
+                if (moduleHealths.Any(health => health.HealthCheck == ModuleHealthCheckEnum.Error))
+                {
+                    return ModuleHealthCheckEnum.Error;
+                }
+
+                if (moduleHealths.Any(health => health.HealthCheck == ModuleHealthCheckEnum.Running))
+                {
+                    return ModuleHealthCheckEnum.Running;
+                }
+
+                if (moduleHealths.All(health => health.HealthCheck == ModuleHealthCheckEnum.Success))
+                {
+                    return ModuleHealthCheckEnum.Success;
+                }
+
+                return ModuleHealthCheckEnum.NotTested;
+            }
         }
 
         public ModuleTestLineUC()
         {
             InitializeComponent();
 
-            // Loaded += ModuleTestLineUC_Loaded;
+            Loaded += (_, _) =>
+            {
+                ContributionSummaryHost.Content = CreateContributionSummary();
+                UpdateModuleHealth();
+            };
         }
 
         #region Build icon panel
@@ -40,12 +80,17 @@ namespace Espluquer.UserControls.Modules
                 VerticalAlignment = VerticalAlignment.Center
             };
 
-            if (ModuleDiagnostic is null)
+            if (ModuleInfo is null)
             {
                 return summaryPanel;
             }
 
-            var contributionGroups = ModuleDiagnostic.Contributions.GroupBy(contribution => contribution.InterfaceType).ToList();
+            var contributionGroups = ContributionHealths
+                .Where(health => health.ModuleName == ModuleInfo.Name)
+                .GroupBy(health => health.ContribInterfaceType)
+                .OrderBy(group => ModuleTestService.GetContributionDisplayOrder(group.Key))
+                .ThenBy(group => group.Key)
+                .ToList();
 
             for (int contribGroupIndex = 0; contribGroupIndex < contributionGroups.Count; contribGroupIndex++)
             {
@@ -58,14 +103,22 @@ namespace Espluquer.UserControls.Modules
                         Text = "  ",
                         VerticalAlignment = VerticalAlignment.Center
                     };
-                    separator.SetResourceReference(TextBlock.ForegroundProperty,"App.TextMuted");
+
+                    separator.SetResourceReference(
+                        TextBlock.ForegroundProperty,
+                        "App.TextMuted");
+
                     summaryPanel.Children.Add(separator);
                 }
 
                 int totalCount = contributionGroup.Count();
-                int successCount = contributionGroup.Count( contribution => contribution.ContributionHealthCheck == ModuleHealthCheckEnum.Success);
 
-                bool groupHasError = false;
+                int successCount = contributionGroup.Count(
+                    health => health.HealthCheck == ModuleHealthCheckEnum.Success);
+
+                bool groupHasError = contributionGroup.Any(
+                    health => health.HealthCheck == ModuleHealthCheckEnum.Error);
+
                 ModuleHealthCheckEnum groupHealthCheck = groupHasError switch
                 {
                     true => ModuleHealthCheckEnum.Error,
@@ -75,14 +128,22 @@ namespace Espluquer.UserControls.Modules
 
                 TextBlock icon = new()
                 {
-                    Text = ModuleTestService.GetContributionIcon(contributionGroup.Key), FontSize = 20, VerticalAlignment = VerticalAlignment.Center
+                    Text = ModuleTestService.GetContributionIcon(contributionGroup.Key),
+                    FontSize = 20,
+                    VerticalAlignment = VerticalAlignment.Center
                 };
 
-                icon.SetResourceReference( TextBlock.FontFamilyProperty, "FluentIcons");
+                icon.SetResourceReference(
+                    TextBlock.FontFamilyProperty,
+                    "FluentIcons");
 
-                string colorKey = ModuleTestService.GetContributionColorKey(contributionGroup.Key, groupHealthCheck);
+                string colorKey = ModuleTestService.GetContributionColorKey(
+                    contributionGroup.Key,
+                    groupHealthCheck);
 
-                icon.SetResourceReference( TextBlock.ForegroundProperty, colorKey);
+                icon.SetResourceReference(
+                    TextBlock.ForegroundProperty,
+                    colorKey);
 
                 TextBlock count = new()
                 {
@@ -90,7 +151,9 @@ namespace Espluquer.UserControls.Modules
                     VerticalAlignment = VerticalAlignment.Center
                 };
 
-                count.SetResourceReference( TextBlock.ForegroundProperty, "App.Text");
+                count.SetResourceReference(
+                    TextBlock.ForegroundProperty,
+                    "App.Text");
 
                 summaryPanel.Children.Add(icon);
                 summaryPanel.Children.Add(count);
@@ -101,29 +164,13 @@ namespace Espluquer.UserControls.Modules
 
         #endregion
 
-        #region Module diagnostic change management
-
-        private static void ModuleDiagnosticChanged( DependencyObject dependencyObject, DependencyPropertyChangedEventArgs e)
+        private void UpdateModuleHealth()
         {
-            ModuleTestLineUC moduleTestLine = (ModuleTestLineUC)dependencyObject;
+            string colorKey = ModuleTestService.GetHealthColorKey(ModuleHealthCheck);
 
-            moduleTestLine.UpdateContributionSummary();
+            StatusEllipse.SetResourceReference(
+                System.Windows.Shapes.Shape.FillProperty,
+                colorKey);
         }
-
-        private void UpdateContributionSummary()
-        {
-            ContributionSummaryHost.Content = null;
-
-            if ((ModuleDiagnostic is null)
-                || (ModuleDiagnostic.ModuleHealthCheck == ModuleHealthCheckEnum.NotTested)
-                || (ModuleDiagnostic.Contributions.Count == 0))
-            {
-                return;
-            }
-
-            ContributionSummaryHost.Content = CreateContributionSummary();
-        }
-
-        #endregion
     }
 }

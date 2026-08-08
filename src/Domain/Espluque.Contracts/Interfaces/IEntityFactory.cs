@@ -16,4 +16,5 @@ public interface IEntityFactory
     IModuleDiagnostic CreateModuleDiagnostic( string filePath, string name);
     IMessage CreateMessage( MessageTypeEnum messageType, string messageLabel, List<KeyValuePair<string, string>> payload);
     IAssertion CreateAssertion(string sourceModule, string sourceContribution, string assertionType, string claimJson, List<KeyValuePair<string, string>>? summary);
+    public IContributionHealth CreateContributionHealth(string moduleName, string contribInterfaceType, string contribClassName, ModuleHealthCheckEnum healthCheck, string? errorDescription);
 }

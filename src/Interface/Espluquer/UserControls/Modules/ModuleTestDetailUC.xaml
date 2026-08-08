@@ -24,21 +24,26 @@
 
             <!-- Module -->
 
-            <Expander Style="{StaticResource App.SectionExpander}" IsExpanded="True" Margin="0,0,0,8">
+            <Expander Style="{StaticResource App.SectionExpander}"
+                      IsExpanded="True"
+                      Margin="0,0,0,8">
 
-                    <Expander.Header>
-                        <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                <Expander.Header>
+                    <StackPanel Orientation="Horizontal"
+                                VerticalAlignment="Center">
 
-                            <Ellipse Width="12" Height="12" Style="{StaticResource ModuleStatusEllipseStyle}" />
+                        <Ellipse Width="12"
+                                 Height="12"
+                                 Style="{StaticResource ModuleStatusEllipseStyle}" />
 
                         <TextBlock Margin="8,0,0,0"
-                           Style="{StaticResource App.StandardSubtitleTextBlock}"
-                           Foreground="{DynamicResource App.TextInverse}"
-                           VerticalAlignment="Center"
-                           Text="{Binding ModuleDiagnostic.Name, ElementName=ModuleDetailRoot}" />
+                                   Style="{StaticResource App.StandardSubtitleTextBlock}"
+                                   Foreground="{DynamicResource App.TextInverse}"
+                                   VerticalAlignment="Center"
+                                   Text="{Binding Name}" />
 
                     </StackPanel>
-                    </Expander.Header>
+                </Expander.Header>
 
                 <Border Background="{DynamicResource App.Background}"
                         BorderBrush="{DynamicResource App.Border}"
@@ -46,6 +51,7 @@
                         Padding="12">
 
                     <Grid>
+
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="140" />
                             <ColumnDefinition Width="*" />
@@ -55,12 +61,11 @@
                             <RowDefinition Height="Auto" />
                             <RowDefinition Height="Auto" />
                             <RowDefinition Height="Auto" />
-                            <RowDefinition Height="Auto" />
                         </Grid.RowDefinitions>
 
                         <TextBlock Grid.Row="0"
-                                   Style="{StaticResource App.StandardTextBlock}"
                                    Grid.Column="0"
+                                   Style="{StaticResource App.StandardTextBlock}"
                                    Margin="0,4,8,4"
                                    VerticalAlignment="Center"
                                    Text="Version" />
@@ -69,11 +74,11 @@
                                  Grid.Column="1"
                                  Margin="0,2"
                                  IsReadOnly="True"
-                                 Text="{Binding ModuleDiagnostic.Version, ElementName=ModuleDetailRoot}" />
+                                 Text="{Binding Version}" />
 
                         <TextBlock Grid.Row="1"
-                                   Style="{StaticResource App.StandardTextBlock}"
                                    Grid.Column="0"
+                                   Style="{StaticResource App.StandardTextBlock}"
                                    Margin="0,4,8,4"
                                    VerticalAlignment="Center"
                                    Text="Assembly" />
@@ -82,12 +87,11 @@
                                  Grid.Column="1"
                                  Margin="0,2"
                                  IsReadOnly="True"
-                                 Text="{Binding ModuleDiagnostic.Assembly,
-                                                ElementName=ModuleDetailRoot}" />
+                                 Text="{Binding Assembly}" />
 
                         <TextBlock Grid.Row="2"
-                                   Style="{StaticResource App.StandardTextBlock}"
                                    Grid.Column="0"
+                                   Style="{StaticResource App.StandardTextBlock}"
                                    Margin="0,4,8,4"
                                    VerticalAlignment="Center"
                                    Text="File path" />
@@ -96,35 +100,8 @@
                                  Grid.Column="1"
                                  Margin="0,2"
                                  IsReadOnly="True"
-                                 Text="{Binding ModuleDiagnostic.FilePath,
-                                                ElementName=ModuleDetailRoot}" />
+                                 Text="{Binding FilePath}" />
 
-                        <TextBox Grid.Row="3"
-                             Grid.Column="0"
-                             Grid.ColumnSpan="2"
-                             Margin="0,8,0,0"
-                             MinHeight="60"
-                             AcceptsReturn="True"
-                             TextWrapping="Wrap"
-                             VerticalScrollBarVisibility="Auto"
-                             IsReadOnly="True"
-                             Text="{Binding ModuleDiagnostic.ErrorDescription,
-                        ElementName=ModuleDetailRoot}">
-
-                            <TextBox.Style>
-                                <Style TargetType="TextBox">
-                                    <Style.Triggers>
-                                        <Trigger Property="Text"
-                         Value="">
-                                            <Setter Property="Visibility"
-                            Value="Collapsed" />
-                                        </Trigger>
-                                    </Style.Triggers>
-                                </Style>
-                            </TextBox.Style>
-
-                        </TextBox>
-                        
                     </Grid>
 
                 </Border>
@@ -134,25 +111,25 @@
             <!-- JSON -->
 
             <Expander Header="JSON"
-                      Style="{StaticResource App.SectionExpander}"
-                      IsExpanded="False"
-                      Margin="0,0,0,8">
+                  Style="{StaticResource App.SectionExpander}"
+                  IsExpanded="False"
+                  Margin="0,0,0,8">
 
                 <Border Background="{DynamicResource App.Background}"
-                        BorderBrush="{DynamicResource App.Border}"
-                        BorderThickness="1"
-                        Padding="8">
+                    BorderBrush="{DynamicResource App.Border}"
+                    BorderThickness="1"
+                    Padding="8">
 
-                    <TextBox Style="{StaticResource App.TextEditorTextBox}"
-                             Text="{Binding ModuleDiagnostic.Json, ElementName=ModuleDetailRoot}" />
+                    <TextBox x:Name="JsonTextBox"
+                 Style="{StaticResource App.TextEditorTextBox}" />
 
                 </Border>
 
             </Expander>
-
+            
             <!-- Contributions -->
 
-            <ItemsControl ItemsSource="{Binding ModuleDiagnostic.Contributions, ElementName=ModuleDetailRoot}">
+            <ItemsControl ItemsSource="{Binding Contributions}">
 
                 <ItemsControl.ItemTemplate>
                     <DataTemplate>
@@ -163,8 +140,8 @@
 
                             <Expander.Header>
                                 <StackPanel Orientation="Horizontal"
-                                    VerticalAlignment="Center"
-                                    Loaded="ContributionHeader_Loaded" />
+                                            VerticalAlignment="Center"
+                                            Loaded="ContributionHeader_Loaded" />
                             </Expander.Header>
 
                             <Border Background="{DynamicResource App.Background}"
@@ -173,6 +150,7 @@
                                     Padding="12">
 
                                 <Grid>
+
                                     <Grid.ColumnDefinitions>
                                         <ColumnDefinition Width="140" />
                                         <ColumnDefinition Width="*" />
@@ -189,8 +167,8 @@
                                     </Grid.RowDefinitions>
 
                                     <TextBlock Grid.Row="0"
-                                               Style="{StaticResource App.StandardTextBlock}"
                                                Grid.Column="0"
+                                               Style="{StaticResource App.StandardTextBlock}"
                                                Margin="0,4,8,4"
                                                VerticalAlignment="Center"
                                                Text="Label" />
@@ -202,8 +180,8 @@
                                              Text="{Binding Label}" />
 
                                     <TextBlock Grid.Row="1"
-                                               Style="{StaticResource App.StandardTextBlock}"
                                                Grid.Column="0"
+                                               Style="{StaticResource App.StandardTextBlock}"
                                                Margin="0,4,8,4"
                                                VerticalAlignment="Center"
                                                Text="Interface type" />
@@ -215,8 +193,8 @@
                                              Text="{Binding InterfaceType}" />
 
                                     <TextBlock Grid.Row="2"
-                                               Style="{StaticResource App.StandardTextBlock}"
                                                Grid.Column="0"
+                                               Style="{StaticResource App.StandardTextBlock}"
                                                Margin="0,4,8,4"
                                                VerticalAlignment="Center"
                                                Text="Class name" />
@@ -228,8 +206,8 @@
                                              Text="{Binding ClassName}" />
 
                                     <TextBlock Grid.Row="3"
-                                               Style="{StaticResource App.StandardTextBlock}"
                                                Grid.Column="0"
+                                               Style="{StaticResource App.StandardTextBlock}"
                                                Margin="0,4,8,4"
                                                VerticalAlignment="Center"
                                                Text="Active" />
@@ -241,8 +219,8 @@
                                              Text="{Binding Active}" />
 
                                     <TextBlock Grid.Row="4"
-                                               Style="{StaticResource App.StandardTextBlock}"
                                                Grid.Column="0"
+                                               Style="{StaticResource App.StandardTextBlock}"
                                                Margin="0,4,8,4"
                                                VerticalAlignment="Center"
                                                Text="Health check" />
@@ -251,11 +229,11 @@
                                              Grid.Column="1"
                                              Margin="0,2"
                                              IsReadOnly="True"
-                                             Text="{Binding ContributionHealthCheck}" />
+                                             Loaded="ContributionHealth_Loaded" />
 
                                     <TextBlock Grid.Row="5"
-                                               Style="{StaticResource App.StandardTextBlock}"
                                                Grid.Column="0"
+                                               Style="{StaticResource App.StandardTextBlock}"
                                                Margin="0,4,8,4"
                                                VerticalAlignment="Top"
                                                Text="Tags" />
@@ -267,33 +245,37 @@
 
                                         <ItemsControl.ItemTemplate>
                                             <DataTemplate>
+
                                                 <TextBox Margin="0,0,0,4"
-                                                     IsReadOnly="True"
-                                                     Text="{Binding Path=., Mode=OneWay}" />
+                                                         IsReadOnly="True"
+                                                         Text="{Binding Path=., Mode=OneWay}" />
+
                                             </DataTemplate>
                                         </ItemsControl.ItemTemplate>
 
                                     </ItemsControl>
 
                                     <TextBox Grid.Row="6"
-                                         Grid.Column="0"
-                                         Grid.ColumnSpan="2"
-                                         Margin="0,8,0,0"
-                                         MinHeight="60"
-                                         AcceptsReturn="True"
-                                         TextWrapping="Wrap"
-                                         VerticalScrollBarVisibility="Auto"
-                                         IsReadOnly="True"
-                                         Text="{Binding ErrorDescription}">
+                                             Grid.Column="0"
+                                             Grid.ColumnSpan="2"
+                                             Margin="0,8,0,0"
+                                             MinHeight="60"
+                                             AcceptsReturn="True"
+                                             TextWrapping="Wrap"
+                                             VerticalScrollBarVisibility="Auto"
+                                             IsReadOnly="True"
+                                             Loaded="ContributionError_Loaded">
 
                                         <TextBox.Style>
                                             <Style TargetType="TextBox">
                                                 <Style.Triggers>
+
                                                     <Trigger Property="Text"
-                         Value="">
+                                                             Value="">
                                                         <Setter Property="Visibility"
-                            Value="Collapsed" />
+                                                                Value="Collapsed" />
                                                     </Trigger>
+
                                                 </Style.Triggers>
                                             </Style>
                                         </TextBox.Style>

@@ -1,23 +1,29 @@
-﻿using Espluque.Contracts.ModuleInterfaces;
+﻿using Espluque.Contracts.Enums;
+using Espluque.Contracts.ModuleInterfaces;
 using Espluquer.Services;
 using System.Windows;
+using System.IO;
 using System.Windows.Controls;
 
 namespace Espluquer.UserControls.Modules
 {
     public partial class ModuleTestDetailUC : UserControl
     {
-        public static readonly DependencyProperty ModuleDiagnosticProperty =
-            DependencyProperty.Register(
-                nameof(ModuleDiagnostic),
-                typeof(IModuleDiagnostic),
-                typeof(ModuleTestDetailUC));
-
-        public IModuleDiagnostic? ModuleDiagnostic
+        public IModuleInfo? ModuleInfo
         {
-            get => (IModuleDiagnostic?)GetValue(ModuleDiagnosticProperty);
-            set => SetValue(ModuleDiagnosticProperty, value);
+            get => DataContext as IModuleInfo;
+            set
+            {
+                DataContext = value;
+
+                JsonTextBox.Text =
+                    value is not null && File.Exists(value.FilePath)
+                        ? File.ReadAllText(value.FilePath)
+                        : string.Empty;
+            }
         }
+
+        public List<IContributionHealth> ContributionHealths { get; set; } = [];
 
         public ModuleTestDetailUC()
         {
@@ -27,10 +33,17 @@ namespace Espluquer.UserControls.Modules
         private void ContributionHeader_Loaded( object sender, RoutedEventArgs e)
         {
             if ((sender is not StackPanel header)
-                || (header.DataContext is not IModuleContributionDiagnostic contribution))
+                || (header.DataContext is not IModuleContributionInfo contribution)
+                || ModuleInfo is null)
             {
                 return;
             }
+
+            IContributionHealth? contributionHealth =
+                ContributionHealths.FirstOrDefault(health =>
+                    health.ModuleName == ModuleInfo.Name &&
+                    health.ContribInterfaceType == contribution.InterfaceType &&
+                    health.ContribClassName == contribution.ClassName);
 
             header.Children.Clear();
 
@@ -41,8 +54,7 @@ namespace Espluquer.UserControls.Modules
 
             icon.SetResourceReference( FrameworkElement.StyleProperty, "ModuleContributionIconStyle");
 
-            string colorKey = ModuleTestService.GetContributionColorKey( contribution.InterfaceType, contribution.ContributionHealthCheck);
-
+            string colorKey = ModuleTestService.GetContributionColorKey(contribution.InterfaceType, contributionHealth?.HealthCheck ?? ModuleHealthCheckEnum.NotTested);
             icon.SetResourceReference( TextBlock.ForegroundProperty, colorKey);
 
             TextBlock label = new()
@@ -56,6 +68,43 @@ namespace Espluquer.UserControls.Modules
 
             header.Children.Add(icon);
             header.Children.Add(label);
+        }
+
+        private void ContributionHealth_Loaded(object sender, RoutedEventArgs e)
+        {
+            if ((sender is not TextBox textBox)
+                || (textBox.DataContext is not IModuleContributionInfo contribution)
+                || ModuleInfo is null)
+            {
+                return;
+            }
+
+            IContributionHealth? contributionHealth =
+                ContributionHealths.FirstOrDefault(health =>
+                    health.ModuleName == ModuleInfo.Name &&
+                    health.ContribInterfaceType == contribution.InterfaceType &&
+                    health.ContribClassName == contribution.ClassName);
+
+            textBox.Text =
+                (contributionHealth?.HealthCheck ?? ModuleHealthCheckEnum.NotTested).ToString();
+        }
+
+        private void ContributionError_Loaded(object sender, RoutedEventArgs e)
+        {
+            if ((sender is not TextBox textBox)
+                || (textBox.DataContext is not IModuleContributionInfo contribution)
+                || ModuleInfo is null)
+            {
+                return;
+            }
+
+            IContributionHealth? contributionHealth =
+                ContributionHealths.FirstOrDefault(health =>
+                    health.ModuleName == ModuleInfo.Name &&
+                    health.ContribInterfaceType == contribution.InterfaceType &&
+                    health.ContribClassName == contribution.ClassName);
+
+            textBox.Text = contributionHealth?.ErrorDescription ?? string.Empty;
         }
     }
 }

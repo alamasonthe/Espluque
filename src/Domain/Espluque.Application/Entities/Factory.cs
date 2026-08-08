@@ -125,5 +125,22 @@ namespace Espluque.Application.Entities
                 Summary = summary ?? []
             };
         }
+
+        public IContributionHealth CreateContributionHealth(
+            string moduleName,
+            string contribInterfaceType,
+            string contribClassName,
+            ModuleHealthCheckEnum healthCheck,
+            string? errorDescription)
+        {
+            return new ContributionHealth
+            {
+                ModuleName = moduleName,
+                ContribInterfaceType = contribInterfaceType,
+                ContribClassName = contribClassName,
+                HealthCheck = healthCheck,
+                ErrorDescription = errorDescription
+            };
+        }
     }
 }

@@ -39,7 +39,7 @@
                Grid.Column="1"
                Margin="15,0"
                VerticalAlignment="Center"
-               Text="{Binding ModuleDiagnostic.Name, ElementName=ModuleDiagElementRoot}"
+               Text="{Binding Name}"
                TextTrimming="CharacterEllipsis"/>
 
             <ContentControl x:Name="ContributionSummaryHost"

@@ -25,7 +25,7 @@
 
             <ListBox.ItemTemplate>
                 <DataTemplate>
-                    <local:ModuleTestLineUC ModuleDiagnostic="{Binding}" />
+                    <local:ModuleTestLineUC ContributionHealths="{Binding _contribHealths, RelativeSource={RelativeSource AncestorType=local:ModuleAdminUC}}" />
                 </DataTemplate>
             </ListBox.ItemTemplate>
 
