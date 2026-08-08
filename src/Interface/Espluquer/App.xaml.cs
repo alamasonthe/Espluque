@@ -5,7 +5,6 @@ using Espluquer.Services;
 using Espluquer.UserControls.Modules;
 using Espluquer.UserControls.Shell;
 using Espluquer.UserControls.Thesaurus;
-using Espluquer.UserControls.Debug;
 using Microsoft.Extensions.DependencyInjection;
 using System.Windows;
 
