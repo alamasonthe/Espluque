@@ -33,7 +33,7 @@ namespace Espluquer
             services.AddSingleton<ModuleAdminUC>();
             services.AddSingleton<ContributionMapUC>();
             services.AddSingleton<ReferenceUC>();
-            services.AddSingleton<ConceptSearchUC>();
+            services.AddTransient<ConceptSearchUC>();
 
             services.AddSingleton<WebView2Configuration>();
             services.AddSingleton<SqliteConfiguration>();

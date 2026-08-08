@@ -8,6 +8,7 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Threading;
 using Util;
+using Espluquer.UserControls.Shell;
 
 namespace Espluquer.UserControls.Thesaurus
 {
@@ -15,17 +16,22 @@ namespace Espluquer.UserControls.Thesaurus
     {
         private readonly IThesaurusService _thesaurusService;
         private readonly IEntityFactory _entityFactory;
+        private readonly ConceptSearchUC _conceptSearchUC;
         private TreeNode<IThesaurusConcept>? _rootNode;
 
         private ConceptDto? _selectedConceptDto;
         private Point? _dragStartPoint;
 
-        public ConceptUC(IThesaurusService thesaurusService, IEntityFactory entityFactory)
+        public ConceptUC(IThesaurusService thesaurusService, IEntityFactory entityFactory, ConceptSearchUC conceptSearchUC)
         {
             _thesaurusService = thesaurusService;
             _entityFactory = entityFactory;
+            _conceptSearchUC = conceptSearchUC;
 
             InitializeComponent();
+
+            ConceptSearchControl.Content = conceptSearchUC;
+            conceptSearchUC.ConceptSelected += Search_ConceptSelected;
         }
 
         protected override async Task RefreshAsync()
@@ -711,6 +717,71 @@ namespace Espluquer.UserControls.Thesaurus
             }
 
             return parent.ItemContainerGenerator.ContainerFromItem(item) as TreeViewItem;
+        }
+
+        #endregion
+
+
+        #region Search and select concept
+
+        private async void Search_ConceptSelected(ConceptDto concept)
+        {
+            await SelectConcept(concept.Id);
+            _conceptSearchUC.Clear();
+        }
+
+        private async Task SelectConcept(int? conceptId)
+        {
+            if (_rootNode is null || conceptId is not int id)
+            {
+                return;
+            }
+
+            TreeNode<IThesaurusConcept>? node =
+                FindTreeNodeByConceptId(_rootNode, id);
+
+            if (node is null)
+            {
+                return;
+            }
+
+            HashSet<int> parentConceptIds = [];
+
+            TreeNode<IThesaurusConcept>? parent = node.Parent;
+
+            while (parent is not null)
+            {
+                if (parent.Data?.Id is int parentId)
+                {
+                    parentConceptIds.Add(parentId);
+                }
+
+                parent = parent.Parent;
+            }
+
+            await ExpandBranchesAsync(ConceptTreeView, parentConceptIds);
+            await SelectTreeViewItem(id);
+        }
+
+        private static TreeNode<IThesaurusConcept>? FindTreeNodeByConceptId( TreeNode<IThesaurusConcept> node, int conceptId)
+        {
+            if (node.Data?.Id == conceptId)
+            {
+                return node;
+            }
+
+            foreach (TreeNode<IThesaurusConcept> child in node.Children)
+            {
+                TreeNode<IThesaurusConcept>? foundNode =
+                    FindTreeNodeByConceptId(child, conceptId);
+
+                if (foundNode is not null)
+                {
+                    return foundNode;
+                }
+            }
+
+            return null;
         }
 
         #endregion

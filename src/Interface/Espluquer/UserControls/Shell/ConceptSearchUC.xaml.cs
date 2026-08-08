@@ -3,6 +3,7 @@ using Espluque.Contracts.Ports;
 using Espluquer.Adapters;
 using Espluquer.Entities;
 using System.Collections.ObjectModel;
+using System.Windows;
 using System.Windows.Controls;
 
 namespace Espluquer.UserControls.Shell
@@ -14,9 +15,22 @@ namespace Espluquer.UserControls.Shell
         private readonly ISearchService _searchService;
         private readonly IEntityFactory _entityFactory;
 
-        private ObservableCollection<KeyValuePair<ConceptDto, string>> _concepts = [];
+        public static readonly DependencyProperty PlaceholderTextProperty = DependencyProperty.Register(
+                nameof(PlaceholderText),
+                typeof(string),
+                typeof(ConceptSearchUC),
+                new PropertyMetadata(string.Empty));
 
-        private bool _selectionInProgress;
+        public string PlaceholderText
+        {
+            get => (string)GetValue(PlaceholderTextProperty);
+            set => SetValue(PlaceholderTextProperty, value);
+        }
+
+        private ObservableCollection<KeyValuePair<ConceptDto, string>> _concepts = [];
+        public event Action<ConceptDto>? ConceptSelected;
+
+        private bool _ignoreSearchTextChanged;
 
         public ConceptSearchUC(IThesaurusService thesaurusService, ISearchService searchService, IEntityFactory entityFactory)
         {
@@ -30,7 +44,7 @@ namespace Espluquer.UserControls.Shell
 
         private async void SearchTextBox_TextChanged(object sender, TextChangedEventArgs e)
         {
-            if (_selectionInProgress) return;
+            if (_ignoreSearchTextChanged) return;
             await Search();
             ConceptPopup.IsOpen = _concepts.Count > 0;
         }
@@ -40,13 +54,15 @@ namespace Espluquer.UserControls.Shell
             if (ConceptList.SelectedItem is not KeyValuePair<ConceptDto, string> selectedResult)
                 return;
 
-            _selectionInProgress = true;
+            _ignoreSearchTextChanged = true;
+
+            ConceptSelected?.Invoke(selectedResult.Key);
 
             SearchTextBox.Text = selectedResult.Key.Term;
             SearchTextBox.CaretIndex = SearchTextBox.Text.Length;
             ConceptPopup.IsOpen = false;
 
-            _selectionInProgress = false;
+            _ignoreSearchTextChanged = false;
         }
 
         private async Task Search()
@@ -82,5 +98,15 @@ namespace Espluquer.UserControls.Shell
             }
         }
 
+        public void Clear()
+        {
+            _ignoreSearchTextChanged = true;
+
+            SearchTextBox.Clear();
+            _concepts.Clear();
+            ConceptPopup.IsOpen = false;
+
+            _ignoreSearchTextChanged = false;
+        }
     }
 }
