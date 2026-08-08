@@ -20,6 +20,7 @@ namespace Espluquer.UserControls.Thesaurus
         private TreeNode<IThesaurusConcept>? _rootNode;
 
         private ConceptDto? _selectedConceptDto;
+        private int? _selectedConceptId;
         private Point? _dragStartPoint;
 
         public ConceptUC(IThesaurusService thesaurusService, IEntityFactory entityFactory, ConceptSearchUC conceptSearchUC)
@@ -31,12 +32,17 @@ namespace Espluquer.UserControls.Thesaurus
             InitializeComponent();
 
             ConceptSearchControl.Content = conceptSearchUC;
+            conceptSearchUC.PlaceholderText = "Search";
             conceptSearchUC.ConceptSelected += Search_ConceptSelected;
         }
 
         protected override async Task RefreshAsync()
         {
             await LoadTreeAsync();
+            if (_selectedConceptId is not null)
+            {
+                await SelectConcept(_selectedConceptId);
+            }
         }
 
         private async Task LoadTreeAsync(HashSet<int>? expandedConceptIds = null)
@@ -160,6 +166,7 @@ namespace Espluquer.UserControls.Thesaurus
                 return;
             }
 
+            _selectedConceptId = selectedNode.Data.Id;
             _selectedConceptDto = ConceptAdapter.FromDomain(selectedNode.Data, _entityFactory);
             _selectedConceptDto.PropertyChanged += ConceptChanged;
 

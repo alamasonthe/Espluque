@@ -15,6 +15,26 @@
              Style="{StaticResource App.StandardTextBox}"
              TextChanged="SearchTextBox_TextChanged"/>
 
+            <TextBlock Text="{Binding PlaceholderText,
+                          RelativeSource={RelativeSource AncestorType=UserControl}}"
+                   IsHitTestVisible="False"
+                   VerticalAlignment="Center"
+                   Margin="8,0,0,0"
+                   Opacity="0.5">
+                <TextBlock.Style>
+                    <Style TargetType="TextBlock">
+                        <Setter Property="Visibility" Value="Collapsed"/>
+
+                        <Style.Triggers>
+                            <DataTrigger Binding="{Binding Text, ElementName=SearchTextBox}"
+                                     Value="">
+                                <Setter Property="Visibility" Value="Visible"/>
+                            </DataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                </TextBlock.Style>
+            </TextBlock>
+
         <Popup x:Name="ConceptPopup"
            PlacementTarget="{Binding ElementName=SearchTextBox}"
            Placement="Bottom"

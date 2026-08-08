@@ -120,6 +120,10 @@
 		<FolderDeletes Include="$(TargetDir)runtimes" />
 	</ItemGroup>
 
+	<ItemGroup>
+	  <Folder Include="UserControls\Debug\" />
+	</ItemGroup>
+
 	<Target Name="MoveDebugFiles" AfterTargets="CopyFilesToOutputDirectory" Condition="'$(Configuration)' == 'Debug'">
 
 		<ItemGroup>

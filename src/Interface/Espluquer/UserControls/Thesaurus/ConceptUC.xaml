@@ -24,7 +24,7 @@
                 <RowDefinition Height="*" />
             </Grid.RowDefinitions>
 
-            <ContentControl x:Name="ConceptSearchControl"/>
+            <ContentControl x:Name="ConceptSearchControl" Margin="5"/>
 
             <TreeView x:Name="ConceptTreeView"
                   Grid.Row="1"

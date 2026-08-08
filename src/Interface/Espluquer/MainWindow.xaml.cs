@@ -10,7 +10,6 @@ using Espluquer.UserControls.Thesaurus;
 using Espluquer.UserControls.Shell;
 using Espluquer.UserControls.Modules;
 using Espluquer.UserControls.Espluque;
-using Espluquer.UserControls.Debug;
 using Microsoft.Extensions.Logging;
 using Microsoft.Win32;
 using System.Diagnostics;
@@ -345,10 +344,6 @@ namespace Espluquer
                 //Debug
                 case "Debug.LogCatalog":
                     LogCatalog(_catalog);
-                    return;
-
-                case "Debug.SearchConcept":
-                    AddTab("Search Concept", _conceptSearchUC);
                     return;
 
                 // Espluque
