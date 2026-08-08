@@ -20,6 +20,7 @@
     <ProjectReference Include="..\Domain\Espluque.Application\Espluque.Application.csproj" />
     <ProjectReference Include="..\Domain\Espluque.Contracts\Espluque.Contracts.csproj" />
     <ProjectReference Include="..\Infrastructure\EspluqueSqlite\EspluqueSqlite.csproj" />
+    <ProjectReference Include="..\Infrastructure\LuceneSearch\LuceneSearch.csproj" />
     <ProjectReference Include="..\Infrastructure\MiniFileLogger\MiniFileLogger.csproj" />
     <ProjectReference Include="..\Infrastructure\SettingsJson\SettingsJson.csproj" />
     <ProjectReference Include="..\Shared\Util\Util.csproj" />

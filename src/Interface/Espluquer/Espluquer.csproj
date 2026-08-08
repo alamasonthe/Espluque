@@ -29,6 +29,13 @@
 	</PropertyGroup>
 
 	<ItemGroup>
+	  <Compile Remove="UserControls\ResultModeling\**" />
+	  <EmbeddedResource Remove="UserControls\ResultModeling\**" />
+	  <None Remove="UserControls\ResultModeling\**" />
+	  <Page Remove="UserControls\ResultModeling\**" />
+	</ItemGroup>
+
+	<ItemGroup>
 		<Resource Include="Espluquer.ico" />
 	</ItemGroup>
 
@@ -114,7 +121,7 @@
 	</ItemGroup>
 
 	<ItemGroup>
-	  <Folder Include="UserControls\ResultModeling\" />
+	  <Folder Include="UserControls\Debug\" />
 	</ItemGroup>
 
 	<Target Name="MoveDebugFiles" AfterTargets="CopyFilesToOutputDirectory" Condition="'$(Configuration)' == 'Debug'">
