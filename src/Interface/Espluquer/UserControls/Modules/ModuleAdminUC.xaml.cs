@@ -13,6 +13,7 @@ namespace Espluquer.UserControls.Modules
         // public List<string> _moduleFilePaths = [];
 
         public ObservableCollection<IModuleInfo> _modules = [];
+        public List<IModuleHealth> _moduleHealths { get; set; } = [];
         public List<IContributionHealth> _contribHealths { get; set; } = [];
 
         private readonly IModuleService _moduleService;
@@ -21,7 +22,7 @@ namespace Espluquer.UserControls.Modules
 
         private readonly ModuleTestDetailUC _moduleTestDetailUC;
 
-        public ModuleAdminUC(IModuleService moduleService, IModuleDiagnosticService moduleDiagnosticService, IEntityFactory entityFactory)
+        public ModuleAdminUC(IModuleService moduleService, IEntityFactory entityFactory)
         {
             _moduleService = moduleService;
             // _moduleDiagnosticService = moduleDiagnosticService;

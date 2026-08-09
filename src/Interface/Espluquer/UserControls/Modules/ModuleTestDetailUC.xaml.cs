@@ -104,7 +104,7 @@ namespace Espluquer.UserControls.Modules
                     health.ContribInterfaceType == contribution.InterfaceType &&
                     health.ContribClassName == contribution.ClassName);
 
-            textBox.Text = contributionHealth?.ErrorDescription ?? string.Empty;
+            textBox.Text = contributionHealth?.Diag ?? string.Empty;
         }
     }
 }

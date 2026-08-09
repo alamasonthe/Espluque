@@ -2,10 +2,8 @@
 
 namespace Espluque.Contracts.ModuleInterfaces
 {
-    public interface IContributionHealth
+    public interface IModuleHealth
     {
-        string ContribClassName { get; set; }
-        string ContribInterfaceType { get; set; }
         string? Diag { get; set; }
         ModuleHealthCheckEnum HealthCheck { get; set; }
         string ModuleName { get; set; }

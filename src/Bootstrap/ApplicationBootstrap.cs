@@ -41,7 +41,6 @@ namespace Bootstrap
             services.AddSingleton<ISearchService, SearchService>();
 
             services.AddSingleton<Espluque.Contracts.ModuleInterfaces.IModuleService, ModuleService>();
-            services.AddSingleton<Espluque.Contracts.ModuleInterfaces.IModuleDiagnosticService, ModuleDiagnosticService>();
 
             return services;
         }
