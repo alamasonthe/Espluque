@@ -1,10 +1,10 @@
-﻿using Espluque.Contracts.Enums;
-using Espluque.Contracts.ModuleInterfaces;
+﻿using Espluque.Contracts.ModuleInterfaces;
 using Espluquer.Entities;
 using Espluquer.Services;
 using System.IO;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Data;
 
 namespace Espluquer.UserControls.Modules
 {
@@ -25,6 +25,14 @@ namespace Espluquer.UserControls.Modules
         }
 
         public List<ContributionHealthDto> ContributionHealths { get; set; } = [];
+
+        public static readonly DependencyProperty ModuleHealthProperty = DependencyProperty.Register(nameof(ModuleHealth), typeof(ModuleHealthDto), typeof(ModuleTestDetailUC));
+
+        public ModuleHealthDto? ModuleHealth
+        {
+            get => (ModuleHealthDto?)GetValue(ModuleHealthProperty);
+            set => SetValue(ModuleHealthProperty, value);
+        }
 
         public ModuleTestDetailUC()
         {
@@ -55,8 +63,11 @@ namespace Espluquer.UserControls.Modules
 
             icon.SetResourceReference( FrameworkElement.StyleProperty, "ModuleContributionIconStyle");
 
-            string colorKey = ModuleTestService.GetContributionColorKey(contribution.InterfaceType, contributionHealth?.HealthCheck ?? ModuleHealthCheckEnum.NotTested);
-            icon.SetResourceReference( TextBlock.ForegroundProperty, colorKey);
+            if (contributionHealth is not null)
+            {
+                icon.SetBinding(TextBlock.ForegroundProperty,
+                    new Binding(nameof(ContributionHealthDto.HealthBrush)) { Source = contributionHealth, Mode = BindingMode.OneWay });
+            }
 
             TextBlock label = new()
             {
@@ -86,8 +97,11 @@ namespace Espluquer.UserControls.Modules
                     health.ContribInterfaceType == contribution.InterfaceType &&
                     health.ContribClassName == contribution.ClassName);
 
-            textBox.Text =
-                (contributionHealth?.HealthCheck ?? ModuleHealthCheckEnum.NotTested).ToString();
+            if (contributionHealth is not null)
+            {
+                textBox.SetBinding(TextBox.TextProperty,
+                    new Binding(nameof(ContributionHealthDto.HealthCheck)) { Source = contributionHealth, Mode = BindingMode.OneWay });
+            }
         }
 
         private void ContributionError_Loaded(object sender, RoutedEventArgs e)
@@ -105,7 +119,11 @@ namespace Espluquer.UserControls.Modules
                     health.ContribInterfaceType == contribution.InterfaceType &&
                     health.ContribClassName == contribution.ClassName);
 
-            textBox.Text = contributionHealth?.Diag ?? string.Empty;
+            if (contributionHealth is not null)
+            {
+                textBox.SetBinding(TextBox.TextProperty,
+                    new Binding(nameof(ContributionHealthDto.Diag)) { Source = contributionHealth, Mode = BindingMode.OneWay });
+            }
         }
     }
 }

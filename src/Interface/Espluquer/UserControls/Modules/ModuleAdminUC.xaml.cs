@@ -193,10 +193,16 @@ namespace Espluquer.UserControls.Modules
 
         }
 
-        private void ModuleListBox_SelectionChanged( object sender, SelectionChangedEventArgs e)
+        private void ModuleListBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            _moduleTestDetailUC.ModuleInfo = ModuleListBox.SelectedItem as IModuleInfo;
+            IModuleInfo? moduleInfo = ModuleListBox.SelectedItem as IModuleInfo;
+
             _moduleTestDetailUC.ContributionHealths = _contribHealths;
+            _moduleTestDetailUC.ModuleHealth = moduleInfo is null
+                ? null
+                : _moduleHealths.FirstOrDefault(health => health.ModuleName == moduleInfo.Name);
+
+            _moduleTestDetailUC.ModuleInfo = moduleInfo;
         }
 
         private void ModuleTestLineUC_Loaded(object sender, RoutedEventArgs e)
