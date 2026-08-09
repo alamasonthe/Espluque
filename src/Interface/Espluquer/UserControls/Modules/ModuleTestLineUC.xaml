@@ -30,11 +30,13 @@
             </Grid.ColumnDefinitions>
 
             <Ellipse x:Name="StatusEllipse"
-                 Grid.Column="0"
-                 Width="12"
-                 Height="12"
-                 Style="{StaticResource ModuleStatusEllipseStyle}" />
-
+                Grid.Column="0"
+                Width="12"
+                Height="12"
+                Style="{StaticResource ModuleStatusEllipseStyle}"
+                Fill="{Binding ModuleHealth.HealthBrush,
+                RelativeSource={RelativeSource AncestorType=UserControl}}" />
+            
             <TextBlock x:Name="ModuleNameTextBlock"
                Grid.Column="1"
                Margin="15,0"

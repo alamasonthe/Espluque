@@ -1,5 +1,7 @@
 ﻿using Espluque.Contracts.Enums;
 using Espluque.Theming.Services;
+using System.Windows;
+using System.Windows.Media;
 
 namespace Espluquer.Services
 {
@@ -60,6 +62,13 @@ namespace Espluquer.Services
             }
 
             return DefaultContributionColorKey;
+        }
+
+        public static Brush GetHealthBrush(ModuleHealthCheckEnum healthCheck)
+        {
+            string colorKey = GetHealthColorKey(healthCheck);
+
+            return (Brush)Application.Current.FindResource(colorKey);
         }
 
         public static string GetContributionColorKey(string interfaceType, ModuleHealthCheckEnum healthCheck)

@@ -3,6 +3,7 @@ using Espluque.Contracts.ModuleInterfaces;
 using Espluquer.Services;
 using System.Windows;
 using System.Windows.Controls;
+using Espluquer.Entities;
 
 namespace Espluquer.UserControls.Modules
 {
@@ -10,53 +11,27 @@ namespace Espluquer.UserControls.Modules
     {
         private static int _styleTestIndex;
         private IModuleInfo? ModuleInfo => DataContext as IModuleInfo;
-        public static readonly DependencyProperty ContributionHealthsProperty =
-            DependencyProperty.Register(
+        public static readonly DependencyProperty ContributionHealthsProperty = DependencyProperty.Register(
                 nameof(ContributionHealths),
-                typeof(List<IContributionHealth>),
+                typeof(List<ContributionHealthDto>),
                 typeof(ModuleTestLineUC));
 
-        public List<IContributionHealth> ContributionHealths
+        public List<ContributionHealthDto> ContributionHealths
         {
-            get => (List<IContributionHealth>)GetValue(ContributionHealthsProperty);
+            get => (List<ContributionHealthDto>)GetValue(ContributionHealthsProperty);
             set => SetValue(ContributionHealthsProperty, value);
         }
 
-        private ModuleHealthCheckEnum ModuleHealthCheck
+        public static readonly DependencyProperty ModuleHealthProperty =
+            DependencyProperty.Register(
+                nameof(ModuleHealth),
+                typeof(ModuleHealthDto),
+                typeof(ModuleTestLineUC));
+
+        public ModuleHealthDto ModuleHealth
         {
-            get
-            {
-                if (ModuleInfo is null)
-                {
-                    return ModuleHealthCheckEnum.NotTested;
-                }
-
-                var moduleHealths = ContributionHealths
-                    .Where(health => health.ModuleName == ModuleInfo.Name)
-                    .ToList();
-
-                if (moduleHealths.Count == 0)
-                {
-                    return ModuleHealthCheckEnum.NotTested;
-                }
-
-                if (moduleHealths.Any(health => health.HealthCheck == ModuleHealthCheckEnum.Error))
-                {
-                    return ModuleHealthCheckEnum.Error;
-                }
-
-                if (moduleHealths.Any(health => health.HealthCheck == ModuleHealthCheckEnum.Running))
-                {
-                    return ModuleHealthCheckEnum.Running;
-                }
-
-                if (moduleHealths.All(health => health.HealthCheck == ModuleHealthCheckEnum.Success))
-                {
-                    return ModuleHealthCheckEnum.Success;
-                }
-
-                return ModuleHealthCheckEnum.NotTested;
-            }
+            get => (ModuleHealthDto)GetValue(ModuleHealthProperty);
+            set => SetValue(ModuleHealthProperty, value);
         }
 
         public ModuleTestLineUC()
@@ -66,11 +41,8 @@ namespace Espluquer.UserControls.Modules
             Loaded += (_, _) =>
             {
                 ContributionSummaryHost.Content = CreateContributionSummary();
-                UpdateModuleHealth();
             };
         }
-
-        #region Build icon panel
 
         private StackPanel CreateContributionSummary()
         {
@@ -81,9 +53,7 @@ namespace Espluquer.UserControls.Modules
             };
 
             if (ModuleInfo is null)
-            {
                 return summaryPanel;
-            }
 
             var contributionGroups = ContributionHealths
                 .Where(health => health.ModuleName == ModuleInfo.Name)
@@ -98,79 +68,19 @@ namespace Espluquer.UserControls.Modules
 
                 if (contribGroupIndex > 0)
                 {
-                    TextBlock separator = new()
-                    {
-                        Text = "  ",
-                        VerticalAlignment = VerticalAlignment.Center
-                    };
-
-                    separator.SetResourceReference(
-                        TextBlock.ForegroundProperty,
-                        "App.TextMuted");
-
+                    TextBlock separator = new() { Text = "  ", VerticalAlignment = VerticalAlignment.Center };
+                    separator.SetResourceReference(TextBlock.ForegroundProperty, "App.TextMuted");
                     summaryPanel.Children.Add(separator);
                 }
 
-                int totalCount = contributionGroup.Count();
-
-                int successCount = contributionGroup.Count(
-                    health => health.HealthCheck == ModuleHealthCheckEnum.Success);
-
-                bool groupHasError = contributionGroup.Any(
-                    health => health.HealthCheck == ModuleHealthCheckEnum.Error);
-
-                ModuleHealthCheckEnum groupHealthCheck = groupHasError switch
-                {
-                    true => ModuleHealthCheckEnum.Error,
-                    false when successCount == totalCount => ModuleHealthCheckEnum.Success,
-                    _ => ModuleHealthCheckEnum.NotTested
-                };
-
-                TextBlock icon = new()
-                {
-                    Text = ModuleTestService.GetContributionIcon(contributionGroup.Key),
-                    FontSize = 20,
-                    VerticalAlignment = VerticalAlignment.Center
-                };
-
-                icon.SetResourceReference(
-                    TextBlock.FontFamilyProperty,
-                    "FluentIcons");
-
-                string colorKey = ModuleTestService.GetContributionColorKey(
-                    contributionGroup.Key,
-                    groupHealthCheck);
-
-                icon.SetResourceReference(
-                    TextBlock.ForegroundProperty,
-                    colorKey);
-
-                TextBlock count = new()
-                {
-                    Text = $" ({successCount}/{totalCount})",
-                    VerticalAlignment = VerticalAlignment.Center
-                };
-
-                count.SetResourceReference(
-                    TextBlock.ForegroundProperty,
-                    "App.Text");
-
-                summaryPanel.Children.Add(icon);
-                summaryPanel.Children.Add(count);
+                summaryPanel.Children.Add(
+                    new ContributionHealthGroup(
+                        contributionGroup.Key,
+                        contributionGroup.ToList())
+                    .DisplayBlock);
             }
 
             return summaryPanel;
-        }
-
-        #endregion
-
-        private void UpdateModuleHealth()
-        {
-            string colorKey = ModuleTestService.GetHealthColorKey(ModuleHealthCheck);
-
-            StatusEllipse.SetResourceReference(
-                System.Windows.Shapes.Shape.FillProperty,
-                colorKey);
         }
     }
 }

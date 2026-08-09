@@ -1,8 +1,9 @@
 ﻿using Espluque.Contracts.Enums;
 using Espluque.Contracts.ModuleInterfaces;
+using Espluquer.Entities;
 using Espluquer.Services;
-using System.Windows;
 using System.IO;
+using System.Windows;
 using System.Windows.Controls;
 
 namespace Espluquer.UserControls.Modules
@@ -23,7 +24,7 @@ namespace Espluquer.UserControls.Modules
             }
         }
 
-        public List<IContributionHealth> ContributionHealths { get; set; } = [];
+        public List<ContributionHealthDto> ContributionHealths { get; set; } = [];
 
         public ModuleTestDetailUC()
         {
@@ -39,7 +40,7 @@ namespace Espluquer.UserControls.Modules
                 return;
             }
 
-            IContributionHealth? contributionHealth =
+            ContributionHealthDto? contributionHealth =
                 ContributionHealths.FirstOrDefault(health =>
                     health.ModuleName == ModuleInfo.Name &&
                     health.ContribInterfaceType == contribution.InterfaceType &&
@@ -79,7 +80,7 @@ namespace Espluquer.UserControls.Modules
                 return;
             }
 
-            IContributionHealth? contributionHealth =
+            ContributionHealthDto? contributionHealth =
                 ContributionHealths.FirstOrDefault(health =>
                     health.ModuleName == ModuleInfo.Name &&
                     health.ContribInterfaceType == contribution.InterfaceType &&
@@ -98,7 +99,7 @@ namespace Espluquer.UserControls.Modules
                 return;
             }
 
-            IContributionHealth? contributionHealth =
+            ContributionHealthDto? contributionHealth =
                 ContributionHealths.FirstOrDefault(health =>
                     health.ModuleName == ModuleInfo.Name &&
                     health.ContribInterfaceType == contribution.InterfaceType &&

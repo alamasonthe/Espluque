@@ -1,5 +1,4 @@
-﻿using Espluque.Application.MessageBus.Entities;
-using Espluque.Contracts.Enums;
+﻿using Espluque.Contracts.Enums;
 using Espluque.Contracts.Interfaces;
 using Espluque.Contracts.ModuleInterfaces;
 using System.Reflection;
@@ -7,8 +6,17 @@ using System.Runtime.Loader;
 
 namespace Espluque.Application.ModuleManager.Services
 {
-    public class ModuleDiagService
+    public class ModuleDiagService : IModuleDiagService
     {
+        private static List<string> ContributionTypesRequiringTags { get; } =
+        [
+            "IDetector",
+            "IExploiter",
+            "IFusioner",
+            "IGrabber",
+            "IWpfViewer"
+        ];
+
         private readonly IThesaurusService _thesaurusService;
         private readonly IEntityFactory _entityFactory;
 
@@ -145,7 +153,7 @@ namespace Espluque.Application.ModuleManager.Services
             return (moduleInfo, moduleHealth);
         }
 
-        private async Task<IContributionHealth> DiagnoseContribAsync( IModuleInfo moduleInfo, IModuleContributionInfo contribution)
+        private async Task<IContributionHealth> DiagnoseContribAsync(IModuleInfo moduleInfo, IModuleContributionInfo contribution)
         {
             IContributionHealth contributionHealth = _entityFactory.CreateContributionHealth(
                 moduleInfo.Name,
@@ -161,7 +169,7 @@ namespace Espluque.Application.ModuleManager.Services
                 // 1 - Check contribution class
                 try
                 {
-                    string assemblyPath = Path.GetFullPath( Path.Combine( Path.GetDirectoryName(moduleInfo.FilePath)!, moduleInfo.Assembly));
+                    string assemblyPath = Path.GetFullPath(Path.Combine(Path.GetDirectoryName(moduleInfo.FilePath)!, moduleInfo.Assembly));
 
                     Assembly moduleAssembly = AssemblyLoadContext.Default.Assemblies
                         .First(assembly =>
@@ -194,37 +202,40 @@ namespace Espluque.Application.ModuleManager.Services
                 }
 
                 // 2 - Check contribution tags
-                try
+                if (ContributionTypesRequiringTags.Contains(contribution.InterfaceType))
                 {
-                    bool preferredTagFound = false;
-
-                    foreach (string tag in contribution.Tags)
+                    try
                     {
-                        (int ConceptId, string MainTerm)? concept = await _thesaurusService.GetConceptMainTermByTerm("Espluque", tag);
+                        bool preferredTagFound = false;
 
-                        if (concept is not null
-                            && string.Equals( concept.Value.MainTerm, tag, StringComparison.OrdinalIgnoreCase))
+                        foreach (string tag in contribution.Tags)
                         {
-                            preferredTagFound = true;
-                            diag.Add($"Check contribution tags: OK");
-                            break;
+                            (int ConceptId, string MainTerm)? concept = await _thesaurusService.GetConceptMainTermByTerm("Espluque", tag);
+
+                            if (concept is not null
+                                && string.Equals(concept.Value.MainTerm, tag, StringComparison.OrdinalIgnoreCase))
+                            {
+                                preferredTagFound = true;
+                                diag.Add($"Check contribution tags: OK");
+                                break;
+                            }
+                        }
+
+                        if (!preferredTagFound)
+                        {
+                            string message = contribution.Tags.Count == 0
+                                ? "No tag is defined for this contribution."
+                                : $"None of the contribution tags is a preferred thesaurus term: {string.Join(", ", contribution.Tags)}";
+
+                            diag.Add($"Check contribution tags: ERROR - {message}");
+                            contributionHealth.HealthCheck = ModuleHealthCheckEnum.Error;
                         }
                     }
-
-                    if (!preferredTagFound)
+                    catch (Exception ex)
                     {
-                        string message = contribution.Tags.Count == 0
-                            ? "No tag is defined for this contribution."
-                            : $"None of the contribution tags is a preferred thesaurus term: {string.Join(", ", contribution.Tags)}";
-
-                        diag.Add($"Check contribution tags: ERROR - {message}");
+                        diag.Add($"Check contribution tags: ERROR - {ex.GetBaseException().Message}");
                         contributionHealth.HealthCheck = ModuleHealthCheckEnum.Error;
                     }
-                }
-                catch (Exception ex)
-                {
-                    diag.Add($"Check contribution tags: ERROR - {ex.GetBaseException().Message}");
-                    contributionHealth.HealthCheck = ModuleHealthCheckEnum.Error;
                 }
 
             }

@@ -2,9 +2,10 @@
 using Espluque.Contracts.Interfaces;
 using Espluque.Contracts.ModuleInterfaces;
 using System.Collections.ObjectModel;
-using System.DirectoryServices;
 using System.Windows;
 using System.Windows.Controls;
+using Espluquer.Entities;
+using Espluquer.Adapters;
 
 namespace Espluquer.UserControls.Modules
 {
@@ -13,19 +14,19 @@ namespace Espluquer.UserControls.Modules
         // public List<string> _moduleFilePaths = [];
 
         public ObservableCollection<IModuleInfo> _modules = [];
-        public List<IModuleHealth> _moduleHealths { get; set; } = [];
-        public List<IContributionHealth> _contribHealths { get; set; } = [];
+        public List<ModuleHealthDto> _moduleHealths { get; set; } = [];
+        public List<ContributionHealthDto> _contribHealths { get; set; } = [];
 
         private readonly IModuleService _moduleService;
-        // private readonly IModuleDiagnosticService _moduleDiagnosticService;
+        private readonly IModuleDiagService _moduleDiagService;
         private readonly IEntityFactory _entityFactory;
 
         private readonly ModuleTestDetailUC _moduleTestDetailUC;
 
-        public ModuleAdminUC(IModuleService moduleService, IEntityFactory entityFactory)
+        public ModuleAdminUC(IModuleService moduleService, IModuleDiagService moduleDiagService, IEntityFactory entityFactory)
         {
             _moduleService = moduleService;
-            // _moduleDiagnosticService = moduleDiagnosticService;
+            _moduleDiagService = moduleDiagService;
             _entityFactory = entityFactory;
 
             InitializeComponent();
@@ -57,22 +58,23 @@ namespace Espluquer.UserControls.Modules
             return modules;
         }
 
-        private List<IContributionHealth> CreateContribHealths(List<IModuleInfo> modules)
+        private List<ContributionHealthDto> CreateContribHealths(List<IModuleInfo> modules)
         {
-            List<IContributionHealth> contribHealths  = [];
+            List<ContributionHealthDto> contribHealths = [];
 
-            foreach (var module in modules)
+            foreach (IModuleInfo module in modules)
             {
-                foreach (var contrib in module.Contributions)
+                foreach (IModuleContributionInfo contrib in module.Contributions)
                 {
+                    ContributionHealthDto contribHealth = new()
+                    {
+                        ModuleName = module.Name,
+                        ContribInterfaceType = contrib.InterfaceType,
+                        ContribClassName = contrib.ClassName,
+                        HealthCheck = ModuleHealthCheckEnum.NotTested,
+                        Diag = string.Empty
+                    };
 
-                    var contribHealth = _entityFactory.CreateContributionHealth(
-                    module.Name,
-                    contrib.InterfaceType,
-                    contrib.ClassName,
-                    ModuleHealthCheckEnum.NotTested,
-                    string.Empty
-                    );
                     contribHealths.Add(contribHealth);
                 }
             }
@@ -102,7 +104,7 @@ namespace Espluquer.UserControls.Modules
             */
         }
 
-        private async Task DiagnoseModules()
+        private async Task DiagnoseModulesOld()
         {
             /*
             for (int index = 0; index < _moduleDiagList.Count; index++)
@@ -122,11 +124,61 @@ namespace Espluquer.UserControls.Modules
             */
         }
 
+        private async Task DiagnoseModules()
+        {
+            foreach (IModuleInfo module in _modules)
+            {
+                (IModuleHealth moduleHealth, List<IContributionHealth> contributionHealths)
+                    = await _moduleDiagService.DiagAsync(module.FilePath);
+
+                ModuleHealthDto diagnosedModuleHealth =
+                    ModuleHealthAdapter.FromDomain(moduleHealth);
+
+                ModuleHealthDto? currentModuleHealth =
+                    _moduleHealths.FirstOrDefault(
+                        health => health.ModuleName == diagnosedModuleHealth.ModuleName);
+
+                if (currentModuleHealth is null)
+                {
+                    _moduleHealths.Add(diagnosedModuleHealth);
+                }
+                else
+                {
+                    currentModuleHealth.HealthCheck = diagnosedModuleHealth.HealthCheck;
+                    currentModuleHealth.Diag = diagnosedModuleHealth.Diag;
+                }
+
+                foreach (IContributionHealth contributionHealth in contributionHealths)
+                {
+                    ContributionHealthDto diagnosedContribHealth =
+                        ContributionHealthAdapter.FromDomain(contributionHealth);
+
+                    ContributionHealthDto? currentContribHealth =
+                        _contribHealths.FirstOrDefault(
+                            health =>
+                                health.ModuleName == diagnosedContribHealth.ModuleName
+                                && health.ContribInterfaceType == diagnosedContribHealth.ContribInterfaceType
+                                && health.ContribClassName == diagnosedContribHealth.ContribClassName);
+
+                    if (currentContribHealth is null)
+                    {
+                        _contribHealths.Add(diagnosedContribHealth);
+                    }
+                    else
+                    {
+                        currentContribHealth.HealthCheck = diagnosedContribHealth.HealthCheck;
+                        currentContribHealth.Diag = diagnosedContribHealth.Diag;
+                    }
+                }
+            }
+        }
+
         private async void ModuleDiagnosticUC_Loaded(object sender, RoutedEventArgs e)
         {
             Loaded -= ModuleDiagnosticUC_Loaded;
 
             _modules = new(await CreateModuleList());
+            _moduleHealths = CreateModuleHealths(_modules.ToList());
             _contribHealths = CreateContribHealths(_modules.ToList());
 
             ModuleListBox.ItemsSource = _modules;
@@ -136,8 +188,8 @@ namespace Espluquer.UserControls.Modules
                 ModuleListBox.SelectedIndex = 0;
             }
 
-            // await DiagnoseModules();
-            // if (ModuleListBox.SelectedIndex < 0 && _moduleDiagList.Count > 0) ModuleListBox.SelectedIndex = 0;
+            await DiagnoseModules();
+            if (ModuleListBox.SelectedIndex < 0 && _modules.Count > 0) ModuleListBox.SelectedIndex = 0;
 
         }
 
@@ -147,5 +199,30 @@ namespace Espluquer.UserControls.Modules
             _moduleTestDetailUC.ContributionHealths = _contribHealths;
         }
 
+        private void ModuleTestLineUC_Loaded(object sender, RoutedEventArgs e)
+        {
+            if (sender is not ModuleTestLineUC moduleLine || moduleLine.DataContext is not IModuleInfo moduleInfo)
+            {
+                return;
+            }
+            moduleLine.ModuleHealth = _moduleHealths.First( health => health.ModuleName == moduleInfo.Name);
+        }
+
+        private List<ModuleHealthDto> CreateModuleHealths(List<IModuleInfo> modules)
+        {
+            List<ModuleHealthDto> moduleHealths = [];
+
+            foreach (IModuleInfo module in modules)
+            {
+                moduleHealths.Add(new ModuleHealthDto
+                {
+                    ModuleName = module.Name,
+                    HealthCheck = ModuleHealthCheckEnum.NotTested,
+                    Diag = string.Empty
+                });
+            }
+
+            return moduleHealths;
+        }
     }
 }
