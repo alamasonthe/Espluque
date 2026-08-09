@@ -1,6 +1,8 @@
 {
   "name": "WebView2 module",
   "version": "0.0.1",
+  "Author": "Alamasonthe",
+  "description": "WebView2 module for handling WebView2 controls",
   "assembly": "WebView.dll",
   "contributions": [
     {

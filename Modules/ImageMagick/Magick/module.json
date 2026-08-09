@@ -1,6 +1,8 @@
 {
   "name": "ImageMagick module",
   "version": "0.0.1",
+  "Author": "Alamasonthe",
+  "description": "ImageMagick module for handling image files",
   "assembly": "Magick.dll",
   "contributions": [
     {

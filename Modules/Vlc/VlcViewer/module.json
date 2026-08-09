@@ -1,6 +1,8 @@
 {
   "name": "VLC viewer",
   "version": "0.0.1",
+  "Author": "Alamasonthe",
+  "description": "VLC video viewer module",
   "assembly": "VlcViewer.dll",
   "contributions": [
     {

@@ -1,6 +1,8 @@
 {
   "name": "SevenZip",
   "version": "0.0.1",
+  "Author": "Alamasonthe",
+  "description": "SevenZip viewer module",
   "assembly": "SevenZipViewer.dll",
   "contributions": [
     {

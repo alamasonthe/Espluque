@@ -1,6 +1,8 @@
 {
   "name": "AvalonEdit",
   "version": "0.0.1",
+  "Author": "Alamasonthe",
+  "description": "AvalonEdit viewer module",
   "assembly": "AvalonEditViewer.dll",
   "contributions": [
     {

@@ -1,6 +1,8 @@
 {
   "name": "TinyHTML.Wpf module",
   "version": "0.0.1",
+  "Author": "Alamasonthe",
+  "description": "TinyHTML Wpf module for handling HTML files",
   "assembly": "TinyHtml.dll",
   "contributions": [
     {

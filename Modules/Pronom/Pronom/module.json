@@ -1,6 +1,8 @@
 {
   "name": "Pronom module",
   "version": "0.0.1",
+  "Author": "Alamasonthe",
+  "description": "Pronom module for file type detection",
   "assembly": "Pronom.dll",
   "contributions": [
     {

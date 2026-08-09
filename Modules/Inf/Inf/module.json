@@ -1,6 +1,8 @@
 {
   "name": "Inf File module",
   "version": "0.0.1",
+  "Author": "Alamasonthe",
+  "description": "This module is for grabbing information from Inf files.",
   "assembly": "Inf.dll",
   "contributions": [
     {

@@ -1,6 +1,8 @@
 {
   "name": "Windows App Package",
   "version": "0.0.1",
+  "Author": "Alamasonthe",
+  "description": "Windows App Package module for handling Windows application packages",
   "assembly": "WindowsAppPackage.dll",
   "contributions": [
     {

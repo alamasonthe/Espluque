@@ -1,6 +1,8 @@
 {
   "name": "Software Package module",
   "version": "0.0.1",
+  "Author": "Alamasonthe",
+  "description": "Software package module for handling software installation packages",
   "assembly": "SoftwarePackage.dll",
   "contributions": [
     {

@@ -1,6 +1,8 @@
 {
   "name": "WpfHexaEditor",
   "version": "0.0.1",
+  "Author": "Alamasonthe",
+  "description": "Wpf Hexa Editor module for handling binary file editing",
   "assembly": "HexaEditor.dll",
   "contributions": [
     {

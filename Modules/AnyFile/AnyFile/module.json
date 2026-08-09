@@ -1,6 +1,8 @@
 {
   "name": "Any File module",
   "version": "0.0.1",
+  "Author": "Alamasonthe",
+  "description": "This is a template for creating a new any file module.",
   "assembly": "AnyFile.dll",
   "contributions": [
     {

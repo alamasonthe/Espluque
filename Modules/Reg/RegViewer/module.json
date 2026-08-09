@@ -1,6 +1,8 @@
 {
   "name": "Registry file Edit",
   "version": "0.0.1",
+  "Author": "Alamasonthe",
+  "description": "Registry file viewer module",
   "assembly": "RegViewer.dll",
   "contributions": [
     {

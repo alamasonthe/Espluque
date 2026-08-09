@@ -1,6 +1,8 @@
 {
   "name": "FFmpeg module",
   "version": "0.0.1",
+  "Author": "Alamasonthe",
+  "description": "FFmpeg module for handling video and audio files",
   "assembly": "FFmpeg.dll",
   "contributions": [
     {

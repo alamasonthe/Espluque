@@ -1,6 +1,8 @@
 {
   "name": "Fuse module",
   "version": "0.0.1",
+  "Author": "Espluque",
+  "description": "This is a template for creating a new fusioner module.",
   "assembly": "Espluque.Fusioner.dll",
   "contributions": [
     {

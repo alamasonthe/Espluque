@@ -1,6 +1,8 @@
 {
   "name": "LibMagic module",
   "version": "0.0.1",
+  "Author": "Alamasonthe",
+  "description": "LibMagic module for file type detection",
   "assembly": "LibMagic.dll",
   "contributions": [
     {

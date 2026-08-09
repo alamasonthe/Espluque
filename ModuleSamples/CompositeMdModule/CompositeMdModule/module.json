@@ -1,6 +1,8 @@
 {
   "name": "Composit Module Sample",
   "version": "0.0.1",
+  "Author": "Your Name",
+  "description": "A sample module that uses the Composite pattern to implement a Markdown viewer.",
   "assembly": "CompositeMdModule.dll",
   "contributions": [
     {

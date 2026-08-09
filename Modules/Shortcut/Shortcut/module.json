@@ -1,6 +1,8 @@
 {
   "name": "Shortcut File module",
   "version": "0.0.1",
+  "Author": "Alamasonthe",
+  "description": "Shortcut file module for handling .lnk files",
   "assembly": "Shortcut.dll",
   "contributions": [
     {

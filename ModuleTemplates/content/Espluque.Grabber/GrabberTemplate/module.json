@@ -1,6 +1,8 @@
 {
   "name": "Grabber Template module",
   "version": "0.0.1",
+  "Author": "Espluque",
+  "description": "This is a template for creating a new grabber module.",
   "assembly": "GrabberTemplate.dll",
   "contributions": [
     {
