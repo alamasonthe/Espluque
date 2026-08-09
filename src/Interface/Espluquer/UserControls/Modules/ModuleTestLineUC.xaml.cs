@@ -3,34 +3,46 @@ using Espluque.Contracts.ModuleInterfaces;
 using Espluquer.Services;
 using System.Windows;
 using System.Windows.Controls;
+using Espluquer.Entities;
 
 namespace Espluquer.UserControls.Modules
 {
     public partial class ModuleTestLineUC : UserControl
     {
         private static int _styleTestIndex;
+        private IModuleInfo? ModuleInfo => DataContext as IModuleInfo;
+        public static readonly DependencyProperty ContributionHealthsProperty = DependencyProperty.Register(
+                nameof(ContributionHealths),
+                typeof(List<ContributionHealthDto>),
+                typeof(ModuleTestLineUC));
 
-        public static readonly DependencyProperty ModuleDiagnosticProperty =
-            DependencyProperty.Register(
-                nameof(ModuleDiagnostic),
-                typeof(IModuleDiagnostic),
-                typeof(ModuleTestLineUC),
-                new PropertyMetadata(null, ModuleDiagnosticChanged));
-
-        public IModuleDiagnostic? ModuleDiagnostic
+        public List<ContributionHealthDto> ContributionHealths
         {
-            get => (IModuleDiagnostic?)GetValue(ModuleDiagnosticProperty);
-            set => SetValue(ModuleDiagnosticProperty, value);
+            get => (List<ContributionHealthDto>)GetValue(ContributionHealthsProperty);
+            set => SetValue(ContributionHealthsProperty, value);
+        }
+
+        public static readonly DependencyProperty ModuleHealthProperty =
+            DependencyProperty.Register(
+                nameof(ModuleHealth),
+                typeof(ModuleHealthDto),
+                typeof(ModuleTestLineUC));
+
+        public ModuleHealthDto ModuleHealth
+        {
+            get => (ModuleHealthDto)GetValue(ModuleHealthProperty);
+            set => SetValue(ModuleHealthProperty, value);
         }
 
         public ModuleTestLineUC()
         {
             InitializeComponent();
 
-            // Loaded += ModuleTestLineUC_Loaded;
+            Loaded += (_, _) =>
+            {
+                ContributionSummaryHost.Content = CreateContributionSummary();
+            };
         }
-
-        #region Build icon panel
 
         private StackPanel CreateContributionSummary()
         {
@@ -40,12 +52,15 @@ namespace Espluquer.UserControls.Modules
                 VerticalAlignment = VerticalAlignment.Center
             };
 
-            if (ModuleDiagnostic is null)
-            {
+            if (ModuleInfo is null)
                 return summaryPanel;
-            }
 
-            var contributionGroups = ModuleDiagnostic.Contributions.GroupBy(contribution => contribution.InterfaceType).ToList();
+            var contributionGroups = ContributionHealths
+                .Where(health => health.ModuleName == ModuleInfo.Name)
+                .GroupBy(health => health.ContribInterfaceType)
+                .OrderBy(group => ModuleTestService.GetContributionDisplayOrder(group.Key))
+                .ThenBy(group => group.Key)
+                .ToList();
 
             for (int contribGroupIndex = 0; contribGroupIndex < contributionGroups.Count; contribGroupIndex++)
             {
@@ -53,77 +68,19 @@ namespace Espluquer.UserControls.Modules
 
                 if (contribGroupIndex > 0)
                 {
-                    TextBlock separator = new()
-                    {
-                        Text = "  ",
-                        VerticalAlignment = VerticalAlignment.Center
-                    };
-                    separator.SetResourceReference(TextBlock.ForegroundProperty,"App.TextMuted");
+                    TextBlock separator = new() { Text = "  ", VerticalAlignment = VerticalAlignment.Center };
+                    separator.SetResourceReference(TextBlock.ForegroundProperty, "App.TextMuted");
                     summaryPanel.Children.Add(separator);
                 }
 
-                int totalCount = contributionGroup.Count();
-                int successCount = contributionGroup.Count( contribution => contribution.ContributionHealthCheck == ModuleHealthCheckEnum.Success);
-
-                bool groupHasError = false;
-                ModuleHealthCheckEnum groupHealthCheck = groupHasError switch
-                {
-                    true => ModuleHealthCheckEnum.Error,
-                    false when successCount == totalCount => ModuleHealthCheckEnum.Success,
-                    _ => ModuleHealthCheckEnum.NotTested
-                };
-
-                TextBlock icon = new()
-                {
-                    Text = ModuleTestService.GetContributionIcon(contributionGroup.Key), FontSize = 20, VerticalAlignment = VerticalAlignment.Center
-                };
-
-                icon.SetResourceReference( TextBlock.FontFamilyProperty, "FluentIcons");
-
-                string colorKey = ModuleTestService.GetContributionColorKey(contributionGroup.Key, groupHealthCheck);
-
-                icon.SetResourceReference( TextBlock.ForegroundProperty, colorKey);
-
-                TextBlock count = new()
-                {
-                    Text = $" ({successCount}/{totalCount})",
-                    VerticalAlignment = VerticalAlignment.Center
-                };
-
-                count.SetResourceReference( TextBlock.ForegroundProperty, "App.Text");
-
-                summaryPanel.Children.Add(icon);
-                summaryPanel.Children.Add(count);
+                summaryPanel.Children.Add(
+                    new ContributionHealthGroup(
+                        contributionGroup.Key,
+                        contributionGroup.ToList())
+                    .DisplayBlock);
             }
 
             return summaryPanel;
         }
-
-        #endregion
-
-        #region Module diagnostic change management
-
-        private static void ModuleDiagnosticChanged( DependencyObject dependencyObject, DependencyPropertyChangedEventArgs e)
-        {
-            ModuleTestLineUC moduleTestLine = (ModuleTestLineUC)dependencyObject;
-
-            moduleTestLine.UpdateContributionSummary();
-        }
-
-        private void UpdateContributionSummary()
-        {
-            ContributionSummaryHost.Content = null;
-
-            if ((ModuleDiagnostic is null)
-                || (ModuleDiagnostic.ModuleHealthCheck == ModuleHealthCheckEnum.NotTested)
-                || (ModuleDiagnostic.Contributions.Count == 0))
-            {
-                return;
-            }
-
-            ContributionSummaryHost.Content = CreateContributionSummary();
-        }
-
-        #endregion
     }
 }
