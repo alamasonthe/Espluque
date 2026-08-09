@@ -86,16 +86,6 @@ namespace Espluque.Application.Entities
             };
         }
 
-        public IModuleDiagnostic CreateModuleDiagnostic(
-            string filePath, string name)
-        {
-            return new ModuleDiagnostic
-            {
-                FilePath = filePath,
-                Name = name
-            };
-        }
-
         public IMessage CreateMessage(
             MessageTypeEnum messageType,
             string messageLabel,
@@ -123,6 +113,36 @@ namespace Espluque.Application.Entities
                 AssertionType = assertionType,
                 ClaimJson = claimJson,
                 Summary = summary ?? []
+            };
+        }
+
+        public IModuleHealth CreateModuleHealth(
+            string moduleName,
+            ModuleHealthCheckEnum healthCheck,
+            string? diag)
+        {
+            return new ModuleHealth
+            {
+                ModuleName = moduleName,
+                HealthCheck = healthCheck,
+                Diag = diag
+            };
+        }
+
+        public IContributionHealth CreateContributionHealth(
+            string moduleName,
+            string contribInterfaceType,
+            string contribClassName,
+            ModuleHealthCheckEnum healthCheck,
+            string? diag)
+        {
+            return new ContributionHealth
+            {
+                ModuleName = moduleName,
+                ContribInterfaceType = contribInterfaceType,
+                ContribClassName = contribClassName,
+                HealthCheck = healthCheck,
+                Diag = diag
             };
         }
     }

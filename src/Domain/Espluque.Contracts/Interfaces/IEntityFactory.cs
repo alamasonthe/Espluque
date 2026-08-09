@@ -13,7 +13,8 @@ public interface IEntityFactory
     IThesaurusTerm CreateThesaurusTerm(string? term, string? normalizedTerm, bool isPreferred, string? referenceName);
     IAnalysisMessage CreateAnalysisMessage(AnalysisMessageTypeEnum messageType, bool isCompleted, IFileFormat? fileFormat, IFileInformationPack? information, string? label, object? viewerUC);
     IFileInformationPack CreateFileInformationPack( string? label, List<KeyValuePair<string, string>>? information);
-    IModuleDiagnostic CreateModuleDiagnostic( string filePath, string name);
     IMessage CreateMessage( MessageTypeEnum messageType, string messageLabel, List<KeyValuePair<string, string>> payload);
     IAssertion CreateAssertion(string sourceModule, string sourceContribution, string assertionType, string claimJson, List<KeyValuePair<string, string>>? summary);
+    IModuleHealth CreateModuleHealth(string moduleName, ModuleHealthCheckEnum healthCheck, string? diag);
+    IContributionHealth CreateContributionHealth(string moduleName, string contribInterfaceType, string contribClassName, ModuleHealthCheckEnum healthCheck, string? diag);
 }
