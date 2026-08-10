@@ -1,23 +1,29 @@
 {
   "name": "TinyHTML.Wpf module",
   "version": "0.0.1",
-  "Author": "Alamasonthe",
+  "author": "Alamasonthe",
   "description": "TinyHTML Wpf module for handling HTML files",
   "assembly": "TinyHtml.dll",
   "contributions": [
     {
       "interfaceType": "IWpfViewer",
       "label": "TinyHTML Viewer",
+      "description": "",
       "className": "TinyHtml.WpfViewer",
-      "tags": [ "HTML file" ],
-      "active": true
+      "contributionSettings": {
+        "tags": [ "HTML file" ],
+        "active": true
+      }
     },
     {
       "interfaceType": "IManagedDependencies",
       "label": "TinyHTML dependency list",
+      "description": "",
       "className": "TinyHtml.WpfViewer",
-      "tags": [],
-      "active": true
+      "contributionSettings": {
+        "tags": [],
+        "active": true
+      }
     }
   ]
 }

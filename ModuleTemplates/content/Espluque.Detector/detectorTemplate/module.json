@@ -1,16 +1,19 @@
 {
   "name": "Detect module",
   "version": "0.0.1",
-  "Author": "Espluque",
+  "author": "Espluque",
   "description": "This is a template for creating a new detector module.",
   "assembly": "detectorTemplate.dll",
   "contributions": [
     {
       "interfaceType": "IDetector",
       "label": "Template detector",
+      "description": "",
       "className": "detectorTemplate.Detector",
-      "tags": [ "AnyFile" ],
-      "active": true
+      "contributionSettings": {
+        "tags": [ "AnyFile" ],
+        "active": true
+      }
     }
   ]
 }

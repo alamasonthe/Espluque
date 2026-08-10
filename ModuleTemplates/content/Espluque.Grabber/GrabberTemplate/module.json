@@ -1,16 +1,19 @@
 {
   "name": "Grabber Template module",
   "version": "0.0.1",
-  "Author": "Espluque",
+  "author": "Espluque",
   "description": "This is a template for creating a new grabber module.",
   "assembly": "GrabberTemplate.dll",
   "contributions": [
     {
       "interfaceType": "IGrabber",
       "label": "Template Grabber",
+      "description": "",
       "className": "GrabberTemplate.Grabber",
-      "tags": [ "AnyFile" ],
-      "active": true
+      "contributionSettings": {
+        "tags": [ "AnyFile" ],
+        "active": true
+      }
     }
   ]
 }

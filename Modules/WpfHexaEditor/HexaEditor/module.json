@@ -1,23 +1,29 @@
 {
   "name": "WpfHexaEditor",
   "version": "0.0.1",
-  "Author": "Alamasonthe",
+  "author": "Alamasonthe",
   "description": "Wpf Hexa Editor module for handling binary file editing",
   "assembly": "HexaEditor.dll",
   "contributions": [
     {
       "interfaceType": "IWpfViewer",
       "label": "Wpf Hexa Editor",
+      "description": "",
       "className": "HexaEditor.Viewer",
-      "tags": [ "Binary" ],
-      "active": true
+      "contributionSettings": {
+        "tags": [ "Binary" ],
+        "active": true
+      }
     },
     {
       "interfaceType": "IManagedDependencies",
       "label": "HexaEditor dependency list",
+      "description": "",
       "className": "HexaEditor.Viewer",
-      "tags": [],
-      "active": true
+      "contributionSettings": {
+        "tags": [],
+        "active": true
+      }
     }
   ]
 }

@@ -1,30 +1,39 @@
 {
   "name": "Windows App Package",
   "version": "0.0.1",
-  "Author": "Alamasonthe",
+  "author": "Alamasonthe",
   "description": "Windows App Package module for handling Windows application packages",
   "assembly": "WindowsAppPackage.dll",
   "contributions": [
     {
       "interfaceType": "IDetector",
       "label": "WindowsAppPackage detector",
+      "description": "",
       "className": "WindowsAppPackage.Detector",
-      "tags": [ "Windows App" ],
-      "active": true
+      "contributionSettings": {
+        "tags": [ "Windows App" ],
+        "active": true
+      }
     },
     {
       "interfaceType": "IGrabber",
       "label": "Windows App Package infos",
+      "description": "",
       "className": "WindowsAppPackage.PackageGrabber",
-      "tags": [ "Windows App Package" ],
-      "active": true
+      "contributionSettings": {
+        "tags": [ "Windows App Package" ],
+        "active": true
+      }
     },
     {
       "interfaceType": "IGrabber",
       "label": "Windows App Bundle infos",
+      "description": "",
       "className": "WindowsAppPackage.BundleGrabber",
-      "tags": [ "Windows App Bundle" ],
-      "active": true
+      "contributionSettings": {
+        "tags": [ "Windows App Bundle" ],
+        "active": true
+      }
     }
   ]
 }

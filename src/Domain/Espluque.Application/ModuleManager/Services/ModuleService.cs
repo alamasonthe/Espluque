@@ -23,6 +23,7 @@ namespace Espluque.Application.ModuleManager.Services
                 JsonSerializerOptions jsonOptions = new() { PropertyNameCaseInsensitive = true };
 
                 jsonOptions.Converters.Add(new ModuleContributionJsonConverter());
+                jsonOptions.Converters.Add(new ContributionSettingsJsonConverter());
 
                 ModuleInfo? moduleInfo = JsonSerializer.Deserialize<Application.ModuleManager.Entities.ModuleInfo>(json, jsonOptions);
                 moduleInfo.FilePath = moduleInfoPath;

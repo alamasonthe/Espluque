@@ -1,16 +1,19 @@
 {
   "name": "SevenZip",
   "version": "0.0.1",
-  "Author": "Alamasonthe",
+  "author": "Alamasonthe",
   "description": "SevenZip viewer module",
   "assembly": "SevenZipViewer.dll",
   "contributions": [
     {
       "interfaceType": "IWpfViewer",
       "label": "7zip explorer",
+      "description": "",
       "className": "SevenZipViewer.Viewer",
-      "tags": [ "Binary" ],
-      "active": true
+      "contributionSettings": {
+        "tags": [ "Binary" ],
+        "active": true
+      }
     }
   ]
 }

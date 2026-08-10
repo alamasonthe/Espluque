@@ -1,37 +1,49 @@
 {
   "name": "Shortcut File module",
   "version": "0.0.1",
-  "Author": "Alamasonthe",
+  "author": "Alamasonthe",
   "description": "Shortcut file module for handling .lnk files",
   "assembly": "Shortcut.dll",
   "contributions": [
     {
       "interfaceType": "IGrabber",
       "label": "Shortcut infos",
+      "description": "",
       "className": "Shortcut.ShortcutInfosGrabber",
-      "tags": [ "Shortcut" ],
-      "active": true
+      "contributionSettings": {
+        "tags": [ "Shortcut" ],
+        "active": true
+      }
     },
     {
       "interfaceType": "IGrabber",
       "label": "Shortcut Link Flags",
+      "description": "",
       "className": "Shortcut.LinkFlagsGrabber",
-      "tags": [ "Shortcut" ],
-      "active": true
+      "contributionSettings": {
+        "tags": [ "Shortcut" ],
+        "active": true
+      }
     },
     {
       "interfaceType": "IGrabber",
       "label": "Shortcut Link Resolution Data",
+      "description": "",
       "className": "Shortcut.LinkResolutionDataGrabber",
-      "tags": [ "Shortcut" ],
-      "active": true
+      "contributionSettings": {
+        "tags": [ "Shortcut" ],
+        "active": true
+      }
     },
     {
       "interfaceType": "IGrabber",
       "label": "Shortcut Tracker Data",
+      "description": "",
       "className": "Shortcut.TrackerDataGrabber",
-      "tags": [ "Shortcut" ],
-      "active": true
+      "contributionSettings": {
+        "tags": [ "Shortcut" ],
+        "active": true
+      }
     }
   ]
 }

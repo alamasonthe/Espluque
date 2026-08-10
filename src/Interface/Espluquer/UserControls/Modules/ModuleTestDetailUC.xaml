@@ -198,6 +198,7 @@
                                         <RowDefinition Height="Auto" />
                                         <RowDefinition Height="Auto" />
                                         <RowDefinition Height="Auto" />
+                                        <RowDefinition Height="Auto" />
                                     </Grid.RowDefinitions>
 
                                     <TextBlock Grid.Row="0"
@@ -214,68 +215,83 @@
                                              Text="{Binding Label}" />
 
                                     <TextBlock Grid.Row="1"
-                                               Grid.Column="0"
-                                               Style="{StaticResource App.StandardTextBlock}"
-                                               Margin="0,4,8,4"
-                                               VerticalAlignment="Center"
-                                               Text="Interface type" />
+                                       Grid.Column="0"
+                                       Style="{StaticResource App.StandardTextBlock}"
+                                       Margin="0,4,8,4"
+                                       VerticalAlignment="Top"
+                                       Text="Description" />
 
                                     <TextBox Grid.Row="1"
-                                             Grid.Column="1"
-                                             Margin="0,2"
-                                             IsReadOnly="True"
-                                             Text="{Binding InterfaceType}" />
+                                         Grid.Column="1"
+                                         Margin="0,2"
+                                         MinHeight="60"
+                                         TextWrapping="Wrap"
+                                         VerticalContentAlignment="Top"
+                                         Text="{Binding Description}" />
 
                                     <TextBlock Grid.Row="2"
                                                Grid.Column="0"
                                                Style="{StaticResource App.StandardTextBlock}"
                                                Margin="0,4,8,4"
                                                VerticalAlignment="Center"
-                                               Text="Class name" />
+                                               Text="Interface type" />
 
                                     <TextBox Grid.Row="2"
                                              Grid.Column="1"
                                              Margin="0,2"
                                              IsReadOnly="True"
-                                             Text="{Binding ClassName}" />
+                                             Text="{Binding InterfaceType}" />
 
                                     <TextBlock Grid.Row="3"
                                                Grid.Column="0"
                                                Style="{StaticResource App.StandardTextBlock}"
                                                Margin="0,4,8,4"
                                                VerticalAlignment="Center"
-                                               Text="Active" />
+                                               Text="Class name" />
 
                                     <TextBox Grid.Row="3"
                                              Grid.Column="1"
                                              Margin="0,2"
                                              IsReadOnly="True"
-                                             Text="{Binding Active}" />
+                                             Text="{Binding ClassName}" />
 
                                     <TextBlock Grid.Row="4"
                                                Grid.Column="0"
                                                Style="{StaticResource App.StandardTextBlock}"
                                                Margin="0,4,8,4"
                                                VerticalAlignment="Center"
-                                               Text="Health check" />
+                                               Text="Active" />
 
                                     <TextBox Grid.Row="4"
                                              Grid.Column="1"
                                              Margin="0,2"
                                              IsReadOnly="True"
-                                             Loaded="ContributionHealth_Loaded" />
+                                             Text="{Binding ContributionSettings.Active}" />
 
                                     <TextBlock Grid.Row="5"
+                                               Grid.Column="0"
+                                               Style="{StaticResource App.StandardTextBlock}"
+                                               Margin="0,4,8,4"
+                                               VerticalAlignment="Center"
+                                               Text="Health check" />
+
+                                    <TextBox Grid.Row="5"
+                                             Grid.Column="1"
+                                             Margin="0,2"
+                                             IsReadOnly="True"
+                                             Loaded="ContributionHealth_Loaded" />
+
+                                    <TextBlock Grid.Row="6"
                                                Grid.Column="0"
                                                Style="{StaticResource App.StandardTextBlock}"
                                                Margin="0,4,8,4"
                                                VerticalAlignment="Top"
                                                Text="Tags" />
 
-                                    <ItemsControl Grid.Row="5"
+                                    <ItemsControl Grid.Row="6"
                                                   Grid.Column="1"
                                                   Margin="0,2"
-                                                  ItemsSource="{Binding Tags}">
+                                                  ItemsSource="{Binding ContributionSettings.Tags}">
 
                                         <ItemsControl.ItemTemplate>
                                             <DataTemplate>
@@ -289,7 +305,7 @@
 
                                     </ItemsControl>
 
-                                    <TextBox Grid.Row="6"
+                                    <TextBox Grid.Row="7"
                                              Grid.Column="0"
                                              Grid.ColumnSpan="2"
                                              Margin="0,8,0,0"

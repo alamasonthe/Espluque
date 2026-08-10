@@ -1,23 +1,29 @@
 {
   "name": "FFmpeg module",
   "version": "0.0.1",
-  "Author": "Alamasonthe",
+  "author": "Alamasonthe",
   "description": "FFmpeg module for handling video and audio files",
   "assembly": "FFmpeg.dll",
   "contributions": [
     {
       "interfaceType": "IGrabber",
       "label": "FFmpeg media properties",
+      "description": "",
       "className": "FFmpeg.MediaInfosGrabber",
-      "tags": [ "Video" ],
-      "active": true
+      "contributionSettings": {
+        "tags": [ "Video" ],
+        "active": true
+      }
     },
     {
       "interfaceType": "IManagedDependencies",
       "label": "FFmpaeg dependency list",
+      "description": "",
       "className": "FFmpeg.Preload",
-      "tags": [],
-      "active": true
+      "contributionSettings": {
+        "tags": [],
+        "active": true
+      }
     }
   ]
 }

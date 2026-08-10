@@ -73,14 +73,14 @@ namespace Espluque.Application.ModuleManager.Services
                         continue;
                     }
 
-                    if (!contribution.Active) { continue; }
+                    if (!contribution.ContributionSettings.Active) { continue; }
 
                     catalogEntries.Add(new CatalogEntry
                     {
                         InterfaceType = contribution.InterfaceType,
                         Label = contribution.Label,
                         ClassName = contribution.ClassName,
-                        Tags = contribution.Tags ?? [],
+                        Tags = contribution.ContributionSettings.Tags ?? [],
                         AssemblyPath = assemblyPath,
                         Assembly = assembly,
                         ModuleName = moduleInfo.Name,

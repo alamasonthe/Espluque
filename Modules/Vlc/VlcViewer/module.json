@@ -1,23 +1,29 @@
 {
   "name": "VLC viewer",
   "version": "0.0.1",
-  "Author": "Alamasonthe",
+  "author": "Alamasonthe",
   "description": "VLC video viewer module",
   "assembly": "VlcViewer.dll",
   "contributions": [
     {
       "interfaceType": "IWpfViewer",
       "label": "VLC video viewer",
+      "description": "",
       "className": "VlcViewer.Viewer",
-      "tags": [ "Binary" ],
-      "active": true
+      "contributionSettings": {
+        "tags": [ "Binary" ],
+        "active": true
+      }
     },
     {
       "interfaceType": "IManagedDependencies",
       "label": "VLC dependency list",
+      "description": "",
       "className": "VlcViewer.Preload",
-      "tags": [],
-      "active": true
+      "contributionSettings": {
+        "tags": [],
+        "active": true
+      }
     }
   ]
 }

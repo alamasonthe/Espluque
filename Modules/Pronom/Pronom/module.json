@@ -1,23 +1,29 @@
 {
   "name": "Pronom module",
   "version": "0.0.1",
-  "Author": "Alamasonthe",
+  "author": "Alamasonthe",
   "description": "Pronom module for file type detection",
   "assembly": "Pronom.dll",
   "contributions": [
     {
       "interfaceType": "IDetector",
       "label": "Pronom detector",
+      "description": "",
       "className": "Pronom.Detector",
-      "tags": [ "AnyFile" ],
-      "active": true
+      "contributionSettings": {
+        "tags": [ "AnyFile" ],
+        "active": true
+      }
     },
     {
       "interfaceType": "IWpfMaintenance",
       "label": "Pronom maintenance",
+      "description": "",
       "className": "Pronom.Maintenance",
-      "tags": [],
-      "active": true
+      "contributionSettings": {
+        "tags": [],
+        "active": true
+      }
     }
   ]
 }
