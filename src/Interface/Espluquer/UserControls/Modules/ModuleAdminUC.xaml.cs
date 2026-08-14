@@ -23,7 +23,7 @@ namespace Espluquer.UserControls.Modules
 
         private readonly ModuleTestDetailUC _moduleTestDetailUC;
 
-        public ModuleAdminUC(IModuleService moduleService, IModuleDiagService moduleDiagService, IEntityFactory entityFactory)
+        public ModuleAdminUC(IModuleService moduleService, IModuleDiagService moduleDiagService, IEntityFactory entityFactory, IContributionSettingsService contributionSettingsService)
         {
             _moduleService = moduleService;
             _moduleDiagService = moduleDiagService;
@@ -31,7 +31,7 @@ namespace Espluquer.UserControls.Modules
 
             InitializeComponent();
 
-            _moduleTestDetailUC = new ModuleTestDetailUC();
+            _moduleTestDetailUC = new ModuleTestDetailUC(_moduleService, contributionSettingsService);
 
             ModuleDetailsHost.Content = _moduleTestDetailUC;
 
