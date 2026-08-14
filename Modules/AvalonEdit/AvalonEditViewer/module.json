@@ -1,21 +1,29 @@
 {
   "name": "AvalonEdit",
   "version": "0.0.1",
+  "author": "Alamasonthe",
+  "description": "AvalonEdit viewer module",
   "assembly": "AvalonEditViewer.dll",
   "contributions": [
     {
       "interfaceType": "IWpfViewer",
       "label": "Avalon Text Editor",
+      "description": "",
       "className": "AvalonEditViewer.Viewer",
-      "tags": [ "Text" ],
-      "active": true
+      "contributionSettings": {
+        "tags": [ "Text" ],
+        "active": true
+      }
     },
     {
       "interfaceType": "IManagedDependencies",
       "label": "Avalon dependency list",
+      "description": "",
       "className": "AvalonEditViewer.Viewer",
-      "tags": [],
-      "active": true
+      "contributionSettings": {
+        "tags": [],
+        "active": true
+      }
     }
   ]
 }

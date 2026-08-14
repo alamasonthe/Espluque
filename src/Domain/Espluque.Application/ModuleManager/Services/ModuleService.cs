@@ -1,6 +1,8 @@
-﻿using Espluque.Application.ModuleManager.Entities;
+﻿using Espluque.Application.ModuleManager;
+using Espluque.Application.ModuleManager.Entities;
 using Espluque.Contracts.ModuleInterfaces;
 using Espluque.Contracts.ModuleInterfaces.Contributions;
+using Espluque.Contracts.Ports;
 using System.Reflection;
 using System.Runtime.Loader;
 using System.Text.Json;
@@ -9,6 +11,13 @@ namespace Espluque.Application.ModuleManager.Services
 {
     public class ModuleService : IModuleService
     {
+        private readonly ContributionSettingsService _contributionSettingsService;
+
+        public ModuleService(ISettingsService settingsService)
+        {
+            _contributionSettingsService = new(settingsService);
+        }
+
         public List<string> GetModuleInfoPaths(string modulesRootPath)
         {
             string[] moduleInfoPaths = Directory.GetFiles(modulesRootPath, "module.json", SearchOption.AllDirectories);
@@ -23,15 +32,69 @@ namespace Espluque.Application.ModuleManager.Services
                 JsonSerializerOptions jsonOptions = new() { PropertyNameCaseInsensitive = true };
 
                 jsonOptions.Converters.Add(new ModuleContributionJsonConverter());
+                jsonOptions.Converters.Add(new ContributionSettingsJsonConverter());
 
                 ModuleInfo? moduleInfo = JsonSerializer.Deserialize<Application.ModuleManager.Entities.ModuleInfo>(json, jsonOptions);
+                if (moduleInfo is null)
+                {
+                    return null;
+                }
                 moduleInfo.FilePath = moduleInfoPath;
+
+
+                foreach (IModuleContributionInfo contribution in moduleInfo.Contributions)
+                {
+                    IContributionSettings? userSettings =
+                        await _contributionSettingsService.GetUserSettings(
+                            moduleInfo.Assembly,
+                            contribution.InterfaceType,
+                            contribution.ClassName);
+
+                    if (userSettings is not null)
+                    {
+                        contribution.ContributionSettings = userSettings;
+                    }
+                }
+
                 return moduleInfo;
             }
             catch (Exception ex)
             {
                 // log!
                 return null;
+            }
+        }
+
+        public async Task<bool> SaveModuleInfo(IModuleInfo moduleInfo, string? filePath = null)
+        {
+            try
+            {
+                JsonSerializerOptions jsonOptions = new()
+                {
+                    PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
+                    WriteIndented = true
+                };
+
+                jsonOptions.Converters.Add(new ModuleContributionJsonConverter());
+                jsonOptions.Converters.Add(new ContributionSettingsJsonConverter());
+
+                string json = JsonSerializer.Serialize(
+                    moduleInfo,
+                    moduleInfo.GetType(),
+                    jsonOptions);
+
+                string targetPath = string.IsNullOrWhiteSpace(filePath)
+                    ? moduleInfo.FilePath
+                    : filePath;
+
+                await File.WriteAllTextAsync(targetPath, json);
+
+                return true;
+            }
+            catch (Exception ex)
+            {
+                // log!
+                return false;
             }
         }
 

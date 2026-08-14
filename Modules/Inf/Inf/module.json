@@ -1,14 +1,19 @@
 {
   "name": "Inf File module",
   "version": "0.0.1",
+  "author": "Alamasonthe",
+  "description": "This module is for grabbing information from Inf files.",
   "assembly": "Inf.dll",
   "contributions": [
     {
       "interfaceType": "IGrabber",
       "label": "Inf Version Section",
+      "description": "",
       "className": "Inf.InfVersionSectionGrabber",
-      "tags": [ "Inf file" ],
-      "active": true
+      "contributionSettings": {
+        "tags": [ "Inf file" ],
+        "active": true
+      }
     }
   ]
 }

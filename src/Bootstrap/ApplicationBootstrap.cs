@@ -19,13 +19,15 @@ namespace Bootstrap
 
             services.AddSingleton<IEntityFactory,Factory>();
 
-            services.AddSingleton<Espluque.Contracts.Ports.ISettingsService, SettingsJson.SettingsService>();
+            ISettingsService settingsService = new SettingsJson.SettingsService();
+            services.AddSingleton(settingsService);
             services.AddSingleton<Espluque.Contracts.Ports.ILogger, MiniFileLogger.Logger>();
 
             services.AddSingleton<IMessageCenter, MessageCenter>();
 
             string modulesRootPath = Path.Combine( AppContext.BaseDirectory, "Modules");
-            List<ICatalogEntry> moduleCatalog = await CatalogService.BuildAsync(modulesRootPath);
+            CatalogService catalogService = new(settingsService);
+            List<ICatalogEntry> moduleCatalog = await catalogService.BuildAsync(modulesRootPath);
             services.AddSingleton(moduleCatalog);
 
             await ModuleService.LoadModuleDependenciesAsync(moduleCatalog);
@@ -42,6 +44,8 @@ namespace Bootstrap
 
             services.AddSingleton<Espluque.Contracts.ModuleInterfaces.IModuleService, ModuleService>();
             services.AddSingleton<Espluque.Contracts.ModuleInterfaces.IModuleDiagService, ModuleDiagService>();
+
+            services.AddSingleton<IContributionSettingsService, ContributionSettingsService>();
 
             return services;
         }

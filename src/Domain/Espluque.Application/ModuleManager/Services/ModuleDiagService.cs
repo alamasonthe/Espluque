@@ -1,4 +1,5 @@
 ﻿using Espluque.Contracts.Enums;
+using Espluque.Contracts.Ports;
 using Espluque.Contracts.Interfaces;
 using Espluque.Contracts.ModuleInterfaces;
 using System.Reflection;
@@ -17,11 +18,13 @@ namespace Espluque.Application.ModuleManager.Services
             "IWpfViewer"
         ];
 
+        private readonly ModuleService _moduleService;
         private readonly IThesaurusService _thesaurusService;
         private readonly IEntityFactory _entityFactory;
 
-        public ModuleDiagService(IThesaurusService thesaurusService, IEntityFactory entityFactory)
+        public ModuleDiagService(IThesaurusService thesaurusService, IEntityFactory entityFactory, ISettingsService settingsService)
         {
+            _moduleService = new ModuleService(settingsService);
             _thesaurusService = thesaurusService;
             _entityFactory = entityFactory;
         }
@@ -63,8 +66,7 @@ namespace Espluque.Application.ModuleManager.Services
                 // 1 - Read definition file
                 try
                 {
-                    ModuleService moduleService = new();
-                    moduleInfo = await moduleService.LoadModuleInfo(filePath);
+                    moduleInfo = await _moduleService.LoadModuleInfo(filePath);
 
                     if (moduleInfo is null)
                     {
@@ -208,7 +210,7 @@ namespace Espluque.Application.ModuleManager.Services
                     {
                         bool preferredTagFound = false;
 
-                        foreach (string tag in contribution.Tags)
+                        foreach (string tag in contribution.ContributionSettings.Tags)
                         {
                             (int ConceptId, string MainTerm)? concept = await _thesaurusService.GetConceptMainTermByTerm("Espluque", tag);
 
@@ -223,9 +225,9 @@ namespace Espluque.Application.ModuleManager.Services
 
                         if (!preferredTagFound)
                         {
-                            string message = contribution.Tags.Count == 0
+                            string message = contribution.ContributionSettings.Tags.Count == 0
                                 ? "No tag is defined for this contribution."
-                                : $"None of the contribution tags is a preferred thesaurus term: {string.Join(", ", contribution.Tags)}";
+                                : $"None of the contribution tags is a preferred thesaurus term: {string.Join(", ", contribution.ContributionSettings.Tags)}";
 
                             diag.Add($"Check contribution tags: ERROR - {message}");
                             contributionHealth.HealthCheck = ModuleHealthCheckEnum.Error;

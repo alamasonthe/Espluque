@@ -1,15 +1,23 @@
 ﻿using Espluque.Application.ModuleManager.Entities;
+using Espluque.Contracts.ModuleInterfaces;
+using Espluque.Contracts.Ports;
 using System.Reflection;
 using System.Runtime.Loader;
-using Espluque.Contracts.ModuleInterfaces;
 
 namespace Espluque.Application.ModuleManager.Services
 {
     public class CatalogService
     {
-        public static async Task<List<ICatalogEntry>> BuildAsync(string modulesRootPath)
+        private readonly ISettingsService _settingsService;
+
+        public CatalogService(ISettingsService settingsService)
         {
-            ModuleService moduleService = new();
+            _settingsService = settingsService;
+        }
+
+        public async Task<List<ICatalogEntry>> BuildAsync(string modulesRootPath)
+        {
+            ModuleService moduleService = new(_settingsService);
 
             try
             {
@@ -42,7 +50,7 @@ namespace Espluque.Application.ModuleManager.Services
             }
         }
 
-        private async static Task<List<ICatalogEntry>> CreateCatalogEntriesAsync(IModuleInfo moduleInfo, string assemblyPath)
+        private async Task<List<ICatalogEntry>> CreateCatalogEntriesAsync(IModuleInfo moduleInfo, string assemblyPath)
         {
             try
             {
@@ -59,8 +67,6 @@ namespace Espluque.Application.ModuleManager.Services
                     return [];
                 }
 
-                // var context = new AssemblyContextLoader(assemblyPath);
-                // var assembly = context.LoadFromAssemblyPath(assemblyPath);
                 Assembly assembly = AssemblyLoadContext.Default.LoadFromAssemblyPath(assemblyPath);
 
                 List<ICatalogEntry> catalogEntries = [];
@@ -73,14 +79,34 @@ namespace Espluque.Application.ModuleManager.Services
                         continue;
                     }
 
-                    if (!contribution.Active) { continue; }
+                    // TODO Load user settings for the contribution
+                    // check if it is active. 
+                    // Replace tags with user settings if they exist.
+                    /*
+                    ContributionSettingsService contributionSettingsService = new(_settingsService);
+                    var userSettings = await contributionSettingsService.GetUserSettings(moduleInfo.Assembly, contribution.InterfaceType, contribution.ClassName);
+
+                    if (userSettings != null)
+                    {
+                        if (userSettings.Active == false)
+                        {
+                            continue;
+                        }
+                        contribution.ContributionSettings.Tags = userSettings.Tags;
+                    }
+                    */
+
+                    if (!contribution.ContributionSettings.Active)
+                    {
+                        continue;
+                    }
 
                     catalogEntries.Add(new CatalogEntry
                     {
                         InterfaceType = contribution.InterfaceType,
                         Label = contribution.Label,
                         ClassName = contribution.ClassName,
-                        Tags = contribution.Tags ?? [],
+                        Tags = contribution.ContributionSettings.Tags ?? [],
                         AssemblyPath = assemblyPath,
                         Assembly = assembly,
                         ModuleName = moduleInfo.Name,

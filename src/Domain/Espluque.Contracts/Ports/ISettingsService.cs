@@ -10,5 +10,6 @@ public interface ISettingsService
     Task<bool> SaveSetting(string key, string value);
     Task<bool> SaveSetting(string moduleName, string key, string value);
 
-    Task<string?> GetModuleSettings(string moduleName);
+    Task<string?> GetJsonSectionSettings(string sectionName);
+    Task<bool> SaveJsonSectionSettings(string sectionName, string jsonPayload);
 }

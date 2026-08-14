@@ -38,7 +38,7 @@ namespace SettingsJson
             return Path.Combine(appDataPath, appName, "settings.json");
         }
 
-        public Task<string?> GetModuleSettings(string moduleName)
+        public Task<string?> GetJsonSectionSettings(string sectionName)
         {
             try
             {
@@ -58,7 +58,7 @@ namespace SettingsJson
 
                 using JsonDocument document = JsonDocument.Parse(json);
 
-                if (!document.RootElement.TryGetProperty(moduleName, out JsonElement moduleSettings))
+                if (!document.RootElement.TryGetProperty(sectionName, out JsonElement moduleSettings))
                 {
                     return Task.FromResult<string?>(null);
                 }
@@ -73,9 +73,73 @@ namespace SettingsJson
             }
         }
 
+        public async Task<bool> SaveJsonSectionSettings(string sectionName, string jsonPayload)
+        {
+            string jsonFilePath = GetWriteSettingsFilePath();
+
+            try
+            {
+                string? directoryPath = Path.GetDirectoryName(jsonFilePath);
+
+                if (!string.IsNullOrWhiteSpace(directoryPath))
+                {
+                    Directory.CreateDirectory(directoryPath);
+                }
+
+                JsonObject rootObject;
+
+                if (File.Exists(jsonFilePath))
+                {
+                    string existingJson = await File.ReadAllTextAsync(jsonFilePath);
+
+                    if (string.IsNullOrWhiteSpace(existingJson))
+                    {
+                        rootObject = new JsonObject();
+                    }
+                    else
+                    {
+                        JsonNode? rootNode = JsonNode.Parse(existingJson);
+
+                        if (rootNode is not JsonObject existingRootObject)
+                        {
+                            return false;
+                        }
+
+                        rootObject = existingRootObject;
+                    }
+                }
+                else
+                {
+                    rootObject = new JsonObject();
+                }
+
+                JsonNode? moduleSettings = JsonNode.Parse(jsonPayload);
+
+                if (moduleSettings is null)
+                {
+                    return false;
+                }
+
+                rootObject[sectionName] = moduleSettings;
+
+                string updatedJson = rootObject.ToJsonString(new JsonSerializerOptions
+                {
+                    WriteIndented = true
+                });
+
+                await File.WriteAllTextAsync(jsonFilePath, updatedJson);
+
+                return true;
+            }
+            catch
+            {
+                return false;
+            }
+        }
+
         public async Task<string?> GetSetting(string moduleName, string key)
         {
-            var moduleJson = await GetModuleSettings(moduleName);
+            var moduleJson = await GetJsonSectionSettings(moduleName);
             if (string.IsNullOrWhiteSpace(moduleJson))
             {
                 return null;

@@ -1,10 +1,10 @@
 ﻿namespace Espluque.Contracts.ModuleInterfaces
 {
-    public interface IModuleContributionInfo
+    public interface IContributionSettingsEntry
     {
         string ClassName { get; set; }
         string InterfaceType { get; set; }
-        string Label { get; set; }
-        IContributionSettings ContributionSettings { get; set; }
+        string ModuleAssembly { get; set; }
+        IContributionSettings Settings { get; set; }
     }
 }

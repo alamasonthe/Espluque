@@ -1,21 +1,29 @@
 {
   "name": "Registry file Edit",
   "version": "0.0.1",
+  "author": "Alamasonthe",
+  "description": "Registry file viewer module",
   "assembly": "RegViewer.dll",
   "contributions": [
     {
       "interfaceType": "IWpfViewer",
       "label": "Reg file viewer",
+      "description": "",
       "className": "RegViewer.Viewer",
-      "tags": [ "Reg file" ],
-      "active": true
+      "contributionSettings": {
+        "tags": [ "Reg file" ],
+        "active": true
+      }
     },
     {
       "interfaceType": "IManagedDependencies",
       "label": "Reg file dependency list",
+      "description": "",
       "className": "RegViewer.Preload",
-      "tags": [],
-      "active": true
+      "contributionSettings": {
+        "tags": [],
+        "active": true
+      }
     }
   ]
 }

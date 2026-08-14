@@ -1,28 +1,39 @@
 {
   "name": "ImageMagick module",
   "version": "0.0.1",
+  "author": "Alamasonthe",
+  "description": "ImageMagick module for handling image files",
   "assembly": "Magick.dll",
   "contributions": [
     {
       "interfaceType": "IGrabber",
       "label": "ImageMagick image properties",
+      "description": "",
       "className": "Magick.Grabber",
-      "tags": [ "Image" ],
-      "active": true
+      "contributionSettings": {
+        "tags": [ "Image" ],
+        "active": true
+      }
     },
     {
       "interfaceType": "IWpfViewer",
       "label": "ImageMagick Image viewer",
+      "description": "",
       "className": "Magick.ImageMagickImageViewer",
-      "tags": [ "ImageMagick viewer" ],
-      "active": true
+      "contributionSettings": {
+        "tags": [ "ImageMagick viewer" ],
+        "active": true
+      }
     },
     {
       "interfaceType": "IManagedDependencies",
       "label": "ImageMagick dependency list",
+      "description": "",
       "className": "Magick.Preload",
-      "tags": [],
-      "active": true
+      "contributionSettings": {
+        "tags": [],
+        "active": true
+      }
     }
   ]
 }

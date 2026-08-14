@@ -1,14 +1,19 @@
 {
   "name": "WPF Viewer Template module",
   "version": "0.0.1",
+  "author": "Espluque",
+  "description": "This is a template for creating a new WPF viewer module.",
   "assembly": "WpfViewerTemplate.dll",
   "contributions": [
     {
       "interfaceType": "IWpfViewer",
       "label": "Template WPF Viewer",
+      "description": "",
       "className": "WpfViewerTemplate.WpfViewer",
-      "tags": [ "AnyFile" ],
-      "active": true
+      "contributionSettings": {
+        "tags": [ "AnyFile" ],
+        "active": true
+      }
     }
   ]
 }

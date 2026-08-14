@@ -16,247 +16,316 @@
         </ResourceDictionary>
     </UserControl.Resources>
 
-    <ScrollViewer VerticalScrollBarVisibility="Auto"
+    <Grid Background="{DynamicResource App.Background}">
+
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+
+        <StackPanel Grid.Row="0"
+                Orientation="Horizontal"
+                HorizontalAlignment="Right"
+                Margin="8">
+
+            <Button Content="Save" Margin="0,0,8,0" Click="SaveButton_Click" />
+            <Button Content="Save As..." Margin="0,0,8,0" Click="SaveAsButton_Click" />
+            <Button Content="Save Settings" Margin="0,0,8,0" Click="SaveSettingsButton_Click" />
+            <Button Content="Explore" Click="ExploreButton_Click" />
+
+        </StackPanel>
+
+        <ScrollViewer Grid.Row="1"
+                  VerticalScrollBarVisibility="Auto"
                   HorizontalScrollBarVisibility="Disabled"
                   Background="{DynamicResource App.Background}">
 
-        <StackPanel Margin="8">
+            <StackPanel Margin="8">
 
-            <!-- Module -->
+                <!-- Module -->
 
-            <Expander Style="{StaticResource App.SectionExpander}"
+                <Expander Style="{StaticResource App.SectionExpander}"
                       IsExpanded="True"
                       Margin="0,0,0,8">
 
-                <Expander.Header>
-                    <StackPanel Orientation="Horizontal"
+                    <Expander.Header>
+                        <StackPanel Orientation="Horizontal"
                                 VerticalAlignment="Center">
 
-                        <Ellipse Width="12"
+                            <Ellipse Width="12"
                                  Height="12"
                                  Style="{StaticResource ModuleStatusEllipseStyle}"
                                  Fill="{Binding ModuleHealth.HealthBrush, ElementName=ModuleDetailRoot}"/>
 
-                        <TextBlock Margin="8,0,0,0"
+                            <TextBlock Margin="8,0,0,0"
                                    Style="{StaticResource App.StandardSubtitleTextBlock}"
                                    Foreground="{DynamicResource App.TextInverse}"
                                    VerticalAlignment="Center"
                                    Text="{Binding Name}" />
 
-                    </StackPanel>
-                </Expander.Header>
+                        </StackPanel>
+                    </Expander.Header>
 
-                <Border Background="{DynamicResource App.Background}"
+                    <Border Background="{DynamicResource App.Background}"
                         BorderBrush="{DynamicResource App.Border}"
                         BorderThickness="1"
                         Padding="12">
 
-                    <Grid>
+                        <Grid>
 
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="140" />
-                            <ColumnDefinition Width="*" />
-                        </Grid.ColumnDefinitions>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="140" />
+                                <ColumnDefinition Width="*" />
+                            </Grid.ColumnDefinitions>
 
-                        <Grid.RowDefinitions>
-                            <RowDefinition Height="Auto" />
-                            <RowDefinition Height="Auto" />
-                            <RowDefinition Height="Auto" />
-                        </Grid.RowDefinitions>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="Auto" />
+                            </Grid.RowDefinitions>
 
-                        <TextBlock Grid.Row="0"
+                            <TextBlock Grid.Row="0"
                                    Grid.Column="0"
                                    Style="{StaticResource App.StandardTextBlock}"
                                    Margin="0,4,8,4"
                                    VerticalAlignment="Center"
                                    Text="Version" />
 
-                        <TextBox Grid.Row="0"
+                            <TextBox Grid.Row="0"
                                  Grid.Column="1"
                                  Margin="0,2"
                                  IsReadOnly="True"
                                  Text="{Binding Version}" />
 
-                        <TextBlock Grid.Row="1"
+                            <TextBlock Grid.Row="1"
+                               Grid.Column="0"
+                               Style="{StaticResource App.StandardTextBlock}"
+                               Margin="0,4,8,4"
+                               VerticalAlignment="Center"
+                               Text="Author" />
+
+                            <TextBox Grid.Row="1"
+                             Grid.Column="1"
+                             Margin="0,2"
+                             IsReadOnly="True"
+                             Text="{Binding Author}" />
+
+                            <TextBlock Grid.Row="2"
+                           Grid.Column="0"
+                           Style="{StaticResource App.StandardTextBlock}"
+                           Margin="0,4,8,4"
+                           VerticalAlignment="Top"
+                           Text="Description" />
+
+                            <TextBox Grid.Row="2"
+                             Grid.Column="1"
+                             Margin="0,2"
+                             MinHeight="60"
+                             IsReadOnly="True"
+                             TextWrapping="Wrap"
+                             VerticalContentAlignment="Top"
+                             VerticalScrollBarVisibility="Auto"
+                             HorizontalScrollBarVisibility="Auto"
+                             Text="{Binding Description}" />
+
+                            <TextBlock Grid.Row="3"
                                    Grid.Column="0"
                                    Style="{StaticResource App.StandardTextBlock}"
                                    Margin="0,4,8,4"
                                    VerticalAlignment="Center"
                                    Text="Assembly" />
 
-                        <TextBox Grid.Row="1"
+                            <TextBox Grid.Row="3"
                                  Grid.Column="1"
                                  Margin="0,2"
                                  IsReadOnly="True"
                                  Text="{Binding Assembly}" />
 
-                        <TextBlock Grid.Row="2"
+                            <TextBlock Grid.Row="4"
                                    Grid.Column="0"
                                    Style="{StaticResource App.StandardTextBlock}"
                                    Margin="0,4,8,4"
                                    VerticalAlignment="Center"
                                    Text="File path" />
 
-                        <TextBox Grid.Row="2"
+                            <TextBox Grid.Row="4"
                                  Grid.Column="1"
                                  Margin="0,2"
                                  IsReadOnly="True"
                                  Text="{Binding FilePath}" />
 
-                    </Grid>
+                        </Grid>
 
-                </Border>
+                    </Border>
 
-            </Expander>
+                </Expander>
 
-            <!-- JSON -->
+                <!-- JSON -->
 
-            <Expander Header="JSON"
+                <Expander Header="JSON"
                   Style="{StaticResource App.SectionExpander}"
                   IsExpanded="False"
                   Margin="0,0,0,8">
 
-                <Border Background="{DynamicResource App.Background}"
+                    <Border Background="{DynamicResource App.Background}"
                     BorderBrush="{DynamicResource App.Border}"
                     BorderThickness="1"
                     Padding="8">
 
-                    <TextBox x:Name="JsonTextBox"
+                        <TextBox x:Name="JsonTextBox"
                  Style="{StaticResource App.TextEditorTextBox}" />
 
-                </Border>
+                    </Border>
 
-            </Expander>
-            
-            <!-- Contributions -->
+                </Expander>
 
-            <ItemsControl ItemsSource="{Binding Contributions}">
+                <!-- Contributions -->
 
-                <ItemsControl.ItemTemplate>
-                    <DataTemplate>
+                <ItemsControl ItemsSource="{Binding Contributions}">
 
-                        <Expander Margin="0,0,0,8"
-                                  Style="{StaticResource App.SectionExpander}"
-                                  IsExpanded="False">
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate>
 
-                            <Expander.Header>
-                                <StackPanel Orientation="Horizontal"
+                                <Expander Margin="0,0,0,8"
+                                          Style="{StaticResource App.SectionExpander}"
+                                          IsExpanded="False">
+
+                                    <Expander.Header>
+                                        <StackPanel Orientation="Horizontal"
                                             VerticalAlignment="Center"
                                             Loaded="ContributionHeader_Loaded" />
-                            </Expander.Header>
+                                    </Expander.Header>
 
-                            <Border Background="{DynamicResource App.Background}"
+                                    <Border Background="{DynamicResource App.Background}"
                                     BorderBrush="{DynamicResource App.Border}"
                                     BorderThickness="1"
                                     Padding="12">
 
-                                <Grid>
+                                        <Grid>
 
-                                    <Grid.ColumnDefinitions>
-                                        <ColumnDefinition Width="140" />
-                                        <ColumnDefinition Width="*" />
-                                    </Grid.ColumnDefinitions>
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="140" />
+                                                <ColumnDefinition Width="*" />
+                                            </Grid.ColumnDefinitions>
 
-                                    <Grid.RowDefinitions>
-                                        <RowDefinition Height="Auto" />
-                                        <RowDefinition Height="Auto" />
-                                        <RowDefinition Height="Auto" />
-                                        <RowDefinition Height="Auto" />
-                                        <RowDefinition Height="Auto" />
-                                        <RowDefinition Height="Auto" />
-                                        <RowDefinition Height="Auto" />
-                                    </Grid.RowDefinitions>
+                                            <Grid.RowDefinitions>
+                                                <RowDefinition Height="Auto" />
+                                                <RowDefinition Height="Auto" />
+                                                <RowDefinition Height="Auto" />
+                                                <RowDefinition Height="Auto" />
+                                                <RowDefinition Height="Auto" />
+                                                <RowDefinition Height="Auto" />
+                                                <RowDefinition Height="Auto" />
+                                                <RowDefinition Height="Auto" />
+                                            </Grid.RowDefinitions>
 
-                                    <TextBlock Grid.Row="0"
+                                            <TextBlock Grid.Row="0"
                                                Grid.Column="0"
                                                Style="{StaticResource App.StandardTextBlock}"
                                                Margin="0,4,8,4"
                                                VerticalAlignment="Center"
                                                Text="Label" />
 
-                                    <TextBox Grid.Row="0"
-                                             Grid.Column="1"
-                                             Margin="0,2"
-                                             IsReadOnly="True"
-                                             Text="{Binding Label}" />
+                                            <TextBox Grid.Row="0"
+                                                 Grid.Column="1"
+                                                 Margin="0,2"
+                                                 IsReadOnly="True"
+                                                 Text="{Binding Label}" />
 
-                                    <TextBlock Grid.Row="1"
+                                            <TextBlock Grid.Row="1"
+                                               Grid.Column="0"
+                                               Style="{StaticResource App.StandardTextBlock}"
+                                               Margin="0,4,8,4"
+                                               VerticalAlignment="Top"
+                                               Text="Description" />
+
+                                            <TextBox Grid.Row="1"
+                                                 Grid.Column="1"
+                                                 Margin="0,2"
+                                                 MinHeight="60"
+                                                 TextWrapping="Wrap"
+                                                 VerticalContentAlignment="Top"
+                                                 Text="{Binding Description}" />
+
+                                            <TextBlock Grid.Row="2"
                                                Grid.Column="0"
                                                Style="{StaticResource App.StandardTextBlock}"
                                                Margin="0,4,8,4"
                                                VerticalAlignment="Center"
                                                Text="Interface type" />
 
-                                    <TextBox Grid.Row="1"
+                                            <TextBox Grid.Row="2"
                                              Grid.Column="1"
                                              Margin="0,2"
                                              IsReadOnly="True"
                                              Text="{Binding InterfaceType}" />
 
-                                    <TextBlock Grid.Row="2"
+                                            <TextBlock Grid.Row="3"
                                                Grid.Column="0"
                                                Style="{StaticResource App.StandardTextBlock}"
                                                Margin="0,4,8,4"
                                                VerticalAlignment="Center"
                                                Text="Class name" />
 
-                                    <TextBox Grid.Row="2"
+                                            <TextBox Grid.Row="3"
                                              Grid.Column="1"
                                              Margin="0,2"
                                              IsReadOnly="True"
                                              Text="{Binding ClassName}" />
 
-                                    <TextBlock Grid.Row="3"
+                                            <TextBlock Grid.Row="4"
                                                Grid.Column="0"
                                                Style="{StaticResource App.StandardTextBlock}"
                                                Margin="0,4,8,4"
                                                VerticalAlignment="Center"
                                                Text="Active" />
 
-                                    <TextBox Grid.Row="3"
+                                            <TextBox Grid.Row="4"
                                              Grid.Column="1"
                                              Margin="0,2"
                                              IsReadOnly="True"
-                                             Text="{Binding Active}" />
+                                             Text="{Binding ContributionSettings.Active}" />
 
-                                    <TextBlock Grid.Row="4"
+                                            <TextBlock Grid.Row="5"
                                                Grid.Column="0"
                                                Style="{StaticResource App.StandardTextBlock}"
                                                Margin="0,4,8,4"
                                                VerticalAlignment="Center"
                                                Text="Health check" />
 
-                                    <TextBox Grid.Row="4"
+                                            <TextBox Grid.Row="5"
                                              Grid.Column="1"
                                              Margin="0,2"
                                              IsReadOnly="True"
                                              Loaded="ContributionHealth_Loaded" />
 
-                                    <TextBlock Grid.Row="5"
+                                            <TextBlock Grid.Row="6"
                                                Grid.Column="0"
                                                Style="{StaticResource App.StandardTextBlock}"
                                                Margin="0,4,8,4"
                                                VerticalAlignment="Top"
                                                Text="Tags" />
 
-                                    <ItemsControl Grid.Row="5"
+                                            <ItemsControl Grid.Row="6"
                                                   Grid.Column="1"
                                                   Margin="0,2"
-                                                  ItemsSource="{Binding Tags}">
+                                                  ItemsSource="{Binding ContributionSettings.Tags}">
 
-                                        <ItemsControl.ItemTemplate>
-                                            <DataTemplate>
+                                                <ItemsControl.ItemTemplate>
+                                                    <DataTemplate>
 
-                                                <TextBox Margin="0,0,0,4"
+                                                        <TextBox Margin="0,0,0,4"
                                                          IsReadOnly="True"
                                                          Text="{Binding Path=., Mode=OneWay}" />
 
-                                            </DataTemplate>
-                                        </ItemsControl.ItemTemplate>
+                                                    </DataTemplate>
+                                                </ItemsControl.ItemTemplate>
 
-                                    </ItemsControl>
+                                            </ItemsControl>
 
-                                    <TextBox Grid.Row="6"
+                                            <TextBox Grid.Row="7"
                                              Grid.Column="0"
                                              Grid.ColumnSpan="2"
                                              Margin="0,8,0,0"
@@ -267,35 +336,36 @@
                                              IsReadOnly="True"
                                              Loaded="ContributionError_Loaded">
 
-                                        <TextBox.Style>
-                                            <Style TargetType="TextBox">
-                                                <Style.Triggers>
+                                                <TextBox.Style>
+                                                    <Style TargetType="TextBox">
+                                                        <Style.Triggers>
 
-                                                    <Trigger Property="Text"
+                                                            <Trigger Property="Text"
                                                              Value="">
-                                                        <Setter Property="Visibility"
+                                                                <Setter Property="Visibility"
                                                                 Value="Collapsed" />
-                                                    </Trigger>
+                                                            </Trigger>
 
-                                                </Style.Triggers>
-                                            </Style>
-                                        </TextBox.Style>
+                                                        </Style.Triggers>
+                                                    </Style>
+                                                </TextBox.Style>
 
-                                    </TextBox>
+                                            </TextBox>
 
-                                </Grid>
+                                        </Grid>
 
-                            </Border>
+                                    </Border>
 
-                        </Expander>
+                                </Expander>
 
-                    </DataTemplate>
-                </ItemsControl.ItemTemplate>
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
 
-            </ItemsControl>
+                </ItemsControl>
 
-        </StackPanel>
+            </StackPanel>
 
-    </ScrollViewer>
+        </ScrollViewer>
+    </Grid>
 
 </UserControl>

@@ -1,21 +1,29 @@
 {
   "name": "LibMagic module",
   "version": "0.0.1",
+  "author": "Alamasonthe",
+  "description": "LibMagic module for file type detection",
   "assembly": "LibMagic.dll",
   "contributions": [
     {
       "interfaceType": "IDetector",
       "label": "LibMagic detector",
+      "description": "",
       "className": "LibMagic.Detector",
-      "tags": [ "AnyFile" ],
-      "active": true
+      "contributionSettings": {
+        "tags": [ "AnyFile" ],
+        "active": true
+      }
     },
     {
       "interfaceType": "IManagedDependencies",
       "label": "LibMagic dependency list",
+      "description": "",
       "className": "LibMagic.Preload",
-      "tags": [],
-      "active": true
+      "contributionSettings": {
+        "tags": [],
+        "active": true
+      }
     }
   ]
 }
