@@ -1,8 +1,6 @@
-﻿using Espluque.Contracts.Interfaces;
-using Espluque.Contracts.MessageInterfaces;
-using Espluque.Contracts.Ports;
-using Espluque.Contracts.ModuleInterfaces.Contributions;
-
+﻿using Espluque.Contracts.CrossCutting;
+using Espluque.Contracts.Contributions.Types;
+using Espluque.Contracts.Workflow;
 
 namespace GrabberTemplate
 {
@@ -24,7 +22,7 @@ namespace GrabberTemplate
             _entityFactory = entityFactory;
         }
 
-        public Task<List<KeyValuePair<string, string>>> Grab(AnalysisContext analysisContext)
+        public Task<List<KeyValuePair<string, string>>> Grab(IAnalysisContext analysisContext)
         {
             List<KeyValuePair<string, string>> infos = new List<KeyValuePair<string, string>>
                 {

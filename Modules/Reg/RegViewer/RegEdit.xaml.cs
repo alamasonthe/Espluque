@@ -1,9 +1,8 @@
-﻿using Espluque.Contracts.Ports;
-using Espluque.Contracts.ModuleInterfaces;
-using System.Windows;
+﻿using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
 using Util;
+using Espluque.Contracts.CrossCutting;
 
 namespace RegViewer
 {

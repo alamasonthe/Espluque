@@ -1,4 +1,4 @@
-﻿using Espluque.Contracts.Interfaces;
+﻿using Espluque.Contracts.Thesaurus;
 using Espluquer.Entities;
 using System.Text.Json;
 using System.Windows;

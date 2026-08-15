@@ -1,0 +1,33 @@
+﻿<ResourceDictionary
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+
+    <Style x:Key="ModuleContributionIconStyle"
+       TargetType="TextBlock">
+
+        <Setter Property="FontFamily" Value="{DynamicResource FluentIcons}" />
+        <Setter Property="FontSize" Value="20" />
+        <Setter Property="HorizontalAlignment" Value="Center" />
+        <Setter Property="VerticalAlignment" Value="Center" />
+        <Setter Property="UseLayoutRounding" Value="True" />
+        <Setter Property="SnapsToDevicePixels" Value="True" />
+        <Setter Property="TextOptions.TextFormattingMode" Value="Display" />
+        <Setter Property="TextOptions.TextRenderingMode" Value="ClearType" />
+
+    </Style>
+
+    <Style x:Key="ModuleStatusEllipseStyle"
+           TargetType="Ellipse">
+
+        <Setter Property="HorizontalAlignment"
+                Value="Center" />
+
+        <Setter Property="VerticalAlignment"
+                Value="Center" />
+
+        <Setter Property="Fill"
+                Value="Transparent" />
+
+    </Style>
+
+</ResourceDictionary>

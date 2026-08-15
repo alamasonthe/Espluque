@@ -1,9 +1,8 @@
-﻿using Espluque.Contracts.Enums;
-using Espluque.Contracts.ModuleInterfaces;
-using Espluquer.Services;
+﻿using Espluquer.Services;
 using System.Windows;
 using System.Windows.Controls;
 using Espluquer.Entities;
+using Espluque.Contracts.Modules;
 
 namespace Espluquer.UserControls.Modules
 {

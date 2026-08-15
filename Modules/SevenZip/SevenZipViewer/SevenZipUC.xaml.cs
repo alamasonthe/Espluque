@@ -1,6 +1,4 @@
-﻿using Espluque.Contracts.Enums;
-using Espluque.Contracts.Interfaces;
-using Espluque.Contracts.MessageInterfaces;
+﻿using Espluque.Contracts.CrossCutting;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;

@@ -1,9 +1,9 @@
-﻿using Espluque.Contracts.Interfaces;
-using Espluque.Contracts.Ports;
-using System.Windows;
+﻿using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using Espluquer.Entities;
+using Espluque.Contracts.Thesaurus;
+using Espluque.Contracts.CrossCutting;
 
 namespace Espluquer.UserControls.Thesaurus
 {

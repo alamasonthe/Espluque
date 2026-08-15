@@ -1,0 +1,12 @@
+{
+  "$schema": "http://json.schemastore.org/template",
+  "identity": "Espluque.Templates.Detector",
+  "name": "Espluque Detector Module",
+  "shortName": "espluque-detector",
+  "sourceName": "detectorTemplate",
+  "preferNameDirectory": true,
+  "tags": {
+    "language": "C#",
+    "type": "project"
+  }
+}

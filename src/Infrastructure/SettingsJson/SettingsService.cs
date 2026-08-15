@@ -1,4 +1,4 @@
-﻿using Espluque.Contracts.Ports;
+﻿using Espluque.Contracts.CrossCutting;
 using System.Diagnostics;
 using System.Reflection;
 using System.Text.Json;

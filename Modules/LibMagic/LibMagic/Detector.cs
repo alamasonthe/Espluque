@@ -1,8 +1,7 @@
-﻿using Espluque.Contracts.Entities;
-using Espluque.Contracts.Interfaces;
-using Espluque.Contracts.MessageInterfaces;
-using Espluque.Contracts.ModuleInterfaces.Contributions;
-using Espluque.Contracts.Ports;
+﻿using Espluque.Contracts.Contributions;
+using Espluque.Contracts.Contributions.Types;
+using Espluque.Contracts.CrossCutting;
+using Espluque.Contracts.Workflow;
 using HeyRed.Mime;
 using Microsoft.Extensions.Logging;
 
@@ -11,14 +10,14 @@ namespace LibMagic
     public class Detector : IDetector
     {
         private readonly IMessageCenter _messageCenter;
-        private readonly Espluque.Contracts.Ports.ILogger _logger;
+        private readonly Espluque.Contracts.CrossCutting.ILogger _logger;
         private readonly ISettingsService _settingsService;
         private readonly IEntityFactory _entityFactory;
 
         private readonly string _referentiel = "Libmagic";
 
         public Detector(IMessageCenter messageCenter,
-            Espluque.Contracts.Ports.ILogger logger,
+            Espluque.Contracts.CrossCutting.ILogger logger,
             ISettingsService settingsService,
             IEntityFactory entityFactory)
         {
@@ -28,7 +27,7 @@ namespace LibMagic
             _entityFactory = entityFactory;
         }
 
-        public async Task<IFileFormat> Detect(AnalysisContext analysisContext)
+        public async Task<IFileFormat> Detect(IAnalysisContext analysisContext)
         {
             var formattedFileName = Path.GetFileName(analysisContext.FilePath).PadRight(35);
             _logger.Log(LogLevel.Debug, $"{formattedFileName}\tLibmagic detection start");

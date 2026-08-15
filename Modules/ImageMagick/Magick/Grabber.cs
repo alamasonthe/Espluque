@@ -1,8 +1,6 @@
-﻿using Espluque.Contracts.Entities;
-using Espluque.Contracts.Interfaces;
-using Espluque.Contracts.MessageInterfaces;
-using Espluque.Contracts.ModuleInterfaces.Contributions;
-using Espluque.Contracts.Ports;
+﻿using Espluque.Contracts.Contributions.Types;
+using Espluque.Contracts.CrossCutting;
+using Espluque.Contracts.Workflow;
 using ImageMagick;
 using Microsoft.Win32;
 using System.Globalization;
@@ -14,12 +12,12 @@ namespace Magick
     internal class Grabber: IGrabber
     {
         private readonly IMessageCenter _messageCenter;
-        private readonly Espluque.Contracts.Ports.ILogger _logger;
+        private readonly ILogger _logger;
         private readonly ISettingsService _settingsService;
         private readonly IEntityFactory _entityFactory;
 
         public Grabber(IMessageCenter messageCenter,
-            Espluque.Contracts.Ports.ILogger logger,
+            ILogger logger,
             ISettingsService settingsService,
             IEntityFactory entityFactory)
         {
@@ -29,7 +27,7 @@ namespace Magick
             _entityFactory = entityFactory;
         }
 
-        public async Task<List<KeyValuePair<string, string>>> Grab(AnalysisContext analysisContext)
+        public async Task<List<KeyValuePair<string, string>>> Grab(IAnalysisContext analysisContext)
         {
             try
             {

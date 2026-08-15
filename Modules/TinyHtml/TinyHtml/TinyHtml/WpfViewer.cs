@@ -1,8 +1,6 @@
-using Espluque.Contracts.Entities;
-using Espluque.Contracts.Interfaces;
-using Espluque.Contracts.MessageInterfaces;
-using Espluque.Contracts.ModuleInterfaces.Contributions;
-using Espluque.Contracts.Ports;
+using Espluque.Contracts.Contributions.Types;
+using Espluque.Contracts.CrossCutting;
+using Espluque.Contracts.Workflow;
 using System.IO;
 
 namespace TinyHtml
@@ -30,7 +28,7 @@ namespace TinyHtml
             _entityFactory = entityFactory;
         }
 
-        public Task<object?> GetViewer(AnalysisContext analysisContext)
+        public Task<object?> GetViewer(IAnalysisContext analysisContext)
         {
             object viewer = new TinyHtmlUC(analysisContext.FilePath);
             return Task.FromResult<object?>(viewer);

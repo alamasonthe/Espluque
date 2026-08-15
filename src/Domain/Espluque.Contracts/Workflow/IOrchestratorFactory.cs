@@ -1,6 +1,4 @@
-﻿using Espluque.Contracts.Detection;
-
-namespace Espluque.Contracts.Workflow
+﻿namespace Espluque.Contracts.Workflow
 {
     public interface IOrchestratorFactory
     {

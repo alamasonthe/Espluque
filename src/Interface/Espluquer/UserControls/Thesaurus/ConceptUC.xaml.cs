@@ -1,5 +1,4 @@
-﻿using Espluque.Contracts.Interfaces;
-using Espluquer.Adapters;
+﻿using Espluquer.Adapters;
 using Espluquer.Entities;
 using System.ComponentModel;
 using System.Windows;
@@ -9,6 +8,8 @@ using System.Windows.Media;
 using System.Windows.Threading;
 using Util;
 using Espluquer.UserControls.Shell;
+using Espluque.Contracts.Thesaurus;
+using Espluque.Contracts.CrossCutting;
 
 namespace Espluquer.UserControls.Thesaurus
 {

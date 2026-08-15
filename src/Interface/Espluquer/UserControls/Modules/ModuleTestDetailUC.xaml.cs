@@ -1,4 +1,5 @@
-﻿using Espluque.Contracts.ModuleInterfaces;
+﻿using Espluque.Contracts.Contributions;
+using Espluque.Contracts.Modules;
 using Espluquer.Entities;
 using Espluquer.Services;
 using Microsoft.Win32;

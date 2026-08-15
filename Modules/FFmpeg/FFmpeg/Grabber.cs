@@ -1,4 +1,4 @@
-﻿using Espluque.Contracts;
+﻿using Espluque.Contracts.CrossCutting;
 using FFmpeg.AutoGen;
 using System.Runtime.InteropServices;
 using Util;

@@ -1,5 +1,4 @@
-﻿using Espluque.Contracts.DetectionResult;
-using Espluque.Contracts.Entities;
+﻿using Espluque.Contracts.Workflow;
 using Microsoft.Extensions.Logging;
 using SoftwarePackage.Entities;
 using System.IO;
@@ -11,9 +10,9 @@ namespace SoftwarePackage.Services
     
     internal class CommandCompletion
     {
-        private readonly Espluque.Contracts.Ports.ILogger _logger;
+        private readonly Espluque.Contracts.CrossCutting.ILogger _logger;
 
-        public CommandCompletion(Espluque.Contracts.Ports.ILogger logger)
+        public CommandCompletion(Espluque.Contracts.CrossCutting.ILogger logger)
         {
             _logger = logger;
         }
@@ -44,7 +43,7 @@ namespace SoftwarePackage.Services
             return commandLineTemplate;
         }
 
-        public string ReplaceVariables(string commandLineTemplate, AnalysisContext analysisContext, string favoriteObservedDataList)
+        public string ReplaceVariables(string commandLineTemplate, IAnalysisContext analysisContext, string favoriteObservedDataList)
         {
             return Regex.Replace(commandLineTemplate, @"\{([^{}]+)\}", match =>
             {
@@ -55,7 +54,7 @@ namespace SoftwarePackage.Services
             });
         }
 
-        private string GetVariableValue(string variableName, AnalysisContext analysisContext, string favoriteObservedDataList)
+        private string GetVariableValue(string variableName, IAnalysisContext analysisContext, string favoriteObservedDataList)
         {
             if (variableName == "InstallerFilePath")
             {

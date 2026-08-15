@@ -1,4 +1,5 @@
-﻿using Espluque.Contracts.Interfaces;
+﻿using Espluque.Contracts.CrossCutting;
+using Espluque.Contracts.Thesaurus;
 using EspluqueSqlite.Dtos;
 using Microsoft.Data.Sqlite;
 using Util;

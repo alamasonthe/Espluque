@@ -1,0 +1,15 @@
+﻿namespace Espluque.Contracts.CrossCutting;
+
+public interface ISettingsService
+{
+    string? GetSettingsFilePath();
+
+    Task<string?> GetSetting(string key);
+    Task<string?> GetSetting(string moduleName, string key);
+
+    Task<bool> SaveSetting(string key, string value);
+    Task<bool> SaveSetting(string moduleName, string key, string value);
+
+    Task<string?> GetJsonSectionSettings(string sectionName);
+    Task<bool> SaveJsonSectionSettings(string sectionName, string jsonPayload);
+}

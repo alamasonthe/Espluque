@@ -1,9 +1,6 @@
-﻿using Espluque.Contracts.Entities;
-using Espluque.Contracts.Enums;
-using Espluque.Contracts.Interfaces;
-using Espluque.Contracts.MessageInterfaces;
-using Espluque.Contracts.ModuleInterfaces.Contributions;
-using Espluque.Contracts.Ports;
+﻿using Espluque.Contracts.Contributions.Types;
+using Espluque.Contracts.CrossCutting;
+using Espluque.Contracts.Workflow;
 using Microsoft.Extensions.Logging;
 using SevenZip.Services;
 using System.Security.Cryptography;
@@ -16,12 +13,12 @@ namespace WindowsAppPackage
     public class BundleGrabber : IGrabber
     {
         private readonly IMessageCenter _messageCenter;
-        private readonly Espluque.Contracts.Ports.ILogger _logger;
+        private readonly Espluque.Contracts.CrossCutting.ILogger _logger;
         private readonly ISettingsService _settingsService;
         private readonly IEntityFactory _entityFactory;
 
         public BundleGrabber(IMessageCenter messageCenter,
-            Espluque.Contracts.Ports.ILogger logger,
+            Espluque.Contracts.CrossCutting.ILogger logger,
             ISettingsService settingsService,
             IEntityFactory entityFactory)
         {
@@ -31,7 +28,7 @@ namespace WindowsAppPackage
             _entityFactory = entityFactory;
         }
 
-        public Task<List<KeyValuePair<string, string>>> Grab(AnalysisContext analysisContext)
+        public Task<List<KeyValuePair<string, string>>> Grab(IAnalysisContext analysisContext)
         {
             List<KeyValuePair<string, string>> properties = [];
 
