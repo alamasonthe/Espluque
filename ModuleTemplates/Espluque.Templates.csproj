@@ -2,7 +2,7 @@
 
 	<PropertyGroup>
 		<PackageId>Espluque.Templates</PackageId>
-		<PackageVersion>1.0.1</PackageVersion>
+		<PackageVersion>1.0.3</PackageVersion>
 		<Title>Espluque Module Templates</Title>
 		<Authors>alamasonthe</Authors>
 		<Description>Templates for creating Grabber, Viewer, and Detector modules inside an Espluque source repository.</Description>
