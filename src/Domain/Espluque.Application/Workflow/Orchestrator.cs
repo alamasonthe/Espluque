@@ -34,8 +34,6 @@ namespace Espluque.Application.Workflow
         private readonly ILogger _logger;
         private readonly ISettingsService _settingsService;
 
-        private readonly IAnalysisEngine _analysisEngine;
-
         public event Action<IAnalysisMessage>? AnalyserMessageEvent;
 
         public Orchestrator(IServiceProvider serviceProvider)
@@ -45,6 +43,7 @@ namespace Espluque.Application.Workflow
             _logger = serviceProvider.GetRequiredService<ILogger>();
             _settingsService = serviceProvider.GetRequiredService<ISettingsService>();
         }
+
         public async Task<IAnalysisContext> ProcessAsync(List<ICatalogEntry> catalog, IAnalysisContext analysisContext, string? viewerType)
         {
             var formattedFilename = FormattedFileName(analysisContext);

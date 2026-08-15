@@ -26,29 +26,6 @@ namespace Espluque.Application.Contributions
         {
         }
 
-
-        public static Type? GetType(string typeName)
-        {
-            try
-            {
-                string interfaceNamespace = "Espluque.Contracts.ModuleInterfaces";
-                string interfaceAssemblyName = "Espluque.Contracts";
-
-                string fullTypeName = $"{interfaceNamespace}.{typeName.Trim()}";
-
-                Type? interfaceType = AppDomain.CurrentDomain.GetAssemblies()
-                    .Where(assembly => assembly.GetName().Name == interfaceAssemblyName)
-                    .Select(assembly => assembly.GetType(fullTypeName))
-                    .FirstOrDefault(type => type is not null);
-
-                return interfaceType;
-            }
-            catch
-            {
-                return null;
-            }
-        }
-
         public static (string label, object instance)? CreateInstance(
             ICatalogEntry catalogEntry,
             IMessageCenter messageCenter,
