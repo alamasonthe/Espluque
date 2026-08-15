@@ -1,4 +1,4 @@
-﻿namespace Espluque.Contracts.Entities
+﻿namespace Espluque.Contracts.Interfaces
 {
     public interface IAssertion
     {

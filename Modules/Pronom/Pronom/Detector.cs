@@ -1,5 +1,4 @@
 ﻿using Espluque.Contracts.Interfaces;
-using Espluque.Contracts.Entities;
 using Espluque.Contracts.MessageInterfaces;
 using Espluque.Contracts.Ports;
 using Microsoft.Extensions.Logging;
@@ -30,7 +29,7 @@ namespace Pronom
             _entityFactory = entityFactory;
         }
 
-        public async Task<IFileFormat> Detect(AnalysisContext analysisContext)
+        public async Task<IFileFormat> Detect(IAnalysisContext analysisContext)
         {
             var formattedFileName = Path.GetFileName(analysisContext.FilePath).PadRight(35);
 

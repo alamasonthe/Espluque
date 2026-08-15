@@ -1,7 +1,9 @@
-﻿using Espluque.Application.Entities;
-using Espluque.Application.MessageBus.Services;
-using Espluque.Application.ModuleManager.Services;
-using Espluque.Application.Thesaurus.Services;
+﻿using Espluque.Application.Catalog;
+using Espluque.Application.Contributions;
+using Espluque.Application.CrossCutting;
+using Espluque.Application.CrossCutting.MessageBus;
+using Espluque.Application.Modules;
+using Espluque.Application.Thesaurus;
 using Espluque.Contracts.Interfaces;
 using Espluque.Contracts.MessageInterfaces;
 using Espluque.Contracts.ModuleInterfaces;

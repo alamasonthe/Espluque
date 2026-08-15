@@ -1,6 +1,4 @@
-﻿using Espluque.Contracts.Entities;
-using Espluque.Contracts.Enums;
-using Espluque.Contracts.Interfaces;
+﻿using Espluque.Contracts.Interfaces;
 using Espluque.Contracts.MessageInterfaces;
 using Espluque.Contracts.ModuleInterfaces.Contributions;
 using Espluque.Contracts.Ports;
@@ -31,7 +29,7 @@ namespace WindowsAppPackage
             _entityFactory = entityFactory;
         }
 
-        public Task<List<KeyValuePair<string, string>>> Grab(AnalysisContext analysisContext)
+        public Task<List<KeyValuePair<string, string>>> Grab(IAnalysisContext analysisContext)
         {
             List<KeyValuePair<string, string>> properties = [];
 

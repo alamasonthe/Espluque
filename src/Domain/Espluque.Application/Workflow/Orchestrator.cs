@@ -1,17 +1,36 @@
-﻿using Espluque.Application.Engines;
-using Espluque.Application.Entities;
+﻿using Espluque.Application.CrossCutting;
 using Espluque.Contracts.Detection;
-using Espluque.Contracts.Entities;
 using Espluque.Contracts.Enums;
 using Espluque.Contracts.Interfaces;
 using Espluque.Contracts.ModuleInterfaces;
 using Espluque.Contracts.Ports;
 using Espluque.Contracts.Workflow;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Logging;
 
 namespace Espluque.Application.Workflow
 {
+    /// <summary>
+    /// Coordinates the analysis workflow by executing the analysis engine followed by the fusion engine.
+    /// </summary>
+    /// <remarks>
+    /// Processing cycle:
+    /// <code>
+    /// AnalysisContext
+    ///     ↓
+    /// Execute AnalysisEngine
+    ///     ↓
+    /// Execute FusionEngine
+    ///     ↓
+    /// Emit AnalysisCompleted message
+    ///     ↓
+    /// Return updated AnalysisContext
+    /// </code>
+    ///
+    /// Messages emitted by the analysis and fusion engines are relayed through AnalyserMessageEvent.
+    ///
+    /// The optional viewerType parameter is forwarded to AnalysisEngine to restrict viewer contribution execution.
+    /// </remarks>
+
     public class Orchestrator : IOrchestrator
     {
         private readonly IServiceProvider _serviceProvider;
@@ -29,7 +48,7 @@ namespace Espluque.Application.Workflow
             _logger = serviceProvider.GetRequiredService<Espluque.Contracts.Ports.ILogger>();
             _settingsService = serviceProvider.GetRequiredService<ISettingsService>();
         }
-        public async Task<AnalysisContext> ProcessAsync(List<ICatalogEntry> catalog, AnalysisContext analysisContext, string? viewerType)
+        public async Task<IAnalysisContext> ProcessAsync(List<ICatalogEntry> catalog, IAnalysisContext analysisContext, string? viewerType)
         {
             var formattedFilename = FormattedFileName(analysisContext);
             AnalysisEngine analysisEngine = new AnalysisEngine(_serviceProvider, catalog);
@@ -63,7 +82,7 @@ namespace Espluque.Application.Workflow
             AnalyserMessageEvent?.Invoke(message);
         }
 
-        private string FormattedFileName(AnalysisContext analysisContext)
+        private string FormattedFileName(IAnalysisContext analysisContext)
         {
             return Path.GetFileName(analysisContext.FilePath).PadRight(35);
         }

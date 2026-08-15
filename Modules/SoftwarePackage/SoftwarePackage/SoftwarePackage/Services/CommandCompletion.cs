@@ -1,5 +1,4 @@
-﻿using Espluque.Contracts.DetectionResult;
-using Espluque.Contracts.Entities;
+﻿using Espluque.Contracts.Interfaces;
 using Microsoft.Extensions.Logging;
 using SoftwarePackage.Entities;
 using System.IO;
@@ -44,7 +43,7 @@ namespace SoftwarePackage.Services
             return commandLineTemplate;
         }
 
-        public string ReplaceVariables(string commandLineTemplate, AnalysisContext analysisContext, string favoriteObservedDataList)
+        public string ReplaceVariables(string commandLineTemplate, IAnalysisContext analysisContext, string favoriteObservedDataList)
         {
             return Regex.Replace(commandLineTemplate, @"\{([^{}]+)\}", match =>
             {
@@ -55,7 +54,7 @@ namespace SoftwarePackage.Services
             });
         }
 
-        private string GetVariableValue(string variableName, AnalysisContext analysisContext, string favoriteObservedDataList)
+        private string GetVariableValue(string variableName, IAnalysisContext analysisContext, string favoriteObservedDataList)
         {
             if (variableName == "InstallerFilePath")
             {

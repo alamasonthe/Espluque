@@ -1,4 +1,3 @@
-using Espluque.Contracts.Entities;
 using Espluque.Contracts.Interfaces;
 using Espluque.Contracts.MessageInterfaces;
 using Espluque.Contracts.ModuleInterfaces.Contributions;
@@ -23,7 +22,7 @@ namespace VlcViewer
             _entityFactory = entityFactory;
         }
 
-        public async Task<object?> GetViewer(AnalysisContext analysisContext)
+        public async Task<object?> GetViewer(IAnalysisContext analysisContext)
         {
             string formattedFileName = Path.GetFileName(analysisContext.FilePath).PadRight(35);
 

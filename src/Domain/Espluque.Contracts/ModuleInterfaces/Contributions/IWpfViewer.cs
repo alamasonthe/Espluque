@@ -1,9 +1,9 @@
-﻿using Espluque.Contracts.Entities;
+﻿using Espluque.Contracts.Interfaces;
 
 namespace Espluque.Contracts.ModuleInterfaces.Contributions
 {
     public interface IWpfViewer
     {
-        Task<object?> GetViewer(AnalysisContext analysisContext);
+        Task<object?> GetViewer(IAnalysisContext analysisContext);
     }
 }

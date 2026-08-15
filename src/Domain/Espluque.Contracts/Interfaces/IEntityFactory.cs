@@ -1,8 +1,7 @@
-﻿using Espluque.Contracts.Entities;
+﻿using Espluque.Contracts.DetectionResult;
 using Espluque.Contracts.Enums;
 using Espluque.Contracts.MessageInterfaces;
 using Espluque.Contracts.ModuleInterfaces;
-using System.Reflection.Emit;
 
 namespace Espluque.Contracts.Interfaces;
 
@@ -17,4 +16,5 @@ public interface IEntityFactory
     IAssertion CreateAssertion(string sourceModule, string sourceContribution, string assertionType, string claimJson, List<KeyValuePair<string, string>>? summary);
     IModuleHealth CreateModuleHealth(string moduleName, ModuleHealthCheckEnum healthCheck, string? diag);
     IContributionHealth CreateContributionHealth(string moduleName, string contribInterfaceType, string contribClassName, ModuleHealthCheckEnum healthCheck, string? diag);
+    IAnalysisContext CreateAnalysisContext(string? startingTag, List<string>? tagHistory, string? filePath, IFileFormat? currentFileFormat, List<IFileFormat>? fileFormatHistory, string? tempFolderPath, List<IGrabberResult>? observedData, List<IAssertion>? assertions);
 }

@@ -26,7 +26,7 @@ namespace detectorTemplate
             _entityFactory = entityFactory;
         }
 
-        public Task<IFileFormat> Detect(AnalysisContext analysisContext)
+        public Task<IFileFormat> Detect(IAnalysisContext analysisContext)
         {
             var formattedFileName = Path.GetFileName(analysisContext.FilePath).PadRight(35);
 

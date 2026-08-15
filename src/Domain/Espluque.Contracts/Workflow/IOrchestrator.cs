@@ -1,6 +1,4 @@
-﻿using Espluque.Contracts.DetectionResult;
-using Espluque.Contracts.Entities;
-using Espluque.Contracts.Interfaces;
+﻿using Espluque.Contracts.Interfaces;
 using Espluque.Contracts.ModuleInterfaces;
 
 namespace Espluque.Contracts.Workflow
@@ -9,6 +7,6 @@ namespace Espluque.Contracts.Workflow
     {
         event Action<IAnalysisMessage>? AnalyserMessageEvent;
 
-        Task<AnalysisContext> ProcessAsync(List<ICatalogEntry> catalog, AnalysisContext analysisContext, string? viewerType);
+        Task<IAnalysisContext> ProcessAsync(List<ICatalogEntry> catalog, IAnalysisContext analysisContext, string? viewerType);
     }
 }

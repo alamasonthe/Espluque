@@ -1,5 +1,4 @@
-﻿using Espluque.Contracts.Entities;
-using Espluque.Contracts.Interfaces;
+﻿using Espluque.Contracts.Interfaces;
 using Espluque.Contracts.MessageInterfaces;
 using Espluque.Contracts.ModuleInterfaces.Contributions;
 using Espluque.Contracts.Ports;
@@ -45,7 +44,7 @@ namespace WindowsAppPackage
             _entityFactory = entityFactory;
         }
 
-        public Task<IFileFormat> Detect(AnalysisContext analysisContext)
+        public Task<IFileFormat> Detect(IAnalysisContext analysisContext)
         {
             var formattedFileName = Path.GetFileName(analysisContext.FilePath).PadRight(35);
 

@@ -1,4 +1,3 @@
-using Espluque.Contracts.Entities;
 using Espluque.Contracts.Interfaces;
 using Espluque.Contracts.MessageInterfaces;
 using Espluque.Contracts.ModuleInterfaces.Contributions;
@@ -30,7 +29,7 @@ namespace HexaEditor
             _entityFactory = entityFactory;
         }
 
-        public async Task<object?> GetViewer(AnalysisContext analysisContext)
+        public async Task<object?> GetViewer(IAnalysisContext analysisContext)
         {
             object viewer = new HexEditUC(analysisContext.FilePath);
             return viewer;

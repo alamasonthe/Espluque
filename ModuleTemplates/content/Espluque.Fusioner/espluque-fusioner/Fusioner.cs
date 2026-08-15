@@ -28,7 +28,7 @@ namespace espluque-fusioner
             _entityFactory = entityFactory;
         }
 
-        public async Task<IAssertion> Fuse(AnalysisContext analysisContext)
+        public async Task<IAssertion> Fuse(IAnalysisContext analysisContext)
         {
             string filename = Path.GetFileName(analysisContext.FilePath);
             string formattedFilename = filename.PadRight(35);

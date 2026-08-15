@@ -1,5 +1,4 @@
-﻿using Espluque.Contracts.Entities;
-using Espluque.Contracts.Interfaces;
+﻿using Espluque.Contracts.Interfaces;
 using Espluque.Contracts.MessageInterfaces;
 using Espluque.Contracts.ModuleInterfaces.Contributions;
 using Espluque.Contracts.Ports;
@@ -24,7 +23,7 @@ namespace AnyFile
             _entityFactory = entityFactory;
         }
 
-        public async Task<List<KeyValuePair<string, string>>> Grab(AnalysisContext analysisContext)
+        public async Task<List<KeyValuePair<string, string>>> Grab(IAnalysisContext analysisContext)
         {
             try
             {

@@ -1,4 +1,4 @@
-﻿using Espluque.Application.Thesaurus.Entities;
+﻿using Espluque.Application.Thesaurus;
 using Espluque.Contracts.Interfaces;
 using Espluquer.Entities;
 using System.Collections.ObjectModel;

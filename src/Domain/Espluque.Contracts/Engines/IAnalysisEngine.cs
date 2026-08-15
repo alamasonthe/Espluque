@@ -1,6 +1,4 @@
-﻿using Espluque.Contracts.Entities;
-
-using Espluque.Contracts.Interfaces;
+﻿using Espluque.Contracts.Interfaces;
 
 namespace Espluque.Contracts.Detection
 {
@@ -8,6 +6,6 @@ namespace Espluque.Contracts.Detection
     {
         event Action<IAnalysisMessage>? AnalyserMessageEvent;
 
-        Task<AnalysisContext> AnalyzeFileAsync(AnalysisContext analysisContext, string? viewerType = null);
+        Task<IAnalysisContext> AnalyzeFileAsync(IAnalysisContext analysisContext, string? viewerType = null);
     }
 }

@@ -1,5 +1,4 @@
-﻿using Espluque.Contracts.Entities;
-using Espluque.Contracts.Enums;
+﻿using Espluque.Contracts.Enums;
 using Espluque.Contracts.Interfaces;
 using Espluque.Contracts.ModuleInterfaces;
 using Espluque.Contracts.ModuleInterfaces.Contributions;
@@ -20,7 +19,7 @@ namespace Espluquer.UserControls.Shell
 {
     public partial class AnalysisViewUC : UserControl, IDisposable
     {
-        private AnalysisContext _analysisContext;
+        private IAnalysisContext _analysisContext;
 
         private readonly List<ICatalogEntry> _catalog = [];
 
@@ -33,7 +32,7 @@ namespace Espluquer.UserControls.Shell
 
         #region Lifecycle
 
-        public AnalysisViewUC(IOrchestratorFactory orchestratorFactory, ILogger logger, AnalysisContext analysisContext, List<ICatalogEntry> catalog)
+        public AnalysisViewUC(IOrchestratorFactory orchestratorFactory, ILogger logger, IAnalysisContext analysisContext, List<ICatalogEntry> catalog)
         {
             _logger = logger;
             _analysisContext = analysisContext;
@@ -77,7 +76,7 @@ namespace Espluquer.UserControls.Shell
 
         #region Analysis Workflow
 
-        private async Task AnalyzeFileAsync(AnalysisContext analysisContext)
+        private async Task AnalyzeFileAsync(IAnalysisContext analysisContext)
         {
             _orchestrator.AnalyserMessageEvent += ReceiveAnalyserMessage;
 
