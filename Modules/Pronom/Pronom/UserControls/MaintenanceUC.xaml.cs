@@ -1,4 +1,4 @@
-﻿using Espluque.Contracts.Ports;
+﻿using Espluque.Contracts.CrossCutting;
 using Microsoft.Extensions.Logging;
 using Microsoft.Win32;
 using System.Diagnostics;
@@ -11,10 +11,10 @@ namespace Pronom.UserControls
 {
     public partial class MaintenanceUC : UserControl
     {
-        private readonly Espluque.Contracts.Ports.ILogger _logger;
+        private readonly Espluque.Contracts.CrossCutting.ILogger _logger;
         private readonly ISettingsService _settingsService;
 
-        public MaintenanceUC(Espluque.Contracts.Ports.ILogger logger, ISettingsService settingsService)
+        public MaintenanceUC(Espluque.Contracts.CrossCutting.ILogger logger, ISettingsService settingsService)
         {
             _logger = logger;
             _settingsService = settingsService;

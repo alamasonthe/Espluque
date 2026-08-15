@@ -1,19 +1,18 @@
-﻿using Espluque.Contracts.Interfaces;
-using Espluque.Contracts.MessageInterfaces;
-using Espluque.Contracts.ModuleInterfaces.Contributions;
-using Espluque.Contracts.Ports;
+﻿using Espluque.Contracts.Contributions.Types;
+using Espluque.Contracts.CrossCutting;
+using Espluque.Contracts.Workflow;
 
 namespace Shortcut
 {
     internal class LinkFlagsGrabber: IGrabber
     {
         private readonly IMessageCenter _messageCenter;
-        private readonly Espluque.Contracts.Ports.ILogger _logger;
+        private readonly ILogger _logger;
         private readonly ISettingsService _settingsService;
         private readonly IEntityFactory _entityFactory;
 
         public LinkFlagsGrabber(IMessageCenter messageCenter,
-            Espluque.Contracts.Ports.ILogger logger,
+            ILogger logger,
             ISettingsService settingsService,
             IEntityFactory entityFactory)
         {

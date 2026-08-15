@@ -1,11 +1,12 @@
-﻿using Espluque.Contracts.Interfaces;
-using Espluque.Contracts.ModuleInterfaces;
-using Espluquer.Adapters;
+﻿using Espluquer.Adapters;
 using Espluquer.UserControls.Thesaurus;
 using Espluquer.Entities;
 using System.Windows;
 using System.Windows.Controls;
 using Util;
+using Espluque.Contracts.Catalog;
+using Espluque.Contracts.Thesaurus;
+using Espluque.Contracts.CrossCutting;
 
 namespace Espluquer.UserControls.Thesaurus
 

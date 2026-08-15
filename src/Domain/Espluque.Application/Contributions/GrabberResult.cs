@@ -1,4 +1,4 @@
-﻿using Espluque.Contracts.DetectionResult;
+﻿using Espluque.Contracts.Contributions;
 
 namespace Espluque.Application.Contributions
 {

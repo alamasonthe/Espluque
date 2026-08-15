@@ -1,5 +1,5 @@
-﻿using Espluque.Contracts.Interfaces;
-using Espluque.Contracts.Enums;
+﻿using Espluque.Contracts.Contributions;
+using Espluque.Contracts.Workflow;
 
 namespace Espluque.Application.Workflow
 {

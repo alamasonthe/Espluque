@@ -1,6 +1,8 @@
 ﻿using Espluque.Application.Modules;
-using Espluque.Contracts.ModuleInterfaces;
-using Espluque.Contracts.Ports;
+using Espluque.Contracts.Catalog;
+using Espluque.Contracts.Contributions;
+using Espluque.Contracts.CrossCutting;
+using Espluque.Contracts.Modules;
 using System.Reflection;
 using System.Runtime.Loader;
 

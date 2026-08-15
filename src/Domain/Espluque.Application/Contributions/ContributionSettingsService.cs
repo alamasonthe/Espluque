@@ -1,5 +1,5 @@
-﻿using Espluque.Contracts.ModuleInterfaces;
-using Espluque.Contracts.Ports;
+﻿using Espluque.Contracts.Contributions;
+using Espluque.Contracts.CrossCutting;
 using System.Text.Json;
 
 namespace Espluque.Application.Contributions

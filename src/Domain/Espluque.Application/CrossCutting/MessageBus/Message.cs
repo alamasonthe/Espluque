@@ -1,5 +1,4 @@
-﻿using Espluque.Contracts.Enums;
-using Espluque.Contracts.MessageInterfaces;
+﻿using Espluque.Contracts.CrossCutting;
 
 namespace Espluque.Application.CrossCutting.MessageBus
 {

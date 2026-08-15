@@ -1,4 +1,4 @@
-﻿using Espluque.Contracts.Enums;
+﻿using Espluque.Contracts.Workflow;
 
 namespace Espluque.Application.Workflow
 {

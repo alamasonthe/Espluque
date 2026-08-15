@@ -1,25 +1,25 @@
-﻿using Espluque.Contracts.Interfaces;
-using Espluque.Contracts.MessageInterfaces;
-using Espluque.Contracts.Ports;
+﻿using Espluque.Contracts.Workflow;
 using Microsoft.Extensions.Logging;
 using System.Diagnostics;
 using System.Reflection;
 using System.IO;
-using Espluque.Contracts.ModuleInterfaces.Contributions;
+using Espluque.Contracts.CrossCutting;
+using Espluque.Contracts.Contributions.Types;
+using Espluque.Contracts.Contributions;
 
 namespace Pronom
 {
     internal class Detector: IDetector
     {
         private readonly IMessageCenter _messageCenter;
-        private readonly Espluque.Contracts.Ports.ILogger _logger;
+        private readonly Espluque.Contracts.CrossCutting.ILogger _logger;
         private readonly ISettingsService _settingsService;
         private readonly IEntityFactory _entityFactory;
 
         private readonly string _referentiel = "Pronom";
 
         public Detector(IMessageCenter messageCenter,
-            Espluque.Contracts.Ports.ILogger logger,
+            Espluque.Contracts.CrossCutting.ILogger logger,
             ISettingsService settingsService,
             IEntityFactory entityFactory)
         {

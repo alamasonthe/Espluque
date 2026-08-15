@@ -1,5 +1,5 @@
 ﻿using System.Reflection;
-using Espluque.Contracts.ModuleInterfaces;
+using Espluque.Contracts.Catalog;
 
 namespace Espluque.Application.Catalog
 {

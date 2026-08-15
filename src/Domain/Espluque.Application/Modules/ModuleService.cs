@@ -1,7 +1,9 @@
 ﻿using Espluque.Application.Contributions;
-using Espluque.Contracts.ModuleInterfaces;
-using Espluque.Contracts.ModuleInterfaces.Contributions;
-using Espluque.Contracts.Ports;
+using Espluque.Contracts.Catalog;
+using Espluque.Contracts.Contributions;
+using Espluque.Contracts.Contributions.Types;
+using Espluque.Contracts.CrossCutting;
+using Espluque.Contracts.Modules;
 using System.Reflection;
 using System.Runtime.Loader;
 using System.Text.Json;

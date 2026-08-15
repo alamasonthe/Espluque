@@ -1,5 +1,5 @@
-﻿using Espluque.Contracts.Interfaces;
-using Espluque.Contracts.Ports;
+﻿using Espluque.Contracts.Contributions;
+using Espluque.Contracts.Thesaurus;
 using Microsoft.Extensions.Logging;
 using System.Globalization;
 using System.Text;
@@ -25,10 +25,10 @@ namespace Espluque.Application.Thesaurus
     {
         private static string _treeLevelSeparator = "/";
 
-        private readonly Contracts.Ports.ILogger _logger;
+        private readonly Contracts.CrossCutting.ILogger _logger;
         private readonly IThesaurusSource _thesaurusSource;
 
-        public ThesaurusService(Contracts.Ports.ILogger logger, IThesaurusSource thesaurusSource)
+        public ThesaurusService(Contracts.CrossCutting.ILogger logger, IThesaurusSource thesaurusSource)
         {
             _logger = logger;
             _thesaurusSource = thesaurusSource;

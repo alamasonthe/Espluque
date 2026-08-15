@@ -1,11 +1,11 @@
 ﻿using Espluque.Application.Contributions;
 using Espluque.Application.CrossCutting;
-using Espluque.Contracts.Enums;
-using Espluque.Contracts.Interfaces;
-using Espluque.Contracts.MessageInterfaces;
-using Espluque.Contracts.ModuleInterfaces;
-using Espluque.Contracts.ModuleInterfaces.Contributions;
-using Espluque.Contracts.Ports;
+using Espluque.Contracts.Catalog;
+using Espluque.Contracts.Contributions;
+using Espluque.Contracts.Contributions.Types;
+using Espluque.Contracts.CrossCutting;
+using Espluque.Contracts.Thesaurus;
+using Espluque.Contracts.Workflow;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 
@@ -41,7 +41,7 @@ namespace Espluque.Application.Workflow
     internal class FusionEngine
     {
         private readonly IMessageCenter _messageCenter;
-        private readonly Contracts.Ports.ILogger _logger;
+        private readonly Contracts.CrossCutting.ILogger _logger;
         private readonly ISettingsService _settingsService;
         private readonly IEntityFactory _entityFactory;
         private readonly IThesaurusService _thesaurusService;
@@ -53,7 +53,7 @@ namespace Espluque.Application.Workflow
         public FusionEngine(IServiceProvider serviceProvider, List<ICatalogEntry> catalog)
         {
             _messageCenter = serviceProvider.GetRequiredService<IMessageCenter>();
-            _logger = serviceProvider.GetRequiredService<Contracts.Ports.ILogger>();
+            _logger = serviceProvider.GetRequiredService<Contracts.CrossCutting.ILogger>();
             _settingsService = serviceProvider.GetRequiredService<ISettingsService>();
             _entityFactory = serviceProvider.GetRequiredService<IEntityFactory>();
             _thesaurusService = serviceProvider.GetRequiredService<IThesaurusService>();

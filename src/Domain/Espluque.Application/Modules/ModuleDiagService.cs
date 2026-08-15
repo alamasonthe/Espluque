@@ -1,9 +1,9 @@
-﻿using Espluque.Contracts.Enums;
-using Espluque.Contracts.Ports;
-using Espluque.Contracts.Interfaces;
-using Espluque.Contracts.ModuleInterfaces;
-using System.Reflection;
+﻿using System.Reflection;
 using System.Runtime.Loader;
+using Espluque.Contracts.Modules;
+using Espluque.Contracts.Thesaurus;
+using Espluque.Contracts.CrossCutting;
+using Espluque.Contracts.Contributions;
 
 namespace Espluque.Application.Modules
 {

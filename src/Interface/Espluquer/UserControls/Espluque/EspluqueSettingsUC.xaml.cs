@@ -1,4 +1,4 @@
-﻿using Espluque.Contracts.Ports;
+﻿using Espluque.Contracts.CrossCutting;
 using Espluquer.Entities;
 using System.ComponentModel;
 using System.Diagnostics;

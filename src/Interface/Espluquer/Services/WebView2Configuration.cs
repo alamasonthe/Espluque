@@ -1,5 +1,5 @@
 ﻿using Microsoft.Web.WebView2.Core;
-using Espluque.Contracts;
+using Espluque.Contracts.CrossCutting;
 
 namespace Espluquer.Services
 {

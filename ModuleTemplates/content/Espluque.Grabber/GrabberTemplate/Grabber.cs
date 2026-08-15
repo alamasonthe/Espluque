@@ -1,8 +1,8 @@
 ﻿using Espluque.Contracts.Interfaces;
 using Espluque.Contracts.MessageInterfaces;
 using Espluque.Contracts.Ports;
-using Espluque.Contracts.ModuleInterfaces.Contributions;
-
+using Espluque.Contracts.Workflow;
+using Espluque.Contracts.Contributions.Types;
 
 namespace GrabberTemplate
 {

@@ -1,9 +1,6 @@
 ﻿using Espluque.Application.CrossCutting;
-using Espluque.Contracts.Detection;
-using Espluque.Contracts.Enums;
-using Espluque.Contracts.Interfaces;
-using Espluque.Contracts.ModuleInterfaces;
-using Espluque.Contracts.Ports;
+using Espluque.Contracts.Catalog;
+using Espluque.Contracts.CrossCutting;
 using Espluque.Contracts.Workflow;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -34,7 +31,7 @@ namespace Espluque.Application.Workflow
     public class Orchestrator : IOrchestrator
     {
         private readonly IServiceProvider _serviceProvider;
-        private readonly Espluque.Contracts.Ports.ILogger _logger;
+        private readonly ILogger _logger;
         private readonly ISettingsService _settingsService;
 
         private readonly IAnalysisEngine _analysisEngine;
@@ -45,7 +42,7 @@ namespace Espluque.Application.Workflow
         {
             _serviceProvider = serviceProvider;
 
-            _logger = serviceProvider.GetRequiredService<Espluque.Contracts.Ports.ILogger>();
+            _logger = serviceProvider.GetRequiredService<ILogger>();
             _settingsService = serviceProvider.GetRequiredService<ISettingsService>();
         }
         public async Task<IAnalysisContext> ProcessAsync(List<ICatalogEntry> catalog, IAnalysisContext analysisContext, string? viewerType)

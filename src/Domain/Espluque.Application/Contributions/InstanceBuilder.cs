@@ -1,10 +1,8 @@
-﻿using Espluque.Contracts.Interfaces;
-using Espluque.Contracts.MessageInterfaces;
-using Espluque.Contracts.Ports;
-using Espluque.Contracts.ModuleInterfaces;
-using System.Reflection;
+﻿using System.Reflection;
 using Microsoft.Extensions.Logging;
 using Espluque.Application.Catalog;
+using Espluque.Contracts.Catalog;
+using Espluque.Contracts.CrossCutting;
 
 namespace Espluque.Application.Contributions
 {
@@ -54,7 +52,7 @@ namespace Espluque.Application.Contributions
         public static (string label, object instance)? CreateInstance(
             ICatalogEntry catalogEntry,
             IMessageCenter messageCenter,
-            Contracts.Ports.ILogger logger,
+            Contracts.CrossCutting.ILogger logger,
             ISettingsService settingsService,
             IEntityFactory entityFactory)
         {
@@ -70,7 +68,7 @@ namespace Espluque.Application.Contributions
                     return null;
                 }
 
-                ConstructorInfo? constructor = classType.GetConstructor([typeof(IMessageCenter), typeof(Contracts.Ports.ILogger), typeof(ISettingsService), typeof(IEntityFactory)]);
+                ConstructorInfo? constructor = classType.GetConstructor([typeof(IMessageCenter), typeof(Contracts.CrossCutting.ILogger), typeof(ISettingsService), typeof(IEntityFactory)]);
                 if (constructor is null)
                 {
                     logger.Log(LogLevel.Debug, $"Module contribution constructor not found: ClassName={catalogEntry.ClassName}");
@@ -94,7 +92,7 @@ namespace Espluque.Application.Contributions
                 string interfaceType,
                 string tag,
                 IMessageCenter messageCenter,
-                Contracts.Ports.ILogger logger,
+                Contracts.CrossCutting.ILogger logger,
                 ISettingsService settingsService,
                 IEntityFactory entityFactory)
         {

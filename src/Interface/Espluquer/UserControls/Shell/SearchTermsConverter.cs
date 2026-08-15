@@ -1,4 +1,4 @@
-﻿using Espluque.Contracts.Interfaces;
+﻿using Espluque.Contracts.Thesaurus;
 using System.Globalization;
 using System.Windows.Data;
 

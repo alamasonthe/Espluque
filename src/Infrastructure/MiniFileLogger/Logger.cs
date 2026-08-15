@@ -1,11 +1,11 @@
-﻿using Espluque.Contracts.Ports;
+﻿using Espluque.Contracts.CrossCutting;
 using Microsoft.Extensions.Logging;
 using System.Diagnostics;
 using System.Reflection;
 
 namespace MiniFileLogger
 {
-    public class Logger : Espluque.Contracts.Ports.ILogger
+    public class Logger : Espluque.Contracts.CrossCutting.ILogger
     {
         public event Action<string>? LineLogged;
 

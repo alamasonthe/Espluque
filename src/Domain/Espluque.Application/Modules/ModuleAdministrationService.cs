@@ -1,8 +1,7 @@
 ﻿using Espluque.Application.Contributions;
-using Espluque.Contracts.Interfaces;
-using Espluque.Contracts.MessageInterfaces;
-using Espluque.Contracts.ModuleInterfaces;
-using Espluque.Contracts.Ports;
+using Espluque.Contracts.Catalog;
+using Espluque.Contracts.CrossCutting;
+using Espluque.Contracts.Modules;
 
 namespace Espluque.Application.Modules
 {

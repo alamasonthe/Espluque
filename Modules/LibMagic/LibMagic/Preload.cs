@@ -1,4 +1,4 @@
-﻿using Espluque.Contracts.ModuleInterfaces.Contributions;
+﻿using Espluque.Contracts.Contributions.Types;
 
 namespace LibMagic
 {

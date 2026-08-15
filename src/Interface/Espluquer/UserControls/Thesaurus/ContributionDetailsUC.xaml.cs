@@ -1,4 +1,4 @@
-﻿using Espluque.Contracts.ModuleInterfaces;
+﻿using Espluque.Contracts.Catalog;
 using Espluquer.Entities;
 using Espluquer.Services;
 using System.Windows;

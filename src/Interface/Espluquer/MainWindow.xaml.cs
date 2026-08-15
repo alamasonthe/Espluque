@@ -1,8 +1,6 @@
-﻿using Espluque.Contracts.Enums;
-using Espluque.Contracts.Interfaces;
-using Espluque.Contracts.MessageInterfaces;
-using Espluque.Contracts.ModuleInterfaces;
-using Espluque.Contracts.Ports;
+﻿using Espluque.Contracts.Catalog;
+using Espluque.Contracts.CrossCutting;
+using Espluque.Contracts.Modules;
 using Espluque.Contracts.Workflow;
 using Espluque.Theming.Services;
 using Espluquer.UserControls.Espluque;
@@ -23,7 +21,7 @@ namespace Espluquer
     {
         private string _themeTag = "Light";
 
-        private readonly Espluque.Contracts.Ports.ILogger _logger;
+        private readonly Espluque.Contracts.CrossCutting.ILogger _logger;
         private readonly ReferenceUC _referenceUC;
         private readonly ISettingsService _settingsService;
         private readonly IOrchestratorFactory _orchestratorFactory;
@@ -46,7 +44,7 @@ namespace Espluquer
             ReferenceUC referenceUC,
             ConceptUC conceptUC,
             ModuleAdminUC moduleAdminUC, 
-            Espluque.Contracts.Ports.ILogger logger, 
+            Espluque.Contracts.CrossCutting.ILogger logger, 
             IOrchestratorFactory orchestratorFactory, 
             ISettingsService settingsService, 
             IMessageCenter messageCenter, 

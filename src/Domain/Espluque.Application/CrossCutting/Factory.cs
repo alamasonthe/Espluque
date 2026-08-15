@@ -3,11 +3,11 @@ using Espluque.Application.CrossCutting.MessageBus;
 using Espluque.Application.Modules;
 using Espluque.Application.Thesaurus;
 using Espluque.Application.Workflow;
-using Espluque.Contracts.DetectionResult;
-using Espluque.Contracts.Enums;
-using Espluque.Contracts.Interfaces;
-using Espluque.Contracts.MessageInterfaces;
-using Espluque.Contracts.ModuleInterfaces;
+using Espluque.Contracts.Contributions;
+using Espluque.Contracts.CrossCutting;
+using Espluque.Contracts.Modules;
+using Espluque.Contracts.Thesaurus;
+using Espluque.Contracts.Workflow;
 
 namespace Espluque.Application.CrossCutting
 {

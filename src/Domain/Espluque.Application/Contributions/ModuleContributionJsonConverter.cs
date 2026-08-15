@@ -1,4 +1,4 @@
-﻿using Espluque.Contracts.ModuleInterfaces;
+﻿using Espluque.Contracts.Contributions;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 

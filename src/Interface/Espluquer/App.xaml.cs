@@ -1,6 +1,5 @@
 ﻿using Bootstrap;
-using Espluque.Contracts.Interfaces;
-using Espluque.Contracts.Ports;
+using Espluque.Contracts.Thesaurus;
 using Espluquer.Services;
 using Espluquer.UserControls.Modules;
 using Espluquer.UserControls.Shell;

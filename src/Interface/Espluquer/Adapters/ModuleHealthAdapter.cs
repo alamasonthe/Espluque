@@ -1,5 +1,5 @@
-﻿using Espluque.Contracts.Interfaces;
-using Espluque.Contracts.ModuleInterfaces;
+﻿using Espluque.Contracts.CrossCutting;
+using Espluque.Contracts.Modules;
 using Espluquer.Entities;
 
 namespace Espluquer.Adapters

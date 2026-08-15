@@ -1,4 +1,4 @@
-﻿using Espluque.Contracts.ModuleInterfaces;
+﻿using Espluque.Contracts.Contributions;
 
 namespace Espluque.Application.Contributions
 {

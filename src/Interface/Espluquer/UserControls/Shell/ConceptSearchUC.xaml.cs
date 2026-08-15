@@ -1,5 +1,5 @@
-﻿using Espluque.Contracts.Interfaces;
-using Espluque.Contracts.Ports;
+﻿using Espluque.Contracts.CrossCutting;
+using Espluque.Contracts.Thesaurus;
 using Espluquer.Adapters;
 using Espluquer.Entities;
 using System.Collections.ObjectModel;

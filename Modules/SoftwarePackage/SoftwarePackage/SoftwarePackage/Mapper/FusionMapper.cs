@@ -1,4 +1,4 @@
-﻿using Espluque.Contracts.Interfaces;
+﻿using Espluque.Contracts.Workflow;
 using Microsoft.Extensions.Logging;
 using System.IO;
 using System.Reflection;
@@ -8,7 +8,7 @@ namespace SoftwarePackage.Mapper
     public static class FusionMapper<TEntity> where TEntity : new()
     {
         
-        public static TEntity Map(IAnalysisContext analysisContext, List<MapLine> mappings, Espluque.Contracts.Ports.ILogger logger)
+        public static TEntity Map(IAnalysisContext analysisContext, List<MapLine> mappings, Espluque.Contracts.CrossCutting.ILogger logger)
         {
             var formattedFilename = Path.GetFileName(analysisContext.FilePath).PadRight(35);
             if (analysisContext is null || mappings is null)

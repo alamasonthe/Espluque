@@ -1,5 +1,5 @@
-﻿using Espluque.Contracts.Enums;
-using Espluque.Contracts.ModuleInterfaces;
+﻿using Espluque.Contracts.Contributions;
+using Espluque.Contracts.CrossCutting;
 
 namespace Espluque.Application.Contributions
 {

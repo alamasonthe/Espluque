@@ -1,11 +1,11 @@
 ﻿using Espluquer.Entities;
-using Espluque.Contracts.Interfaces;
-using Espluque.Contracts.ModuleInterfaces;
 using System.Text.Json;
 using System.Windows;
 using System.Windows.Controls;
 
 using Util;
+using Espluque.Contracts.Catalog;
+using Espluque.Contracts.Thesaurus;
 
 namespace Espluquer.UserControls.Thesaurus
 {

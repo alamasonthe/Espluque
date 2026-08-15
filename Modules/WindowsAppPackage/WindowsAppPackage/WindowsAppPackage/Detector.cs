@@ -1,7 +1,7 @@
-﻿using Espluque.Contracts.Interfaces;
-using Espluque.Contracts.MessageInterfaces;
-using Espluque.Contracts.ModuleInterfaces.Contributions;
-using Espluque.Contracts.Ports;
+﻿using Espluque.Contracts.Contributions;
+using Espluque.Contracts.Contributions.Types;
+using Espluque.Contracts.CrossCutting;
+using Espluque.Contracts.Workflow;
 using Microsoft.Extensions.Logging;
 using SevenZip.Services;
 using System.Text;
@@ -13,7 +13,7 @@ namespace WindowsAppPackage
     public class Detector : IDetector
     {
         private readonly IMessageCenter _messageCenter;
-        private readonly Espluque.Contracts.Ports.ILogger _logger;
+        private readonly Espluque.Contracts.CrossCutting.ILogger _logger;
         private readonly ISettingsService _settingsService;
         private readonly IEntityFactory _entityFactory;
 
@@ -34,7 +34,7 @@ namespace WindowsAppPackage
             ];
 
         public Detector(IMessageCenter messageCenter,
-            Espluque.Contracts.Ports.ILogger logger,
+            Espluque.Contracts.CrossCutting.ILogger logger,
             ISettingsService settingsService,
             IEntityFactory entityFactory)
         {

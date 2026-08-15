@@ -1,5 +1,4 @@
-﻿using Espluque.Contracts.Interfaces;
-using Espluque.Contracts.ModuleInterfaces;
+﻿using Espluque.Contracts.Catalog;
 
 namespace Espluque.Contracts.Workflow
 {

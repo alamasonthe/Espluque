@@ -1,4 +1,4 @@
-﻿using Espluque.Contracts.Interfaces;
+﻿using Espluque.Contracts.Workflow;
 using Microsoft.Extensions.Logging;
 using SoftwarePackage.Entities;
 using System.IO;
@@ -10,9 +10,9 @@ namespace SoftwarePackage.Services
     
     internal class CommandCompletion
     {
-        private readonly Espluque.Contracts.Ports.ILogger _logger;
+        private readonly Espluque.Contracts.CrossCutting.ILogger _logger;
 
-        public CommandCompletion(Espluque.Contracts.Ports.ILogger logger)
+        public CommandCompletion(Espluque.Contracts.CrossCutting.ILogger logger)
         {
             _logger = logger;
         }
