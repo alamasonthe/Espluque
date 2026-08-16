@@ -1,8 +1,8 @@
 ﻿using Espluque.Application.CrossCutting;
 using Espluque.Contracts.Catalog;
 using Espluque.Contracts.CrossCutting;
+using Espluque.Contracts.Thesaurus;
 using Espluque.Contracts.Workflow;
-using Microsoft.Extensions.DependencyInjection;
 
 namespace Espluque.Application.Workflow
 {
@@ -30,27 +30,49 @@ namespace Espluque.Application.Workflow
 
     public class Orchestrator : IOrchestrator
     {
-        private readonly IServiceProvider _serviceProvider;
+        private readonly IMessageCenter _messageCenter;
         private readonly ILogger _logger;
         private readonly ISettingsService _settingsService;
+        private readonly IEntityFactory _entityFactory;
+        private readonly IThesaurusService _thesaurusService;
 
         public event Action<IAnalysisMessage>? AnalyserMessageEvent;
 
-        public Orchestrator(IServiceProvider serviceProvider)
+        public Orchestrator(
+            IMessageCenter messageCenter,
+            ILogger logger,
+            ISettingsService settingsService,
+            IEntityFactory entityFactory,
+            IThesaurusService thesaurusService)
         {
-            _serviceProvider = serviceProvider;
-
-            _logger = serviceProvider.GetRequiredService<ILogger>();
-            _settingsService = serviceProvider.GetRequiredService<ISettingsService>();
+            _messageCenter = messageCenter;
+            _logger = logger;
+            _settingsService = settingsService;
+            _entityFactory = entityFactory;
+            _thesaurusService = thesaurusService;
         }
 
         public async Task<IAnalysisContext> ProcessAsync(List<ICatalogEntry> catalog, IAnalysisContext analysisContext, string? viewerType)
         {
             var formattedFilename = FormattedFileName(analysisContext);
-            AnalysisEngine analysisEngine = new AnalysisEngine(_serviceProvider, catalog);
+            AnalysisEngine analysisEngine = new AnalysisEngine(
+                _messageCenter,
+                _logger,
+                _settingsService,
+                _entityFactory,
+                _thesaurusService,
+                catalog);
+
             analysisEngine.AnalyserMessageEvent += RelayAnalyserMessage;
 
-            FusionEngine fusionEngine = new FusionEngine(_serviceProvider, catalog);
+            FusionEngine fusionEngine = new FusionEngine(
+                _messageCenter,
+                _logger,
+                _settingsService,
+                _entityFactory,
+                _thesaurusService,
+                catalog);
+
             fusionEngine.AnalyserMessageEvent += RelayAnalyserMessage;
 
             try

@@ -24,12 +24,19 @@ namespace Bootstrap
 
             ISettingsService settingsService = new SettingsJson.SettingsService();
             services.AddSingleton(settingsService);
+
+            IContributionSettingsService contributionSettingsService = new ContributionSettingsService(settingsService);
+            services.AddSingleton(contributionSettingsService);
+
+            IModuleService moduleService = new ModuleService(contributionSettingsService);
+            services.AddSingleton(moduleService);
+
             services.AddSingleton<ILogger, MiniFileLogger.Logger>();
 
             services.AddSingleton<IMessageCenter, MessageCenter>();
 
             string modulesRootPath = Path.Combine( AppContext.BaseDirectory, "Modules");
-            CatalogService catalogService = new(settingsService);
+            CatalogService catalogService = new(moduleService);
             List<ICatalogEntry> moduleCatalog = await catalogService.BuildAsync(modulesRootPath);
             services.AddSingleton(moduleCatalog);
 
@@ -45,10 +52,7 @@ namespace Bootstrap
 
             services.AddSingleton<ISearchService, SearchService>();
 
-            services.AddSingleton<IModuleService, ModuleService>();
             services.AddSingleton<IModuleDiagService, ModuleDiagService>();
-
-            services.AddSingleton<IContributionSettingsService, ContributionSettingsService>();
 
             return services;
         }

@@ -18,13 +18,13 @@ namespace Espluque.Application.Modules
             "IWpfViewer"
         ];
 
-        private readonly ModuleService _moduleService;
+        private readonly IModuleService _moduleService;
         private readonly IThesaurusService _thesaurusService;
         private readonly IEntityFactory _entityFactory;
 
-        public ModuleDiagService(IThesaurusService thesaurusService, IEntityFactory entityFactory, ISettingsService settingsService)
+        public ModuleDiagService( IThesaurusService thesaurusService, IEntityFactory entityFactory, IModuleService moduleService)
         {
-            _moduleService = new ModuleService(settingsService);
+            _moduleService = moduleService;
             _thesaurusService = thesaurusService;
             _entityFactory = entityFactory;
         }

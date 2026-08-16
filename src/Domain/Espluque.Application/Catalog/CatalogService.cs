@@ -19,26 +19,24 @@ namespace Espluque.Application.Catalog
 
     public class CatalogService
     {
-        private readonly ISettingsService _settingsService;
+        private readonly IModuleService _moduleService;
 
-        public CatalogService(ISettingsService settingsService)
+        public CatalogService(IModuleService moduleService)
         {
-            _settingsService = settingsService;
+            _moduleService = moduleService;
         }
 
         public async Task<List<ICatalogEntry>> BuildAsync(string modulesRootPath)
         {
-            ModuleService moduleService = new(_settingsService);
-
             try
             {
                 List<ICatalogEntry> catalogEntries = [];
 
-                var moduleInfoPaths = moduleService.GetModuleInfoPaths(modulesRootPath);
+                var moduleInfoPaths = _moduleService.GetModuleInfoPaths(modulesRootPath);
 
                 foreach (string moduleInfoPath in moduleInfoPaths)
                 {
-                    IModuleInfo? moduleInfo = await moduleService.LoadModuleInfo(moduleInfoPath);
+                    IModuleInfo? moduleInfo = await _moduleService.LoadModuleInfo(moduleInfoPath);
 
                     if (moduleInfo is null)
                     {
