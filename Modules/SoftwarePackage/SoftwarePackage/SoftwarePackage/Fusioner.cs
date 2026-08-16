@@ -1,8 +1,7 @@
-﻿using Espluque.Contracts.Entities;
-using Espluque.Contracts.Interfaces;
-using Espluque.Contracts.MessageInterfaces;
-using Espluque.Contracts.ModuleInterfaces.Contributions;
-using Espluque.Contracts.Ports;
+﻿using Espluque.Contracts.Contributions;
+using Espluque.Contracts.Contributions.Types;
+using Espluque.Contracts.CrossCutting;
+using Espluque.Contracts.Workflow;
 using SoftwarePackage.Entities;
 using SoftwarePackage.Mapper;
 using SoftwarePackage.Services;
@@ -34,7 +33,7 @@ namespace SoftwarePackage
             _entityFactory = entityFactory;
         }
 
-        public async Task<IAssertion> Fuse(AnalysisContext analysisContext)
+        public async Task<IAssertion> Fuse(IAnalysisContext analysisContext)
         {
             string filename = Path.GetFileName(analysisContext.FilePath);
             string formattedFilename = filename.PadRight(35);

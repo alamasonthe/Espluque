@@ -1,11 +1,14 @@
-﻿using Espluque.Application.Entities;
-using Espluque.Application.MessageBus.Services;
-using Espluque.Application.ModuleManager.Services;
-using Espluque.Application.Thesaurus.Services;
-using Espluque.Contracts.Interfaces;
-using Espluque.Contracts.MessageInterfaces;
-using Espluque.Contracts.ModuleInterfaces;
-using Espluque.Contracts.Ports;
+﻿using Espluque.Application.Catalog;
+using Espluque.Application.Contributions;
+using Espluque.Application.CrossCutting;
+using Espluque.Application.CrossCutting.MessageBus;
+using Espluque.Application.Modules;
+using Espluque.Application.Thesaurus;
+using Espluque.Contracts.Catalog;
+using Espluque.Contracts.Contributions;
+using Espluque.Contracts.CrossCutting;
+using Espluque.Contracts.Modules;
+using Espluque.Contracts.Thesaurus;
 using EspluqueSqlite.Thesaurus;
 using LuceneSearch;
 using Microsoft.Extensions.DependencyInjection;
@@ -19,13 +22,22 @@ namespace Bootstrap
 
             services.AddSingleton<IEntityFactory,Factory>();
 
-            services.AddSingleton<Espluque.Contracts.Ports.ISettingsService, SettingsJson.SettingsService>();
-            services.AddSingleton<Espluque.Contracts.Ports.ILogger, MiniFileLogger.Logger>();
+            ISettingsService settingsService = new SettingsJson.SettingsService();
+            services.AddSingleton(settingsService);
+
+            IContributionSettingsService contributionSettingsService = new ContributionSettingsService(settingsService);
+            services.AddSingleton(contributionSettingsService);
+
+            IModuleService moduleService = new ModuleService(contributionSettingsService);
+            services.AddSingleton(moduleService);
+
+            services.AddSingleton<ILogger, MiniFileLogger.Logger>();
 
             services.AddSingleton<IMessageCenter, MessageCenter>();
 
             string modulesRootPath = Path.Combine( AppContext.BaseDirectory, "Modules");
-            List<ICatalogEntry> moduleCatalog = await CatalogService.BuildAsync(modulesRootPath);
+            CatalogService catalogService = new(moduleService);
+            List<ICatalogEntry> moduleCatalog = await catalogService.BuildAsync(modulesRootPath);
             services.AddSingleton(moduleCatalog);
 
             await ModuleService.LoadModuleDependenciesAsync(moduleCatalog);
@@ -35,13 +47,12 @@ namespace Bootstrap
             services.AddTransient<Espluque.Application.Workflow.Orchestrator>();
             services.AddSingleton<Espluque.Contracts.Workflow.IOrchestratorFactory, Espluque.Application.Workflow.OrchestratorFactory>();
 
-            services.AddSingleton<Espluque.Contracts.Ports.IThesaurusSource, ThesaurusRepository>();
+            services.AddSingleton<IThesaurusSource, ThesaurusRepository>();
             services.AddSingleton<IThesaurusService, ThesaurusService>();
 
             services.AddSingleton<ISearchService, SearchService>();
 
-            services.AddSingleton<Espluque.Contracts.ModuleInterfaces.IModuleService, ModuleService>();
-            services.AddSingleton<Espluque.Contracts.ModuleInterfaces.IModuleDiagService, ModuleDiagService>();
+            services.AddSingleton<IModuleDiagService, ModuleDiagService>();
 
             return services;
         }

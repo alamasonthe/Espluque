@@ -6,9 +6,9 @@ namespace RegViewer
 {
     public class RegService
     {
-        private readonly Espluque.Contracts.Ports.ILogger _logger;
+        private readonly Espluque.Contracts.CrossCutting.ILogger _logger;
 
-        public RegService(Espluque.Contracts.Ports.ILogger logger)
+        public RegService(Espluque.Contracts.CrossCutting.ILogger logger)
         {
             _logger = logger;
         }

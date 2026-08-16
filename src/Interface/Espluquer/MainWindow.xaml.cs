@@ -1,15 +1,12 @@
-﻿using Espluque.Contracts.Entities;
-using Espluque.Contracts.Enums;
-using Espluque.Contracts.MessageInterfaces;
-using Espluque.Contracts.ModuleInterfaces;
-using Espluque.Contracts.Detection;
+﻿using Espluque.Contracts.Catalog;
+using Espluque.Contracts.CrossCutting;
+using Espluque.Contracts.Modules;
 using Espluque.Contracts.Workflow;
-using Espluque.Contracts.Ports;
 using Espluque.Theming.Services;
-using Espluquer.UserControls.Thesaurus;
-using Espluquer.UserControls.Shell;
-using Espluquer.UserControls.Modules;
 using Espluquer.UserControls.Espluque;
+using Espluquer.UserControls.Modules;
+using Espluquer.UserControls.Shell;
+using Espluquer.UserControls.Thesaurus;
 using Microsoft.Extensions.Logging;
 using Microsoft.Win32;
 using System.Diagnostics;
@@ -24,12 +21,13 @@ namespace Espluquer
     {
         private string _themeTag = "Light";
 
-        private readonly Espluque.Contracts.Ports.ILogger _logger;
+        private readonly Espluque.Contracts.CrossCutting.ILogger _logger;
         private readonly ReferenceUC _referenceUC;
         private readonly ISettingsService _settingsService;
         private readonly IOrchestratorFactory _orchestratorFactory;
         private readonly IMessageCenter _messageCenter;
         private readonly IModuleAdministrationService _moduleAdministrationService;
+        private readonly IEntityFactory _factory;
 
         private readonly LogUC _logUC;
         private readonly ConceptUC _conceptUC;
@@ -46,14 +44,15 @@ namespace Espluquer
             ReferenceUC referenceUC,
             ConceptUC conceptUC,
             ModuleAdminUC moduleAdminUC, 
-            Espluque.Contracts.Ports.ILogger logger, 
+            Espluque.Contracts.CrossCutting.ILogger logger, 
             IOrchestratorFactory orchestratorFactory, 
             ISettingsService settingsService, 
             IMessageCenter messageCenter, 
             List<ICatalogEntry> catalog, 
             IModuleAdministrationService moduleAdministration, 
             ConceptSearchUC conceptSearchUC,
-            ContributionMapUC contributionMapUC)
+            ContributionMapUC contributionMapUC,
+            IEntityFactory factory)
         {
             _logger = logger;
             _referenceUC = referenceUC;
@@ -62,6 +61,7 @@ namespace Espluquer
             _messageCenter = messageCenter;
             _catalog = catalog;
             _conceptSearchUC = conceptSearchUC;
+            _factory = factory;
 
             _logUC = logUC;
             _conceptUC = conceptUC;
@@ -89,9 +89,6 @@ namespace Espluquer
             AddHandler(DragDrop.DragOverEvent, new DragEventHandler(MainWindow_DragOver), true);
             AddHandler(DragDrop.DropEvent, new DragEventHandler(MainWindow_Drop), true);
             _moduleAdministrationService = moduleAdministration;
-
-            
-
 
         }
 
@@ -251,12 +248,8 @@ namespace Espluquer
             {
                 tempFolderPath = Util.File.CreateTempFolder("Espluquer").FullName;
             }
-            AnalysisContext analysisContext = new()
-            {
-                FilePath = filePath,
-                TempFolderPath = tempFolderPath,
-                StartingTag = _startingTag
-            };
+            IAnalysisContext analysisContext = _factory.CreateAnalysisContext(
+                _startingTag, [], filePath, null, [], tempFolderPath, [], []);
 
             AnalysisViewUC analysisView = new AnalysisViewUC(_orchestratorFactory, _logger, analysisContext, _catalog);
 

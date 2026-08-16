@@ -1,14 +1,19 @@
 {
   "name": "WebView2 module",
   "version": "0.0.1",
+  "author": "Alamasonthe",
+  "description": "WebView2 module for handling WebView2 controls",
   "assembly": "WebView.dll",
   "contributions": [
     {
       "interfaceType": "IWpfViewer",
       "label": "Microsoft WebView 2",
+      "description": "",
       "className": "WebView.Viewer",
-      "tags": [ "WebView2" ],
-      "active": true
+      "contributionSettings": {
+        "tags": [ "WebView2" ],
+        "active": true
+      }
     }
   ]
 }

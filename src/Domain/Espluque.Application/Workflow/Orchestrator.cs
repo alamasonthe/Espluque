@@ -1,41 +1,78 @@
-﻿using Espluque.Application.Engines;
-using Espluque.Application.Entities;
-using Espluque.Contracts.Detection;
-using Espluque.Contracts.Entities;
-using Espluque.Contracts.Enums;
-using Espluque.Contracts.Interfaces;
-using Espluque.Contracts.ModuleInterfaces;
-using Espluque.Contracts.Ports;
+﻿using Espluque.Application.CrossCutting;
+using Espluque.Contracts.Catalog;
+using Espluque.Contracts.CrossCutting;
+using Espluque.Contracts.Thesaurus;
 using Espluque.Contracts.Workflow;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Logging;
 
 namespace Espluque.Application.Workflow
 {
+    /// <summary>
+    /// Coordinates the analysis workflow by executing the analysis engine followed by the fusion engine.
+    /// </summary>
+    /// <remarks>
+    /// Processing cycle:
+    /// <code>
+    /// AnalysisContext
+    ///     ↓
+    /// Execute AnalysisEngine
+    ///     ↓
+    /// Execute FusionEngine
+    ///     ↓
+    /// Emit AnalysisCompleted message
+    ///     ↓
+    /// Return updated AnalysisContext
+    /// </code>
+    ///
+    /// Messages emitted by the analysis and fusion engines are relayed through AnalyserMessageEvent.
+    ///
+    /// The optional viewerType parameter is forwarded to AnalysisEngine to restrict viewer contribution execution.
+    /// </remarks>
+
     public class Orchestrator : IOrchestrator
     {
-        private readonly IServiceProvider _serviceProvider;
-        private readonly Espluque.Contracts.Ports.ILogger _logger;
+        private readonly IMessageCenter _messageCenter;
+        private readonly ILogger _logger;
         private readonly ISettingsService _settingsService;
-
-        private readonly IAnalysisEngine _analysisEngine;
+        private readonly IEntityFactory _entityFactory;
+        private readonly IThesaurusService _thesaurusService;
 
         public event Action<IAnalysisMessage>? AnalyserMessageEvent;
 
-        public Orchestrator(IServiceProvider serviceProvider)
+        public Orchestrator(
+            IMessageCenter messageCenter,
+            ILogger logger,
+            ISettingsService settingsService,
+            IEntityFactory entityFactory,
+            IThesaurusService thesaurusService)
         {
-            _serviceProvider = serviceProvider;
-
-            _logger = serviceProvider.GetRequiredService<Espluque.Contracts.Ports.ILogger>();
-            _settingsService = serviceProvider.GetRequiredService<ISettingsService>();
+            _messageCenter = messageCenter;
+            _logger = logger;
+            _settingsService = settingsService;
+            _entityFactory = entityFactory;
+            _thesaurusService = thesaurusService;
         }
-        public async Task<AnalysisContext> ProcessAsync(List<ICatalogEntry> catalog, AnalysisContext analysisContext, string? viewerType)
+
+        public async Task<IAnalysisContext> ProcessAsync(List<ICatalogEntry> catalog, IAnalysisContext analysisContext, string? viewerType)
         {
             var formattedFilename = FormattedFileName(analysisContext);
-            AnalysisEngine analysisEngine = new AnalysisEngine(_serviceProvider, catalog);
+            AnalysisEngine analysisEngine = new AnalysisEngine(
+                _messageCenter,
+                _logger,
+                _settingsService,
+                _entityFactory,
+                _thesaurusService,
+                catalog);
+
             analysisEngine.AnalyserMessageEvent += RelayAnalyserMessage;
 
-            FusionEngine fusionEngine = new FusionEngine(_serviceProvider, catalog);
+            FusionEngine fusionEngine = new FusionEngine(
+                _messageCenter,
+                _logger,
+                _settingsService,
+                _entityFactory,
+                _thesaurusService,
+                catalog);
+
             fusionEngine.AnalyserMessageEvent += RelayAnalyserMessage;
 
             try
@@ -63,7 +100,7 @@ namespace Espluque.Application.Workflow
             AnalyserMessageEvent?.Invoke(message);
         }
 
-        private string FormattedFileName(AnalysisContext analysisContext)
+        private string FormattedFileName(IAnalysisContext analysisContext)
         {
             return Path.GetFileName(analysisContext.FilePath).PadRight(35);
         }

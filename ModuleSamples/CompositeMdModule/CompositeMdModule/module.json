@@ -1,35 +1,49 @@
 {
   "name": "Composit Module Sample",
   "version": "0.0.1",
+  "author": "Your Name",
+  "description": "A sample module that uses the Composite pattern to implement a Markdown viewer.",
   "assembly": "CompositeMdModule.dll",
   "contributions": [
     {
       "interfaceType": "IDetector",
       "label": "Markdown detector",
+      "description": "",
       "className": "CompositeMdModule.ModuleService",
-      "tags": [ "Markdown" ],
-      "active": true
+      "contributionSettings": {
+        "tags": [ "Markdown" ],
+        "active": true
+      }
     },
     {
       "interfaceType": "IGrabber",
       "label": "Markdown infos",
+      "description": "",
       "className": "CompositeMdModule.ModuleService",
-      "tags": [ "Markdown" ],
-      "active": true
+      "contributionSettings": {
+        "tags": [ "Markdown" ],
+        "active": true
+      }
     },
     {
       "interfaceType": "IWpfViewer",
       "label": "Markdown viewer",
+      "description": "",
       "className": "CompositeMdModule.ModuleService",
-      "tags": [ "Markdown" ],
-      "active": true
+      "contributionSettings": {
+        "tags": [ "Markdown" ],
+        "active": true
+      }
     },
     {
       "interfaceType": "IManagedDependencies",
       "label": "Markdig dependency list",
+      "description": "",
       "className": "CompositeMdModule.ModuleService",
-      "tags": [],
-      "active": true
+      "contributionSettings": {
+        "tags": [],
+        "active": true
+      }
     }
   ]
 }

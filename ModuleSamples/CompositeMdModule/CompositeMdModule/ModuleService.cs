@@ -1,8 +1,7 @@
-using Espluque.Contracts.Entities;
-using Espluque.Contracts.Interfaces;
-using Espluque.Contracts.MessageInterfaces;
-using Espluque.Contracts.ModuleInterfaces.Contributions;
-using Espluque.Contracts.Ports;
+using Espluque.Contracts.Contributions;
+using Espluque.Contracts.Contributions.Types;
+using Espluque.Contracts.CrossCutting;
+using Espluque.Contracts.Workflow;
 using System.IO;
 
 namespace CompositeMdModule
@@ -32,7 +31,7 @@ namespace CompositeMdModule
             _entityFactory = entityFactory;
         }
 
-        public async Task<IFileFormat> Detect(AnalysisContext analysisContext)
+        public async Task<IFileFormat> Detect(IAnalysisContext analysisContext)
         {
             IFileFormat fileFormat = _entityFactory.CreateFileFormat(
                     _referentiel,
@@ -51,7 +50,7 @@ namespace CompositeMdModule
             return fileFormat;
         }
 
-        public async Task<List<KeyValuePair<string, string>>> Grab(AnalysisContext analysisContext)
+        public async Task<List<KeyValuePair<string, string>>> Grab(IAnalysisContext analysisContext)
         {
             List<KeyValuePair<string, string>> infos = [];
 
@@ -62,7 +61,7 @@ namespace CompositeMdModule
             return infos;
         }
 
-        public Task<object?> GetViewer(AnalysisContext analysisContext)
+        public Task<object?> GetViewer(IAnalysisContext analysisContext)
         {
             object viewer = new MdViewerUC(analysisContext.FilePath);
             return Task.FromResult<object?>(viewer);

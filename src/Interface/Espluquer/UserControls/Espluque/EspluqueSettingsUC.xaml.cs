@@ -1,4 +1,4 @@
-﻿using Espluque.Contracts.Ports;
+﻿using Espluque.Contracts.CrossCutting;
 using Espluquer.Entities;
 using System.ComponentModel;
 using System.Diagnostics;
@@ -30,7 +30,7 @@ namespace Espluquer.UserControls.Espluque
 
         private async Task LoadSettings()
         {
-            string? moduleSettingsJson = await _settingsService.GetModuleSettings(_moduleName);
+            string? moduleSettingsJson = await _settingsService.GetJsonSectionSettings(_moduleName);
             if (string.IsNullOrWhiteSpace(moduleSettingsJson))
             {
                 return;

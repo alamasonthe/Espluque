@@ -1,14 +1,19 @@
 {
   "name": "Software Package module",
   "version": "0.0.1",
+  "author": "Alamasonthe",
+  "description": "Software package module for handling software installation packages",
   "assembly": "SoftwarePackage.dll",
   "contributions": [
     {
       "interfaceType": "IFusioner",
       "label": "Package Fusioner",
+      "description": "",
       "className": "SoftwarePackage.Fusioner",
-      "tags": [ "Software Package" ],
-      "active": true
+      "contributionSettings": {
+        "tags": [ "Software Package" ],
+        "active": true
+      }
     }
   ]
 }

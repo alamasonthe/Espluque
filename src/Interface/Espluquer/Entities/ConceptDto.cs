@@ -1,4 +1,4 @@
-﻿using Espluque.Contracts.Interfaces;
+﻿using Espluque.Contracts.Thesaurus;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
 

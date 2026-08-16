@@ -1,7 +1,6 @@
-using Espluque.Contracts.Interfaces;
-using Espluque.Contracts.MessageInterfaces;
-using Espluque.Contracts.ModuleInterfaces.Contributions;
-using Espluque.Contracts.Ports;
+using Espluque.Contracts.CrossCutting;
+using Espluque.Contracts.Contributions.Types;
+using Espluque.Contracts.Workflow;
 
 namespace WpfViewerTemplate
 {
@@ -28,7 +27,7 @@ namespace WpfViewerTemplate
             _entityFactory = entityFactory;
         }
 
-        public Task<object?> GetViewer(AnalysisContext analysisContext)
+        public Task<object?> GetViewer(IAnalysisContext analysisContext)
         {
             object viewer = new CustomUserControl(analysisContext.FilePath);
             return Task.FromResult<object?>(viewer);

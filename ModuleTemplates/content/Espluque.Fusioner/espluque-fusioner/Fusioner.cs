@@ -1,9 +1,8 @@
-﻿using Espluque.Contracts.Interfaces;
-using Espluque.Contracts.MessageInterfaces;
-using Espluque.Contracts.ModuleInterfaces.Contributions;
-using Espluque.Contracts.Ports;
+﻿using Espluque.Contracts.CrossCutting;
+using Espluque.Contracts.Contributions;
+using Espluque.Contracts.Contributions.Types;
+using Espluque.Contracts.Workflow;
 using Espluque.Fusioner.Entities;
-using Espluque.Contracts.Entities;
 using System.Text.Json;
 
 namespace espluque-fusioner
@@ -28,7 +27,7 @@ namespace espluque-fusioner
             _entityFactory = entityFactory;
         }
 
-        public async Task<IAssertion> Fuse(AnalysisContext analysisContext)
+        public async Task<IAssertion> Fuse(IAnalysisContext analysisContext)
         {
             string filename = Path.GetFileName(analysisContext.FilePath);
             string formattedFilename = filename.PadRight(35);

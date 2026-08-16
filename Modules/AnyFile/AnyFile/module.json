@@ -1,28 +1,39 @@
 {
   "name": "Any File module",
   "version": "0.0.1",
+  "author": "Alamasonthe",
+  "description": "This is a template for creating a new any file module.",
   "assembly": "AnyFile.dll",
   "contributions": [
     {
       "interfaceType": "IGrabber",
       "label": "File properties",
+      "description": "",
       "className": "AnyFile.InfosGrabber",
-      "tags": [ "AnyFile" ],
-      "active": true
+      "contributionSettings": {
+        "tags": [ "AnyFile" ],
+        "active": true
+      }
     },
     {
       "interfaceType": "IGrabber",
       "label": "File attributes",
+      "description": "",
       "className": "AnyFile.AttributesGrabber",
-      "tags": [ "AnyFile" ],
-      "active": true
+      "contributionSettings": {
+        "tags": [ "AnyFile" ],
+        "active": true
+      }
     },
     {
       "interfaceType": "IDetector",
       "label": "Text or Binary",
+      "description": "",
       "className": "AnyFile.TextOrBinaryDetector",
-      "tags": [ "AnyFile" ],
-      "active": true
+      "contributionSettings": {
+        "tags": [ "AnyFile" ],
+        "active": true
+      }
     }
   ]
 }

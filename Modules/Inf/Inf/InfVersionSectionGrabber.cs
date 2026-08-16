@@ -1,8 +1,6 @@
-﻿using Espluque.Contracts.Entities;
-using Espluque.Contracts.Interfaces;
-using Espluque.Contracts.MessageInterfaces;
-using Espluque.Contracts.ModuleInterfaces.Contributions;
-using Espluque.Contracts.Ports;
+﻿using Espluque.Contracts.Contributions.Types;
+using Espluque.Contracts.CrossCutting;
+using Espluque.Contracts.Workflow;
 using Microsoft.Extensions.Logging;
 using Util;
 
@@ -11,12 +9,12 @@ namespace Inf
     internal class InfVersionSectionGrabber: IGrabber
     {
         private readonly IMessageCenter _messageCenter;
-        private readonly Espluque.Contracts.Ports.ILogger _logger;
+        private readonly Espluque.Contracts.CrossCutting.ILogger _logger;
         private readonly ISettingsService _settingsService;
         private readonly IEntityFactory _entityFactory;
 
         public InfVersionSectionGrabber(IMessageCenter messageCenter,
-            Espluque.Contracts.Ports.ILogger logger,
+            Espluque.Contracts.CrossCutting.ILogger logger,
             ISettingsService settingsService,
             IEntityFactory entityFactory)
         {
@@ -26,7 +24,7 @@ namespace Inf
             _entityFactory = entityFactory;
         }
 
-        public async Task<List<KeyValuePair<string, string>>> Grab(AnalysisContext analysisContext)
+        public async Task<List<KeyValuePair<string, string>>> Grab(IAnalysisContext analysisContext)
         {
             string fileName = Path.GetFileName(analysisContext.FilePath).PadRight(35);
 

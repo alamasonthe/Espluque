@@ -1,8 +1,8 @@
-﻿using Espluque.Contracts.Interfaces;
-using Espluque.Contracts.MessageInterfaces;
-using Espluque.Contracts.ModuleInterfaces.Contributions;
-using Espluque.Contracts.Ports;
+﻿using Espluque.Contracts.CrossCutting;
+using Espluque.Contracts.Contributions.Types;
+using Espluque.Contracts.Workflow;
 using Microsoft.Extensions.Logging;
+using Espluque.Contracts.Contributions;
 
 namespace detectorTemplate
 {
@@ -26,7 +26,7 @@ namespace detectorTemplate
             _entityFactory = entityFactory;
         }
 
-        public Task<IFileFormat> Detect(AnalysisContext analysisContext)
+        public Task<IFileFormat> Detect(IAnalysisContext analysisContext)
         {
             var formattedFileName = Path.GetFileName(analysisContext.FilePath).PadRight(35);
 

@@ -1,19 +1,20 @@
-﻿using Espluque.Contracts.Interfaces;
-using Microsoft.Extensions.Logging;
+﻿using Microsoft.Extensions.Logging;
 using Pronom.Entities;
 using Util;
 using System.IO;
+using Espluque.Contracts.CrossCutting;
+using Espluque.Contracts.Contributions;
 
 namespace Pronom
 {
     public class FormatIdentifier
     {
-        private readonly Espluque.Contracts.Ports.ILogger _logger;
+        private readonly Espluque.Contracts.CrossCutting.ILogger _logger;
         private readonly IEntityFactory _entityFactory;
         private readonly string _referentiel = "Pronom";
 
         public FormatIdentifier(
-            Espluque.Contracts.Ports.ILogger logger,
+            Espluque.Contracts.CrossCutting.ILogger logger,
             IEntityFactory entityFactory)
         {
             _logger = logger;

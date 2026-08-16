@@ -1,4 +1,4 @@
-﻿using Espluque.Contracts;
+﻿using Espluque.Contracts.CrossCutting;
 using System.Reflection;
 using System.Runtime.InteropServices;
 

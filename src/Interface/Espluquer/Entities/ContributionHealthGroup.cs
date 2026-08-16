@@ -1,4 +1,4 @@
-﻿using Espluque.Contracts.Enums;
+﻿using Espluque.Contracts.CrossCutting;
 using Espluquer.Services;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;

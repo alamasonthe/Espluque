@@ -1,8 +1,6 @@
-﻿using Espluque.Contracts.Entities;
-using Espluque.Contracts.Interfaces;
-using Espluque.Contracts.MessageInterfaces;
-using Espluque.Contracts.ModuleInterfaces.Contributions;
-using Espluque.Contracts.Ports;
+﻿using Espluque.Contracts.Contributions.Types;
+using Espluque.Contracts.CrossCutting;
+using Espluque.Contracts.Workflow;
 using FFmpeg.AutoGen;
 using Util;
 
@@ -11,12 +9,12 @@ namespace FFmpeg
     internal class MediaInfosGrabber : IGrabber
     {
         private readonly IMessageCenter _messageCenter;
-        private readonly Espluque.Contracts.Ports.ILogger _logger;
+        private readonly ILogger _logger;
         private readonly ISettingsService _settingsService;
         private readonly IEntityFactory _entityFactory;
 
         public MediaInfosGrabber(IMessageCenter messageCenter,
-            Espluque.Contracts.Ports.ILogger logger,
+            ILogger logger,
             ISettingsService settingsService,
             IEntityFactory entityFactory)
         {
@@ -26,7 +24,7 @@ namespace FFmpeg
             _entityFactory = entityFactory;
         }
 
-        public async Task<List<KeyValuePair<string, string>>> Grab(AnalysisContext analysisContext)
+        public async Task<List<KeyValuePair<string, string>>> Grab(IAnalysisContext analysisContext)
         {
             string fileName = Path.GetFileName(analysisContext.FilePath).PadRight(35);
             List<KeyValuePair<string, string>> infos = [];

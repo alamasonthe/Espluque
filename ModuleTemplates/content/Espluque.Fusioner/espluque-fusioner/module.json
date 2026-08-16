@@ -1,14 +1,19 @@
 {
   "name": "Fuse module",
   "version": "0.0.1",
+  "author": "Espluque",
+  "description": "This is a template for creating a new fusioner module.",
   "assembly": "Espluque.Fusioner.dll",
   "contributions": [
     {
       "interfaceType": "IFusioner",
       "label": "Package Fusioner",
+      "description": "",
       "className": "Espluque.Fusioner.Fusioner",
-      "tags": [ "AnyFile" ],
-      "active": true
+      "contributionSettings": {
+        "tags": [ "AnyFile" ],
+        "active": true
+      }
     }
   ]
 }

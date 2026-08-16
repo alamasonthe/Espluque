@@ -1,5 +1,5 @@
-﻿using Espluque.Contracts.Interfaces;
-using Espluque.Contracts.Ports;
+﻿using Espluque.Contracts.CrossCutting;
+using Espluque.Contracts.Thesaurus;
 using System.Diagnostics;
 using System.Reflection;
 using Util;
@@ -10,7 +10,7 @@ namespace EspluqueSqlite.Thesaurus
     {
         public string DbFilepath;
 
-        private readonly Espluque.Contracts.Ports.ILogger _logger;
+        private readonly ILogger _logger;
         private readonly IEntityFactory _entityFactory;
 
         public ThesaurusRepository(ILogger logger, IEntityFactory entityFactory, ISettingsService settingsService)

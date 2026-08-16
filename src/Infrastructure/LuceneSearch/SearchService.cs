@@ -1,6 +1,5 @@
-﻿using Espluque.Contracts.Interfaces;
-using Lucene.Net.Documents;
-using Espluque.Contracts.Ports;
+﻿using Lucene.Net.Documents;
+using Espluque.Contracts.Thesaurus;
 
 namespace LuceneSearch
 {

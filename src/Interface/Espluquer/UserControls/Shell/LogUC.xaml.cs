@@ -1,7 +1,7 @@
 ﻿using System.Text;
 using System.Windows;
 using System.Windows.Controls;
-using Espluque.Contracts.Ports;
+using Espluque.Contracts.CrossCutting;
 using LogLevel = Microsoft.Extensions.Logging.LogLevel;
 
 namespace Espluquer.UserControls.Shell

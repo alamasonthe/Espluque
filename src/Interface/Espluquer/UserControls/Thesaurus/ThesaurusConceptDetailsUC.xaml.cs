@@ -1,5 +1,5 @@
-﻿using Espluque.Application.Thesaurus.Entities;
-using Espluque.Contracts.Interfaces;
+﻿using Espluque.Application.Thesaurus;
+using Espluque.Contracts.Thesaurus;
 using Espluquer.Entities;
 using System.Collections.ObjectModel;
 using System.Windows;
