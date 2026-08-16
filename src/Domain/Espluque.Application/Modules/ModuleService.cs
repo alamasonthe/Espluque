@@ -2,7 +2,6 @@
 using Espluque.Contracts.Catalog;
 using Espluque.Contracts.Contributions;
 using Espluque.Contracts.Contributions.Types;
-using Espluque.Contracts.CrossCutting;
 using Espluque.Contracts.Modules;
 using System.Reflection;
 using System.Runtime.Loader;
@@ -12,11 +11,11 @@ namespace Espluque.Application.Modules
 {
     public class ModuleService : IModuleService
     {
-        private readonly ContributionSettingsService _contributionSettingsService;
+        private readonly IContributionSettingsService _contributionSettingsService;
 
-        public ModuleService(ISettingsService settingsService)
+        public ModuleService(IContributionSettingsService contributionSettingsService)
         {
-            _contributionSettingsService = new(settingsService);
+            _contributionSettingsService = contributionSettingsService;
         }
 
         public List<string> GetModuleInfoPaths(string modulesRootPath)

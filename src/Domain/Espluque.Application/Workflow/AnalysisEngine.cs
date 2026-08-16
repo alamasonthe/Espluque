@@ -1,7 +1,6 @@
 ﻿using Util;
 using Espluque.Application.CrossCutting;
 using Espluque.Application.Contributions;
-using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Espluque.Application.Catalog;
 using Espluque.Contracts.Catalog;
@@ -54,7 +53,7 @@ namespace Espluque.Application.Workflow
     /// and grabber results to the presentation layer.
     /// </remarks>
 
-    public class AnalysisEngine: IAnalysisEngine
+    public class AnalysisEngine
     {
         private readonly IMessageCenter _messageCenter;
         private readonly Contracts.CrossCutting.ILogger _logger;
@@ -72,14 +71,19 @@ namespace Espluque.Application.Workflow
 
         private IAnalysisContext _analysisContext;
 
-        public AnalysisEngine(IServiceProvider serviceProvider, List<ICatalogEntry> catalog)
+        public AnalysisEngine(
+            IMessageCenter messageCenter,
+            Contracts.CrossCutting.ILogger logger,
+            ISettingsService settingsService,
+            IEntityFactory entityFactory,
+            IThesaurusService thesaurusService,
+            List<ICatalogEntry> catalog)
         {
-            _messageCenter = serviceProvider.GetRequiredService<IMessageCenter>();
-            _logger = serviceProvider.GetRequiredService<Contracts.CrossCutting.ILogger>();
-            _settingsService = serviceProvider.GetRequiredService<ISettingsService>();
-            _entityFactory = serviceProvider.GetRequiredService<IEntityFactory>();
-            _thesaurusService = serviceProvider.GetRequiredService<IThesaurusService>();
-
+            _messageCenter = messageCenter;
+            _logger = logger;
+            _settingsService = settingsService;
+            _entityFactory = entityFactory;
+            _thesaurusService = thesaurusService;
             _catalog = catalog;
         }
 

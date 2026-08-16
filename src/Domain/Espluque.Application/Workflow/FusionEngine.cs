@@ -6,7 +6,6 @@ using Espluque.Contracts.Contributions.Types;
 using Espluque.Contracts.CrossCutting;
 using Espluque.Contracts.Thesaurus;
 using Espluque.Contracts.Workflow;
-using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 
 namespace Espluque.Application.Workflow
@@ -38,7 +37,7 @@ namespace Espluque.Application.Workflow
     /// Each fusioner is identified by its assembly path and class name and is executed once per fusion pass.
     /// </remarks>
 
-    internal class FusionEngine
+    public class FusionEngine
     {
         private readonly IMessageCenter _messageCenter;
         private readonly Contracts.CrossCutting.ILogger _logger;
@@ -50,14 +49,19 @@ namespace Espluque.Application.Workflow
 
         public event Action<IAnalysisMessage>? AnalyserMessageEvent;
 
-        public FusionEngine(IServiceProvider serviceProvider, List<ICatalogEntry> catalog)
+        public FusionEngine(
+            IMessageCenter messageCenter,
+            Contracts.CrossCutting.ILogger logger,
+            ISettingsService settingsService,
+            IEntityFactory entityFactory,
+            IThesaurusService thesaurusService,
+            List<ICatalogEntry> catalog)
         {
-            _messageCenter = serviceProvider.GetRequiredService<IMessageCenter>();
-            _logger = serviceProvider.GetRequiredService<Contracts.CrossCutting.ILogger>();
-            _settingsService = serviceProvider.GetRequiredService<ISettingsService>();
-            _entityFactory = serviceProvider.GetRequiredService<IEntityFactory>();
-            _thesaurusService = serviceProvider.GetRequiredService<IThesaurusService>();
-
+            _messageCenter = messageCenter;
+            _logger = logger;
+            _settingsService = settingsService;
+            _entityFactory = entityFactory;
+            _thesaurusService = thesaurusService;
             _catalog = catalog;
         }
 

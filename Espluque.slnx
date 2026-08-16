@@ -115,4 +115,8 @@
       <Platform Project="x64" />
     </Project>
   </Folder>
+  <Folder Name="/tests/" />
+  <Folder Name="/tests/Domain/">
+    <Project Path="tests/Domain/Espluque.Application.Tests/Espluque.Application.Tests.csproj" Id="60b1b381-980d-4128-a86f-a5e236f0d9e6" />
+  </Folder>
 </Solution>
