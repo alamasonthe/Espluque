@@ -2,7 +2,9 @@
 using Espluque.Contracts.Modules;
 using Espluquer.Entities;
 using Espluquer.Services;
+using Espluquer.UserControls.Shell;
 using Microsoft.Win32;
+using System.Diagnostics;
 using System.IO;
 using System.Windows;
 using System.Windows.Controls;
@@ -40,11 +42,23 @@ namespace Espluquer.UserControls.Modules
             set => SetValue(ModuleHealthProperty, value);
         }
 
-        public ModuleTestDetailUC( IModuleService moduleService, IContributionSettingsService contributionSettingsService)
+        private readonly ConceptSearchUC _conceptSearchUC;
+
+        private IModuleContributionInfo? _tagContribution;
+        private ContentControl? _tagSearchHost;
+
+        public ModuleTestDetailUC(
+            IModuleService moduleService,
+            IContributionSettingsService contributionSettingsService,
+            ConceptSearchUC conceptSearchUC)
         {
             _moduleService = moduleService;
             _contributionSettingsService = contributionSettingsService;
+            _conceptSearchUC = conceptSearchUC;
+
             InitializeComponent();
+
+            _conceptSearchUC.ConceptSelected += ConceptSearch_ConceptSelected;
         }
 
         private void ContributionHeader_Loaded( object sender, RoutedEventArgs e)
@@ -199,6 +213,140 @@ namespace Espluquer.UserControls.Modules
 
         private void ExploreButton_Click(object sender, RoutedEventArgs e)
         {
+            if (ModuleInfo is null)
+            {
+                return;
+            }
+
+            string? directory = Path.GetDirectoryName(ModuleInfo.FilePath);
+
+            if (string.IsNullOrWhiteSpace(directory) || !Directory.Exists(directory))
+            {
+                return;
+            }
+
+            Process.Start(new ProcessStartInfo
+            {
+                FileName = "explorer.exe",
+                Arguments = $"\"{directory}\"",
+                UseShellExecute = true
+            });
+        }
+
+        private void AddTagButton_Click(object sender, RoutedEventArgs e)
+        {
+            if (sender is not Button button
+                || button.DataContext is not IModuleContributionInfo contribution
+                || button.Parent is not StackPanel tagsPanel)
+            {
+                return;
+            }
+
+            // ContentControl? searchHost = tagsPanel.Children.OfType<ContentControl>().FirstOrDefault();
+
+            ContentControl? searchHost =
+                tagsPanel.Children
+                    .OfType<ContentControl>()
+                    .FirstOrDefault(control => control.Name == "ConceptSearchHost");
+
+            if (searchHost is null)
+            {
+                return;
+            }
+
+            if (_tagSearchHost is not null)
+            {
+                Button? previousButton = GetAddTagButton(_tagSearchHost);
+
+                if (previousButton is not null)
+                {
+                    previousButton.Visibility = Visibility.Visible;
+                }
+
+                _tagSearchHost.Content = null;
+                _tagSearchHost.Visibility = Visibility.Collapsed;
+            }
+
+            _tagContribution = contribution;
+            _tagSearchHost = searchHost;
+
+            _conceptSearchUC.Clear();
+
+            /*
+            _conceptSearchUC.SetBinding(
+                FrameworkElement.WidthProperty,
+                new Binding(nameof(FrameworkElement.ActualWidth)) { Source = searchHost });
+            */
+
+            searchHost.Content = _conceptSearchUC;
+            searchHost.Visibility = Visibility.Visible;
+            button.Visibility = Visibility.Collapsed;
+            searchHost.UpdateLayout();
+
+        }
+
+        private void RemoveTagButton_Click(object sender, RoutedEventArgs e)
+        {
+            if (sender is not Button button
+                || button.DataContext is not string tag
+                || button.Tag is not IModuleContributionInfo contribution)
+            {
+                return;
+            }
+
+            if (contribution.ContributionSettings.Tags.Remove(tag))
+            {
+                CollectionViewSource
+                    .GetDefaultView(contribution.ContributionSettings.Tags)
+                    .Refresh();
+            }
+        }
+
+        private void ConceptSearch_ConceptSelected(ConceptDto concept)
+        {
+            if (_tagContribution is null || _tagSearchHost is null)
+            {
+                return;
+            }
+
+            List<string> tags = _tagContribution.ContributionSettings.Tags;
+
+            if (!tags.Any(tag =>
+                string.Equals(tag, concept.Term, StringComparison.OrdinalIgnoreCase)))
+            {
+                tags.Add(concept.Term);
+
+                CollectionViewSource
+                    .GetDefaultView(tags)
+                    .Refresh();
+            }
+
+            Button? addButton = GetAddTagButton(_tagSearchHost);
+
+            if (addButton is not null)
+            {
+                addButton.Visibility = Visibility.Visible;
+            }
+
+            _tagSearchHost.Content = null;
+            _tagSearchHost.Visibility = Visibility.Collapsed;
+
+            _tagSearchHost.Visibility = Visibility.Collapsed;
+
+            _tagSearchHost = null;
+            _tagContribution = null;
+        }
+
+        private static Button? GetAddTagButton(ContentControl searchHost)
+        {
+            if (searchHost.Parent is not StackPanel tagsPanel)
+            {
+                return null;
+            }
+
+            return tagsPanel.Children
+                .OfType<Button>()
+                .FirstOrDefault(button => button.Name == "AddTagButton");
         }
     }
 }

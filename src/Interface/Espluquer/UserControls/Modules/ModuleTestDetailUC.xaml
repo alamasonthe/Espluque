@@ -183,14 +183,12 @@
 
                 <!-- Contributions -->
 
-                <ItemsControl ItemsSource="{Binding Contributions}">
+                <ItemsControl ItemsSource="{Binding Contributions}" HorizontalContentAlignment="Stretch">
 
                     <ItemsControl.ItemTemplate>
                         <DataTemplate>
 
-                                <Expander Margin="0,0,0,8"
-                                          Style="{StaticResource App.SectionExpander}"
-                                          IsExpanded="False">
+                                <Expander Margin="0,0,0,8" Style="{StaticResource App.SectionExpander}" IsExpanded="False">
 
                                     <Expander.Header>
                                         <StackPanel Orientation="Horizontal"
@@ -198,10 +196,7 @@
                                             Loaded="ContributionHeader_Loaded" />
                                     </Expander.Header>
 
-                                    <Border Background="{DynamicResource App.Background}"
-                                    BorderBrush="{DynamicResource App.Border}"
-                                    BorderThickness="1"
-                                    Padding="12">
+                                    <Border Background="{DynamicResource App.Background}" BorderBrush="{DynamicResource App.Border}" BorderThickness="1" Padding="12">
 
                                         <Grid>
 
@@ -308,24 +303,73 @@
                                                VerticalAlignment="Top"
                                                Text="Tags" />
 
-                                            <ItemsControl Grid.Row="6"
-                                                  Grid.Column="1"
-                                                  Margin="0,2"
-                                                  ItemsSource="{Binding ContributionSettings.Tags}">
+                                        <StackPanel Grid.Row="6" Grid.Column="1" Margin="0,2">
+
+                                            <!-- Existing tags -->
+                                            <ItemsControl ItemsSource="{Binding ContributionSettings.Tags}">
+                                                <ItemsControl.ItemsPanel>
+                                                    <ItemsPanelTemplate>
+                                                        <WrapPanel />
+                                                    </ItemsPanelTemplate>
+                                                </ItemsControl.ItemsPanel>
 
                                                 <ItemsControl.ItemTemplate>
                                                     <DataTemplate>
+                                                        <Border Margin="0,0,6,4"
+                                                            Padding="6,3"
+                                                            BorderBrush="{DynamicResource App.Border}"
+                                                            BorderThickness="1"
+                                                            CornerRadius="3">
 
-                                                        <TextBox Margin="0,0,0,4"
-                                                         IsReadOnly="True"
-                                                         Text="{Binding Path=., Mode=OneWay}" />
+                                                            <StackPanel Orientation="Horizontal">
+                                                                <TextBlock Text="{Binding}" VerticalAlignment="Center" />
 
+                                                                <Button Content="×"
+                                                                    Margin="6,0,0,0"
+                                                                    Padding="2,0"
+                                                                    Tag="{Binding DataContext,
+                                                                    RelativeSource={RelativeSource AncestorType=ItemsControl}}"
+                                                                    Click="RemoveTagButton_Click" />
+                                                            </StackPanel>
+
+                                                        </Border>
                                                     </DataTemplate>
                                                 </ItemsControl.ItemTemplate>
-
                                             </ItemsControl>
 
-                                            <TextBox Grid.Row="7"
+                                            <!-- Action -->
+                                            <Button x:Name="AddTagButton"
+                                                    Content="+ Add a concept"
+                                                    HorizontalAlignment="Left"
+                                                    Margin="0,2,0,0"
+                                                    Tag="{Binding}"
+                                                    Click="AddTagButton_Click" />
+
+                                            <!-- ConceptSearchUC -->
+                                            <ContentControl x:Name="ConceptSearchHost"
+                                                Margin="0,4,0,0"
+                                                HorizontalAlignment="Stretch"
+                                                HorizontalContentAlignment="Stretch"
+                                                Visibility="Collapsed">
+
+                                                <ContentControl.Template>
+                                                    <ControlTemplate TargetType="{x:Type ContentControl}">
+                                                        <Grid>
+                                                            <ContentPresenter
+                                                                Content="{TemplateBinding Content}"
+                                                                ContentTemplate="{TemplateBinding ContentTemplate}"
+                                                                ContentTemplateSelector="{TemplateBinding ContentTemplateSelector}"
+                                                                HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+                                                                VerticalAlignment="{TemplateBinding VerticalContentAlignment}" />
+                                                        </Grid>
+                                                    </ControlTemplate>
+                                                </ContentControl.Template>
+
+                                            </ContentControl>
+
+                                        </StackPanel>
+
+                                        <TextBox Grid.Row="7"
                                              Grid.Column="0"
                                              Grid.ColumnSpan="2"
                                              Margin="0,8,0,0"
