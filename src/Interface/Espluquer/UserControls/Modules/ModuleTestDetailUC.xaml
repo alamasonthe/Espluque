@@ -23,10 +23,7 @@
             <RowDefinition Height="*" />
         </Grid.RowDefinitions>
 
-        <StackPanel Grid.Row="0"
-                Orientation="Horizontal"
-                HorizontalAlignment="Right"
-                Margin="8">
+        <StackPanel Grid.Row="0" Orientation="Horizontal" HorizontalAlignment="Right" Margin="8">
 
             <Button Content="Save" Margin="0,0,8,0" Click="SaveButton_Click" />
             <Button Content="Save As..." Margin="0,0,8,0" Click="SaveAsButton_Click" />
@@ -164,18 +161,14 @@
 
                 <!-- JSON -->
 
-                <Expander Header="JSON"
-                  Style="{StaticResource App.SectionExpander}"
-                  IsExpanded="False"
-                  Margin="0,0,0,8">
+                <Expander Header="JSON" Style="{StaticResource App.SectionExpander}" IsExpanded="False" Margin="0,0,0,8">
 
                     <Border Background="{DynamicResource App.Background}"
                     BorderBrush="{DynamicResource App.Border}"
                     BorderThickness="1"
                     Padding="8">
 
-                        <TextBox x:Name="JsonTextBox"
-                 Style="{StaticResource App.TextEditorTextBox}" />
+                        <TextBox x:Name="JsonTextBox" Style="{StaticResource App.TextEditorTextBox}" />
 
                     </Border>
 
@@ -196,211 +189,349 @@
                                             Loaded="ContributionHeader_Loaded" />
                                     </Expander.Header>
 
-                                    <Border Background="{DynamicResource App.Background}" BorderBrush="{DynamicResource App.Border}" BorderThickness="1" Padding="12">
+                                <Border Background="{DynamicResource App.Border}"
+        BorderBrush="{DynamicResource App.Border}"
+        BorderThickness="1"
+        Padding="5,5,5,12">
 
-                                        <Grid>
+                                    <Grid>
 
-                                            <Grid.ColumnDefinitions>
-                                                <ColumnDefinition Width="140" />
-                                                <ColumnDefinition Width="*" />
-                                            </Grid.ColumnDefinitions>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="*" />
+                                            <ColumnDefinition Width="5" />
+                                            <ColumnDefinition Width="*" />
+                                        </Grid.ColumnDefinitions>
 
-                                            <Grid.RowDefinitions>
-                                                <RowDefinition Height="Auto" />
-                                                <RowDefinition Height="Auto" />
-                                                <RowDefinition Height="Auto" />
-                                                <RowDefinition Height="Auto" />
-                                                <RowDefinition Height="Auto" />
-                                                <RowDefinition Height="Auto" />
-                                                <RowDefinition Height="Auto" />
-                                                <RowDefinition Height="Auto" />
-                                            </Grid.RowDefinitions>
+                                        <Grid.RowDefinitions>
+                                            <RowDefinition Height="Auto" />
+                                            <RowDefinition Height="5" />
+                                            <RowDefinition Height="Auto" />
+                                        </Grid.RowDefinitions>
 
-                                            <TextBlock Grid.Row="0"
-                                               Grid.Column="0"
-                                               Style="{StaticResource App.StandardTextBlock}"
-                                               Margin="0,4,8,4"
-                                               VerticalAlignment="Center"
-                                               Text="Label" />
 
-                                            <TextBox Grid.Row="0"
-                                                 Grid.Column="1"
-                                                 Margin="0,2"
-                                                 IsReadOnly="True"
-                                                 Text="{Binding Label}" />
+                                        <!-- ========================================================= -->
+                                        <!-- CONTRIBUTION INFORMATION                                  -->
+                                        <!-- ========================================================= -->
 
-                                            <TextBlock Grid.Row="1"
-                                               Grid.Column="0"
-                                               Style="{StaticResource App.StandardTextBlock}"
-                                               Margin="0,4,8,4"
-                                               VerticalAlignment="Top"
-                                               Text="Description" />
+                                        <Border x:Name="ContributionInformationBlock"
+                Grid.Row="0"
+                Grid.Column="0"
+                Background="{DynamicResource App.Background}"
+                BorderThickness="1"
+                Padding="12">
 
-                                            <TextBox Grid.Row="1"
-                                                 Grid.Column="1"
-                                                 Margin="0,2"
-                                                 MinHeight="60"
-                                                 TextWrapping="Wrap"
-                                                 VerticalContentAlignment="Top"
-                                                 Text="{Binding Description}" />
+                                            <StackPanel>
 
-                                            <TextBlock Grid.Row="2"
-                                               Grid.Column="0"
-                                               Style="{StaticResource App.StandardTextBlock}"
-                                               Margin="0,4,8,4"
-                                               VerticalAlignment="Center"
-                                               Text="Interface type" />
+                                                <TextBlock Text="Contribution information"
+                           Style="{StaticResource App.StandardSubtitleTextBlock}"
+                           Margin="0,0,0,10" />
 
-                                            <TextBox Grid.Row="2"
-                                             Grid.Column="1"
-                                             Margin="0,2"
-                                             IsReadOnly="True"
-                                             Text="{Binding InterfaceType}" />
+                                                <Grid>
 
-                                            <TextBlock Grid.Row="3"
-                                               Grid.Column="0"
-                                               Style="{StaticResource App.StandardTextBlock}"
-                                               Margin="0,4,8,4"
-                                               VerticalAlignment="Center"
-                                               Text="Class name" />
+                                                    <Grid.ColumnDefinitions>
+                                                        <ColumnDefinition Width="110" />
+                                                        <ColumnDefinition Width="*" />
+                                                    </Grid.ColumnDefinitions>
 
-                                            <TextBox Grid.Row="3"
-                                             Grid.Column="1"
-                                             Margin="0,2"
-                                             IsReadOnly="True"
-                                             Text="{Binding ClassName}" />
+                                                    <Grid.RowDefinitions>
+                                                        <RowDefinition Height="Auto" />
+                                                        <RowDefinition Height="Auto" />
+                                                        <RowDefinition Height="Auto" />
+                                                        <RowDefinition Height="Auto" />
+                                                    </Grid.RowDefinitions>
 
-                                            <TextBlock Grid.Row="4"
-                                               Grid.Column="0"
-                                               Style="{StaticResource App.StandardTextBlock}"
-                                               Margin="0,4,8,4"
-                                               VerticalAlignment="Center"
-                                               Text="Active" />
 
-                                            <TextBox Grid.Row="4"
-                                             Grid.Column="1"
-                                             Margin="0,2"
-                                             IsReadOnly="True"
-                                             Text="{Binding ContributionSettings.Active}" />
+                                                    <!-- Label -->
 
-                                            <TextBlock Grid.Row="5"
-                                               Grid.Column="0"
-                                               Style="{StaticResource App.StandardTextBlock}"
-                                               Margin="0,4,8,4"
-                                               VerticalAlignment="Center"
-                                               Text="Health check" />
+                                                    <TextBlock Grid.Row="0"
+                               Grid.Column="0"
+                               Text="Label"
+                               Style="{StaticResource App.StandardTextBlock}"
+                               Margin="0,4,8,4"
+                               VerticalAlignment="Center" />
 
-                                            <TextBox Grid.Row="5"
-                                             Grid.Column="1"
-                                             Margin="0,2"
-                                             IsReadOnly="True"
-                                             Loaded="ContributionHealth_Loaded" />
+                                                    <TextBox Grid.Row="0"
+                             Grid.Column="1"
+                             Margin="0,2"
+                             IsReadOnly="True"
+                             Text="{Binding Label}" />
 
-                                            <TextBlock Grid.Row="6"
-                                               Grid.Column="0"
-                                               Style="{StaticResource App.StandardTextBlock}"
-                                               Margin="0,4,8,4"
-                                               VerticalAlignment="Top"
-                                               Text="Tags" />
 
-                                        <StackPanel Grid.Row="6" Grid.Column="1" Margin="0,2">
+                                                    <!-- Interface type -->
 
-                                            <!-- Existing tags -->
-                                            <ItemsControl ItemsSource="{Binding ContributionSettings.Tags}">
-                                                <ItemsControl.ItemsPanel>
-                                                    <ItemsPanelTemplate>
-                                                        <WrapPanel />
-                                                    </ItemsPanelTemplate>
-                                                </ItemsControl.ItemsPanel>
+                                                    <TextBlock Grid.Row="1"
+                               Grid.Column="0"
+                               Text="Interface type"
+                               Style="{StaticResource App.StandardTextBlock}"
+                               Margin="0,4,8,4"
+                               VerticalAlignment="Center" />
 
-                                                <ItemsControl.ItemTemplate>
-                                                    <DataTemplate>
-                                                        <Border Margin="0,0,6,4"
-                                                            Padding="6,3"
-                                                            BorderBrush="{DynamicResource App.Border}"
-                                                            BorderThickness="1"
-                                                            CornerRadius="3">
+                                                    <TextBox Grid.Row="1"
+                             Grid.Column="1"
+                             Margin="0,2"
+                             IsReadOnly="True"
+                             Text="{Binding InterfaceType}" />
 
-                                                            <StackPanel Orientation="Horizontal">
-                                                                <TextBlock Text="{Binding}" VerticalAlignment="Center" />
 
-                                                                <Button Content="×"
-                                                                    Margin="6,0,0,0"
-                                                                    Padding="2,0"
-                                                                    Tag="{Binding DataContext,
-                                                                    RelativeSource={RelativeSource AncestorType=ItemsControl}}"
-                                                                    Click="RemoveTagButton_Click" />
-                                                            </StackPanel>
+                                                    <!-- Class name -->
 
-                                                        </Border>
-                                                    </DataTemplate>
-                                                </ItemsControl.ItemTemplate>
-                                            </ItemsControl>
+                                                    <TextBlock Grid.Row="2"
+                               Grid.Column="0"
+                               Text="Class name"
+                               Style="{StaticResource App.StandardTextBlock}"
+                               Margin="0,4,8,4"
+                               VerticalAlignment="Center" />
 
-                                            <!-- Action -->
-                                            <Button x:Name="AddTagButton"
-                                                    Content="+ Add a concept"
-                                                    HorizontalAlignment="Left"
-                                                    Margin="0,2,0,0"
-                                                    Tag="{Binding}"
-                                                    Click="AddTagButton_Click" />
+                                                    <TextBox Grid.Row="2"
+                             Grid.Column="1"
+                             Margin="0,2"
+                             IsReadOnly="True"
+                             Text="{Binding ClassName}" />
 
-                                            <!-- ConceptSearchUC -->
-                                            <ContentControl x:Name="ConceptSearchHost"
-                                                Margin="0,4,0,0"
-                                                HorizontalAlignment="Stretch"
-                                                HorizontalContentAlignment="Stretch"
-                                                Visibility="Collapsed">
 
-                                                <ContentControl.Template>
-                                                    <ControlTemplate TargetType="{x:Type ContentControl}">
-                                                        <Grid>
-                                                            <ContentPresenter
-                                                                Content="{TemplateBinding Content}"
-                                                                ContentTemplate="{TemplateBinding ContentTemplate}"
-                                                                ContentTemplateSelector="{TemplateBinding ContentTemplateSelector}"
-                                                                HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
-                                                                VerticalAlignment="{TemplateBinding VerticalContentAlignment}" />
-                                                        </Grid>
-                                                    </ControlTemplate>
-                                                </ContentControl.Template>
+                                                    <!-- Description -->
 
-                                            </ContentControl>
+                                                    <TextBlock Grid.Row="3"
+                               Grid.Column="0"
+                               Text="Description"
+                               Style="{StaticResource App.StandardTextBlock}"
+                               Margin="0,4,8,4"
+                               VerticalAlignment="Top" />
 
-                                        </StackPanel>
+                                                    <TextBox Grid.Row="3"
+                             Grid.Column="1"
+                             Margin="0,2"
+                             MinHeight="60"
+                             TextWrapping="Wrap"
+                             VerticalContentAlignment="Top"
+                             Text="{Binding Description}" />
 
-                                        <TextBox Grid.Row="7"
-                                             Grid.Column="0"
-                                             Grid.ColumnSpan="2"
-                                             Margin="0,8,0,0"
-                                             MinHeight="60"
-                                             AcceptsReturn="True"
-                                             TextWrapping="Wrap"
-                                             VerticalScrollBarVisibility="Auto"
-                                             IsReadOnly="True"
-                                             Loaded="ContributionError_Loaded">
+                                                </Grid>
 
-                                                <TextBox.Style>
-                                                    <Style TargetType="TextBox">
-                                                        <Style.Triggers>
+                                            </StackPanel>
 
-                                                            <Trigger Property="Text"
-                                                             Value="">
-                                                                <Setter Property="Visibility"
-                                                                Value="Collapsed" />
-                                                            </Trigger>
+                                        </Border>
 
-                                                        </Style.Triggers>
-                                                    </Style>
-                                                </TextBox.Style>
 
-                                            </TextBox>
+                                        <!-- ========================================================= -->
+                                        <!-- CONTRIBUTION SETTINGS                                     -->
+                                        <!-- ========================================================= -->
 
-                                        </Grid>
+                                        <Border x:Name="ContributionSettingsBlock"
+                Grid.Row="0"
+                Grid.Column="2"
+                Background="{DynamicResource App.Background}"
+                BorderThickness="1"
+                Padding="12">
 
-                                    </Border>
+                                            <StackPanel>
 
-                                </Expander>
+                                                <TextBlock Text="Settings"
+                           Style="{StaticResource App.StandardSubtitleTextBlock}"
+                           Margin="0,0,0,10" />
+
+                                                <Grid>
+
+                                                    <Grid.ColumnDefinitions>
+                                                        <ColumnDefinition Width="80" />
+                                                        <ColumnDefinition Width="*" />
+                                                    </Grid.ColumnDefinitions>
+
+                                                    <Grid.RowDefinitions>
+                                                        <RowDefinition Height="Auto" />
+                                                        <RowDefinition Height="Auto" />
+                                                    </Grid.RowDefinitions>
+
+
+                                                    <!-- Active -->
+
+                                                    <TextBlock Grid.Row="0"
+                               Grid.Column="0"
+                               Text="Active"
+                               Style="{StaticResource App.StandardTextBlock}"
+                               Margin="0,4,8,4"
+                               VerticalAlignment="Center" />
+
+                                                    <TextBox Grid.Row="0"
+                             Grid.Column="1"
+                             Margin="0,2"
+                             IsReadOnly="True"
+                             Text="{Binding ContributionSettings.Active}" />
+
+
+                                                    <!-- Tags -->
+
+                                                    <TextBlock Grid.Row="1"
+                               Grid.Column="0"
+                               Text="Tags"
+                               Style="{StaticResource App.StandardTextBlock}"
+                               Margin="0,8,8,4"
+                               VerticalAlignment="Top" />
+
+                                                    <StackPanel Grid.Row="1"
+                                Grid.Column="1"
+                                Margin="0,6,0,0">
+
+                                                        <!-- Existing tags -->
+
+                                                        <ItemsControl ItemsSource="{Binding ContributionSettings.Tags}">
+
+                                                            <ItemsControl.ItemsPanel>
+                                                                <ItemsPanelTemplate>
+                                                                    <WrapPanel />
+                                                                </ItemsPanelTemplate>
+                                                            </ItemsControl.ItemsPanel>
+
+                                                            <ItemsControl.ItemTemplate>
+                                                                <DataTemplate>
+
+                                                                    <Border Margin="0,0,6,4"
+                                            Padding="6,3"
+                                            BorderBrush="{DynamicResource App.Border}"
+                                            BorderThickness="1"
+                                            CornerRadius="3">
+
+                                                                        <StackPanel Orientation="Horizontal">
+
+                                                                            <TextBlock Text="{Binding}"
+                                                       VerticalAlignment="Center" />
+
+                                                                            <Button Content="×"
+                                                    Margin="6,0,0,0"
+                                                    Padding="2,0"
+                                                    Tag="{Binding DataContext,
+                                                    RelativeSource={RelativeSource AncestorType=ItemsControl}}"
+                                                    Click="RemoveTagButton_Click" />
+
+                                                                        </StackPanel>
+
+                                                                    </Border>
+
+                                                                </DataTemplate>
+                                                            </ItemsControl.ItemTemplate>
+
+                                                        </ItemsControl>
+
+
+                                                        <!-- Add concept -->
+
+                                                        <Button x:Name="AddTagButton"
+                                Content="+ Add a concept"
+                                HorizontalAlignment="Left"
+                                Margin="0,2,0,0"
+                                Tag="{Binding}"
+                                Click="AddTagButton_Click" />
+
+
+                                                        <!-- Concept search -->
+
+                                                        <ContentControl x:Name="ConceptSearchHost"
+                                        Margin="0,4,0,0"
+                                        Visibility="Collapsed" />
+
+                                                    </StackPanel>
+
+                                                </Grid>
+
+                                            </StackPanel>
+
+                                        </Border>
+
+
+                                        <!-- ========================================================= -->
+                                        <!-- CONTRIBUTION HEALTH                                       -->
+                                        <!-- ========================================================= -->
+
+                                        <Border x:Name="ContributionHealthBlock"
+                Grid.Row="2"
+                Grid.Column="0"
+                Grid.ColumnSpan="3"
+                Background="{DynamicResource App.Background}"
+                BorderThickness="1"
+                Padding="12">
+
+                                            <StackPanel>
+
+                                                <TextBlock Text="Health"
+                           Style="{StaticResource App.StandardSubtitleTextBlock}"
+                           Margin="0,0,0,10" />
+
+                                                <Grid>
+
+                                                    <Grid.ColumnDefinitions>
+                                                        <ColumnDefinition Width="110" />
+                                                        <ColumnDefinition Width="*" />
+                                                    </Grid.ColumnDefinitions>
+
+                                                    <Grid.RowDefinitions>
+                                                        <RowDefinition Height="Auto" />
+                                                        <RowDefinition Height="Auto" />
+                                                    </Grid.RowDefinitions>
+
+
+                                                    <!-- Health check -->
+
+                                                    <TextBlock Grid.Row="0"
+                               Grid.Column="0"
+                               Text="Health check"
+                               Style="{StaticResource App.StandardTextBlock}"
+                               Margin="0,4,8,4"
+                               VerticalAlignment="Center" />
+
+                                                    <TextBox Grid.Row="0"
+                             Grid.Column="1"
+                             Margin="0,2"
+                             IsReadOnly="True"
+                             Loaded="ContributionHealth_Loaded" />
+
+
+                                                    <!-- Diagnostic -->
+
+                                                    <TextBlock Grid.Row="1"
+                               Grid.Column="0"
+                               Text="Diagnostic"
+                               Style="{StaticResource App.StandardTextBlock}"
+                               Margin="0,8,8,4"
+                               VerticalAlignment="Top" />
+
+                                                    <TextBox Grid.Row="1"
+                             Grid.Column="1"
+                             Margin="0,8,0,0"
+                             MinHeight="60"
+                             AcceptsReturn="True"
+                             TextWrapping="Wrap"
+                             VerticalScrollBarVisibility="Auto"
+                             IsReadOnly="True"
+                             Loaded="ContributionError_Loaded">
+
+                                                        <TextBox.Style>
+                                                            <Style TargetType="TextBox">
+
+                                                                <Style.Triggers>
+
+                                                                    <Trigger Property="Text"
+                                             Value="">
+                                                                        <Setter Property="Visibility"
+                                                Value="Collapsed" />
+                                                                    </Trigger>
+
+                                                                </Style.Triggers>
+
+                                                            </Style>
+                                                        </TextBox.Style>
+
+                                                    </TextBox>
+
+                                                </Grid>
+
+                                            </StackPanel>
+
+                                        </Border>
+
+                                    </Grid>
+
+                                </Border>
+                            </Expander>
 
                         </DataTemplate>
                     </ItemsControl.ItemTemplate>

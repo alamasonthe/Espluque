@@ -99,11 +99,15 @@ namespace Espluquer.UserControls.Modules
 
             icon.SetResourceReference( FrameworkElement.StyleProperty, "ModuleContributionIconStyle");
 
+            /*
             if (contributionHealth is not null)
             {
                 icon.SetBinding(TextBlock.ForegroundProperty,
                     new Binding(nameof(ContributionHealthDto.HealthBrush)) { Source = contributionHealth, Mode = BindingMode.OneWay });
             }
+            */
+
+            icon.DataContext = contributionHealth;
 
             TextBlock label = new()
             {
@@ -242,8 +246,6 @@ namespace Espluquer.UserControls.Modules
                 return;
             }
 
-            // ContentControl? searchHost = tagsPanel.Children.OfType<ContentControl>().FirstOrDefault();
-
             ContentControl? searchHost =
                 tagsPanel.Children
                     .OfType<ContentControl>()
@@ -271,12 +273,6 @@ namespace Espluquer.UserControls.Modules
             _tagSearchHost = searchHost;
 
             _conceptSearchUC.Clear();
-
-            /*
-            _conceptSearchUC.SetBinding(
-                FrameworkElement.WidthProperty,
-                new Binding(nameof(FrameworkElement.ActualWidth)) { Source = searchHost });
-            */
 
             searchHost.Content = _conceptSearchUC;
             searchHost.Visibility = Visibility.Visible;
