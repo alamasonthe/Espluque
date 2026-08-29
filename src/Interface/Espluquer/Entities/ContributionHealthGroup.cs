@@ -17,7 +17,6 @@ namespace Espluquer.Entities
         public int SuccessCount => Contributions.Count(x => x.HealthCheck == ModuleHealthCheckEnum.Success);
         public int TotalCount => Contributions.Count;
         public string CountText => $" ({SuccessCount}/{TotalCount})";
-        public Brush HealthBrush => ModuleTestService.GetHealthBrush(HealthCheck);
         public TextBlock DisplayBlock { get; }
 
         public ModuleHealthCheckEnum HealthCheck
@@ -47,7 +46,11 @@ namespace Espluquer.Entities
 
         private TextBlock CreateDisplayBlock()
         {
-            TextBlock textBlock = new() { VerticalAlignment = VerticalAlignment.Center };
+            TextBlock textBlock = new()
+            {
+                VerticalAlignment = VerticalAlignment.Center,
+                DataContext = this
+            };
 
             Run icon = new()
             {
@@ -57,14 +60,22 @@ namespace Espluquer.Entities
             };
 
             icon.SetResourceReference(TextElement.FontFamilyProperty, "FluentIcons");
-            icon.SetBinding(TextElement.ForegroundProperty, new Binding(nameof(HealthBrush)) { Source = this });
+            // icon.SetBinding(TextElement.ForegroundProperty, new Binding(nameof(HealthBrush)) { Source = this });
+            icon.SetResourceReference( FrameworkContentElement.StyleProperty, "ModuleHealthRunStyle");
 
             Run count = new()
             {
                 BaselineAlignment = BaselineAlignment.Center
             };
-            count.SetBinding(TextElement.ForegroundProperty, new Binding(nameof(HealthBrush)) { Source = this });
-            count.SetBinding(Run.TextProperty, new Binding(nameof(CountText)) { Source = this, Mode = BindingMode.OneWay });
+            count.SetResourceReference( FrameworkContentElement.StyleProperty, "ModuleHealthRunStyle");
+
+            count.SetBinding(
+                Run.TextProperty,
+                new Binding(nameof(CountText))
+                {
+                    Source = this,
+                    Mode = BindingMode.OneWay
+                });
 
             textBlock.Inlines.Add(icon);
             textBlock.Inlines.Add(count);
@@ -80,7 +91,6 @@ namespace Espluquer.Entities
             OnPropertyChanged(nameof(SuccessCount));
             OnPropertyChanged(nameof(CountText));
             OnPropertyChanged(nameof(HealthCheck));
-            OnPropertyChanged(nameof(HealthBrush));
         }
 
         public event PropertyChangedEventHandler? PropertyChanged;

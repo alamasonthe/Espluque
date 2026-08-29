@@ -31,7 +31,7 @@
                             <ContentPresenter Grid.Column="0"
                                   ContentSource="Content"
                                   VerticalAlignment="Center"
-                                  HorizontalAlignment="Left"
+                                  HorizontalAlignment="Stretch"
                                   RecognizesAccessKey="True" />
 
                             <Path x:Name="Arrow"

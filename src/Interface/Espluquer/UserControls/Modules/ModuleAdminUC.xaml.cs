@@ -1,11 +1,12 @@
-﻿using System.Collections.ObjectModel;
+﻿using Espluque.Contracts.Contributions;
+using Espluque.Contracts.CrossCutting;
+using Espluque.Contracts.Modules;
+using Espluquer.Adapters;
+using Espluquer.Entities;
+using Espluquer.UserControls.Shell;
+using System.Collections.ObjectModel;
 using System.Windows;
 using System.Windows.Controls;
-using Espluquer.Entities;
-using Espluquer.Adapters;
-using Espluque.Contracts.Modules;
-using Espluque.Contracts.CrossCutting;
-using Espluque.Contracts.Contributions;
 
 namespace Espluquer.UserControls.Modules
 {
@@ -23,7 +24,7 @@ namespace Espluquer.UserControls.Modules
 
         private readonly ModuleTestDetailUC _moduleTestDetailUC;
 
-        public ModuleAdminUC(IModuleService moduleService, IModuleDiagService moduleDiagService, IEntityFactory entityFactory, IContributionSettingsService contributionSettingsService)
+        public ModuleAdminUC(IModuleService moduleService, IModuleDiagService moduleDiagService, IEntityFactory entityFactory, IContributionSettingsService contributionSettingsService, ConceptSearchUC conceptSearchUC)
         {
             _moduleService = moduleService;
             _moduleDiagService = moduleDiagService;
@@ -31,7 +32,7 @@ namespace Espluquer.UserControls.Modules
 
             InitializeComponent();
 
-            _moduleTestDetailUC = new ModuleTestDetailUC(_moduleService, contributionSettingsService);
+            _moduleTestDetailUC = new ModuleTestDetailUC(_moduleService, contributionSettingsService, conceptSearchUC);
 
             ModuleDetailsHost.Content = _moduleTestDetailUC;
 
