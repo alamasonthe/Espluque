@@ -2,7 +2,9 @@
 using Espluque.Contracts.Modules;
 using Espluquer.Entities;
 using Espluquer.Services;
+using Espluquer.UserControls.Shell;
 using Microsoft.Win32;
+using System.Diagnostics;
 using System.IO;
 using System.Windows;
 using System.Windows.Controls;
@@ -40,165 +42,88 @@ namespace Espluquer.UserControls.Modules
             set => SetValue(ModuleHealthProperty, value);
         }
 
-        public ModuleTestDetailUC( IModuleService moduleService, IContributionSettingsService contributionSettingsService)
+        private readonly ConceptSearchUC _conceptSearchUC;
+        public ConceptSearchUC ConceptSearch => _conceptSearchUC;
+
+        private IModuleContributionInfo? _tagContribution;
+        private ContentControl? _tagSearchHost;
+
+        public ModuleTestDetailUC(
+            IModuleService moduleService,
+            IContributionSettingsService contributionSettingsService,
+            ConceptSearchUC conceptSearchUC)
         {
             _moduleService = moduleService;
             _contributionSettingsService = contributionSettingsService;
+            _conceptSearchUC = conceptSearchUC;
+
             InitializeComponent();
+
+            _conceptSearchUC.ConceptSelected += ConceptSearch_ConceptSelected;
         }
 
-        private void ContributionHeader_Loaded( object sender, RoutedEventArgs e)
+        private void ConceptSearch_ConceptSelected(ConceptDto concept)
         {
-            if ((sender is not StackPanel header)
-                || (header.DataContext is not IModuleContributionInfo contribution)
-                || ModuleInfo is null)
+            if (_tagContribution is null || _tagSearchHost is null)
             {
                 return;
             }
 
-            ContributionHealthDto? contributionHealth =
-                ContributionHealths.FirstOrDefault(health =>
-                    health.ModuleName == ModuleInfo.Name &&
-                    health.ContribInterfaceType == contribution.InterfaceType &&
-                    health.ContribClassName == contribution.ClassName);
+            List<string> tags = _tagContribution.ContributionSettings.Tags;
 
-            header.Children.Clear();
-
-            ToggleButton activeToggle = new()
+            if (!tags.Any(tag =>
+                string.Equals(tag, concept.Term, StringComparison.OrdinalIgnoreCase)))
             {
-                Content = "\uF60E"
-            };
+                tags.Add(concept.Term);
 
-            activeToggle.SetResourceReference( FrameworkElement.StyleProperty, "App.ActiveToggleButton");
-
-            activeToggle.SetBinding(
-                ToggleButton.IsCheckedProperty,
-                new Binding("ContributionSettings.Active")
-                {
-                    Mode = BindingMode.TwoWay
-                });
-
-            TextBlock icon = new()
-            {
-                Text = ModuleTestService.GetContributionIcon( contribution.InterfaceType)
-            };
-
-            icon.SetResourceReference( FrameworkElement.StyleProperty, "ModuleContributionIconStyle");
-
-            if (contributionHealth is not null)
-            {
-                icon.SetBinding(TextBlock.ForegroundProperty,
-                    new Binding(nameof(ContributionHealthDto.HealthBrush)) { Source = contributionHealth, Mode = BindingMode.OneWay });
+                CollectionViewSource
+                    .GetDefaultView(tags)
+                    .Refresh();
             }
 
-            TextBlock label = new()
+            Button? addButton = GetAddTagButton(_tagSearchHost);
+
+            if (addButton is not null)
             {
-                Text = contribution.Label,
-                Margin = new Thickness(8, 0, 0, 0)
-            };
+                addButton.Visibility = Visibility.Visible;
+            }
 
-            label.SetResourceReference( FrameworkElement.StyleProperty, "App.StandardSubtitleTextBlock");
-            label.SetResourceReference( TextBlock.ForegroundProperty, "App.TextInverse");
+            _tagSearchHost.Content = null;
+            _tagSearchHost.Visibility = Visibility.Collapsed;
 
-            header.Children.Add(activeToggle);
-            header.Children.Add(icon);
-            header.Children.Add(label);
+            _tagSearchHost.Visibility = Visibility.Collapsed;
+
+            _tagSearchHost = null;
+            _tagContribution = null;
         }
 
-        private void ContributionHealth_Loaded(object sender, RoutedEventArgs e)
+        private static Button? GetAddTagButton(ContentControl searchHost)
         {
-            if ((sender is not TextBox textBox)
-                || (textBox.DataContext is not IModuleContributionInfo contribution)
-                || ModuleInfo is null)
+            if (searchHost.Parent is not StackPanel tagsPanel)
+            {
+                return null;
+            }
+
+            return tagsPanel.Children
+                .OfType<Button>()
+                .FirstOrDefault(button => button.Name == "AddTagButton");
+        }
+
+        private async void ContributionDetail_SettingsChanged(object? sender, EventArgs e)
+        {
+            if (ModuleInfo is null
+                || sender is not ContributionDetailUC contributionDetail
+                || contributionDetail.DataContext is not IModuleContributionInfo contribution)
             {
                 return;
             }
 
-            ContributionHealthDto? contributionHealth =
-                ContributionHealths.FirstOrDefault(health =>
-                    health.ModuleName == ModuleInfo.Name &&
-                    health.ContribInterfaceType == contribution.InterfaceType &&
-                    health.ContribClassName == contribution.ClassName);
-
-            if (contributionHealth is not null)
-            {
-                textBox.SetBinding(TextBox.TextProperty,
-                    new Binding(nameof(ContributionHealthDto.HealthCheck)) { Source = contributionHealth, Mode = BindingMode.OneWay });
-            }
+            await _contributionSettingsService.SaveUserSettings(
+                ModuleInfo.Assembly,
+                contribution.InterfaceType,
+                contribution.ClassName,
+                contribution.ContributionSettings);
         }
 
-        private void ContributionError_Loaded(object sender, RoutedEventArgs e)
-        {
-            if ((sender is not TextBox textBox)
-                || (textBox.DataContext is not IModuleContributionInfo contribution)
-                || ModuleInfo is null)
-            {
-                return;
-            }
-
-            ContributionHealthDto? contributionHealth =
-                ContributionHealths.FirstOrDefault(health =>
-                    health.ModuleName == ModuleInfo.Name &&
-                    health.ContribInterfaceType == contribution.InterfaceType &&
-                    health.ContribClassName == contribution.ClassName);
-
-            if (contributionHealth is not null)
-            {
-                textBox.SetBinding(TextBox.TextProperty,
-                    new Binding(nameof(ContributionHealthDto.Diag)) { Source = contributionHealth, Mode = BindingMode.OneWay });
-            }
-        }
-
-        private async void SaveButton_Click(object sender, RoutedEventArgs e)
-        {
-            if (ModuleInfo is null)
-            {
-                return;
-            }
-
-            await _moduleService.SaveModuleInfo(ModuleInfo);
-        }
-
-        private async void SaveAsButton_Click(object sender, RoutedEventArgs e)
-        {
-            if (ModuleInfo is null)
-            {
-                return;
-            }
-
-            SaveFileDialog dialog = new()
-            {
-                FileName = Path.GetFileName(ModuleInfo.FilePath),
-                InitialDirectory = Path.GetDirectoryName(ModuleInfo.FilePath),
-                Filter = "JSON files (*.json)|*.json",
-                DefaultExt = ".json"
-            };
-
-            if (dialog.ShowDialog() == true)
-            {
-                await _moduleService.SaveModuleInfo(ModuleInfo, dialog.FileName);
-            }
-        }
-
-        private async void SaveSettingsButton_Click(object sender, RoutedEventArgs e)
-        {
-            if (ModuleInfo is null)
-            {
-                return;
-            }
-
-            foreach (IModuleContributionInfo contribution in ModuleInfo.Contributions)
-            {
-                await _contributionSettingsService.SaveUserSettings(
-                    ModuleInfo.Assembly,
-                    contribution.InterfaceType,
-                    contribution.ClassName,
-                    contribution.ContributionSettings);
-            }
-        }
-
-        private void ExploreButton_Click(object sender, RoutedEventArgs e)
-        {
-        }
     }
 }
