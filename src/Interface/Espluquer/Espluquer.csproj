@@ -89,6 +89,10 @@
 		<FileMoves Include="$(TargetDir)Microsoft.Web.WebView2.WinForms.dll" TargetRelativePath="managed\nuGet\Microsoft.Web.WebView2.WinForms.dll" />
 		<FileMoves Include="$(TargetDir)Microsoft.Web.WebView2.Wpf.dll" TargetRelativePath="managed\nuGet\Microsoft.Web.WebView2.Wpf.dll" />
 		<FileMoves Include="$(TargetDir)SevenZipExtractor.dll" TargetRelativePath="managed\nuGet\SevenZipExtractor.dll" />
+		<FileMoves Include="$(TargetDir)J2N.dll" TargetRelativePath="managed\nuGet\J2N.dll" />
+		<FileMoves Include="$(TargetDir)Lucene.Net.dll" TargetRelativePath="managed\nuGet\Lucene.Net.dll" />
+		<FileMoves Include="$(TargetDir)Lucene.Net.Analysis.Common.dll" TargetRelativePath="managed\nuGet\Lucene.Net.Analysis.Common.dll" />
+		<FileMoves Include="$(TargetDir)Microsoft.Extensions.Configuration.Abstractions.dll" TargetRelativePath="managed\nuGet\Microsoft.Extensions.Configuration.Abstractions.dll" />
 
 		<FileMoves Include="$(TargetDir)Bootstrap.dll" TargetRelativePath="managed\Espluque\Bootstrap.dll" />
 		<FileMoves Include="$(TargetDir)Espluque.Theming.dll" TargetRelativePath="managed\Espluque\Espluque.Theming.dll" />
@@ -104,6 +108,8 @@
 		<FileMoves Include="$(TargetDir)x64\7z.dll" TargetRelativePath="native\sevenzip\7z.dll" />
 		<FileMoves Include="$(TargetDir)WebView2Loader.dll" TargetRelativePath="native\webview2\WebView2Loader.dll" />
 		<FileMoves Include="$(TargetDir)e_sqlite3.dll" TargetRelativePath="native\sqlite\e_sqlite3.dll" />
+		<FileMoves Include="$(TargetDir)LuceneSearch.dll" TargetRelativePath="managed\Espluque\LuceneSearch.dll" />
+		
 	</ItemGroup>
 
 	<ItemGroup>
