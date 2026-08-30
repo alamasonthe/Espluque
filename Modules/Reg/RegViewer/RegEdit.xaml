@@ -15,14 +15,24 @@
         </Grid.ColumnDefinitions>
 
         <TreeView x:Name="ContainerTreeView"
-              Grid.Column="0"
-              Style="{DynamicResource App.Controls.TreeView}"
-              SelectedItemChanged="ContainerTreeView_SelectedItemChanged">
+          Grid.Column="0"
+          Style="{DynamicResource App.Controls.TreeView}"
+          SelectedItemChanged="ContainerTreeView_SelectedItemChanged">
+
+            <TreeView.ItemContainerStyle>
+                <Style TargetType="TreeViewItem"
+               BasedOn="{StaticResource App.Controls.TreeViewItem}">
+                    <Setter Property="IsExpanded" Value="True" />
+                </Style>
+            </TreeView.ItemContainerStyle>
+
             <TreeView.ItemTemplate>
                 <HierarchicalDataTemplate ItemsSource="{Binding BranchChildren}">
-                    <TextBlock Text="{Binding Name}" Style="{StaticResource App.StandardTextBlock}" />
+                    <TextBlock Text="{Binding Name}"
+                       Style="{StaticResource App.StandardTextBlock}" />
                 </HierarchicalDataTemplate>
             </TreeView.ItemTemplate>
+
         </TreeView>
 
         <GridSplitter Grid.Column="1"
@@ -31,16 +41,19 @@
                   VerticalAlignment="Stretch"
                   Background="{DynamicResource App.Border}"/>
 
-        <DataGrid x:Name="LeafDataGrid"
-              Style="{DynamicResource App.Controls.DataGrid}"
-              Grid.Column="2"
-              AutoGenerateColumns="False"
-              IsReadOnly="True"
-              CanUserAddRows="False"
-              CanUserDeleteRows="False"
-              SelectionMode="Single"
-              SelectionUnit="FullRow"
-              HeadersVisibility="Column" />
+        <RichTextBox x:Name="LeafRichTextBox"
+             Grid.Column="2"
+             IsReadOnly="True"
+             IsDocumentEnabled="False"
+             BorderThickness="0"
+             Background="{DynamicResource App.Background}"
+             Foreground="{DynamicResource App.Text}"
+             SelectionBrush="{DynamicResource App.Selection}"
+             VerticalScrollBarVisibility="Auto"
+             HorizontalScrollBarVisibility="Disabled"
+             Padding="0"
+             FontFamily="Segoe UI"
+             FontSize="13" />
 
     </Grid>
 </UserControl>
