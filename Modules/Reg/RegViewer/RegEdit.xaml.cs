@@ -1,8 +1,8 @@
-﻿using System.Windows;
+﻿using Espluque.Contracts.CrossCutting;
+using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
+using System.Windows.Documents;
 using Util;
-using Espluque.Contracts.CrossCutting;
 
 namespace RegViewer
 {
@@ -33,40 +33,34 @@ namespace RegViewer
 
         private async void LoadTree(string filePath)
         {
-            Result<TreeNode<List<KeyValuePair<string, string>>>> treeResult = await _regService.GetRegistryKeyValueTree(filePath);
+            Result<TreeNode<List<KeyValuePair<string, string>>>> treeResult =
+                await _regService.GetRegistryKeyValueTree(filePath);
+
             if (!treeResult.IsSuccess)
             {
-                LeafDataGrid.Columns.Clear();
-                LeafDataGrid.Columns.Add(new DataGridTextColumn
+                FlowDocument document = new()
                 {
-                    Header = "Error",
-                    Binding = new Binding("[Error]")
-                });
-
-                LeafDataGrid.ItemsSource = new[]
-                {
-                    new Dictionary<string, string>
-                    {
-                        ["Error"] = treeResult.Error?.Message ?? "Failed to load registry tree."
-                    }
+                    PagePadding = new Thickness(0)
                 };
+
+                document.SetResourceReference(TextElement.ForegroundProperty, "App.Text");
+
+                Paragraph paragraph = new(
+                    new Run(treeResult.Error?.Message ?? "Failed to load registry tree."))
+                {
+                    Margin = new Thickness(8, 5, 8, 5)
+                };
+
+                document.Blocks.Add(paragraph);
+
+                LeafRichTextBox.Document = document;
 
                 return;
             }
 
             _rootNode = treeResult.Value;
 
-            ContainerTreeView.ItemsSource = new[] { _rootNode };
-
-            ContainerTreeView.ApplyTemplate();
-            ContainerTreeView.UpdateLayout();
-
-            if (ContainerTreeView.ItemContainerGenerator.ContainerFromItem(_rootNode) is TreeViewItem rootTreeViewItem)
-            {
-                rootTreeViewItem.IsExpanded = true;
-            }
-
-            BuildLeafGridColumns(EnumerateLeafs(_rootNode));
+            ContainerTreeView.ItemsSource = _rootNode.BranchChildren;
 
             ShowLeafs(_rootNode);
         }
@@ -76,57 +70,6 @@ namespace RegViewer
             if (e.NewValue is TreeNode<List<KeyValuePair<string, string>>> selectedNode)
             {
                 ShowLeafs(selectedNode);
-            }
-        }
-
-        private void ShowLeafs(TreeNode<List<KeyValuePair<string, string>>> node)
-        {
-            List<Dictionary<string, string>> rows = [];
-
-            foreach (TreeNode<List<KeyValuePair<string, string>>> leaf in node.Children.Where(child => child.IsLeaf))
-            {
-                Dictionary<string, string> row = new(StringComparer.Ordinal);
-
-                string? internalPath = leaf.Data?.FirstOrDefault(property => property.Key == "Path").Value;
-                row["Path"] = internalPath ?? string.Empty;
-
-                if (_leafColumns.Contains("Name"))
-                {
-                    row["Name"] = string.IsNullOrWhiteSpace(internalPath)
-                        ? string.Empty
-                        : internalPath.Split(['/', '\\'], StringSplitOptions.RemoveEmptyEntries).LastOrDefault() ?? string.Empty;
-                }
-
-                foreach (string column in _leafColumns)
-                {
-                    if (column == "Name")
-                    {
-                        continue;
-                    }
-
-                    string? value = leaf.Data?.FirstOrDefault(property => property.Key == column).Value;
-                    row[column] = value ?? string.Empty;
-                }
-
-                rows.Add(row);
-            }
-
-            LeafDataGrid.ItemsSource = rows;
-        }
-
-        private void BuildLeafGridColumns(IEnumerable<TreeNode<List<KeyValuePair<string, string>>>> leafs)
-        {
-            _leafColumns = BuildLeafColumns(leafs);
-
-            LeafDataGrid.Columns.Clear();
-
-            foreach (string column in _leafColumns)
-            {
-                LeafDataGrid.Columns.Add(new DataGridTextColumn
-                {
-                    Header = column,
-                    Binding = new Binding($"[{column}]")
-                });
             }
         }
 
@@ -147,35 +90,95 @@ namespace RegViewer
             }
         }
 
-        private static List<string> BuildLeafColumns(IEnumerable<TreeNode<List<KeyValuePair<string, string>>>> leafs)
+        private void ShowLeafs(TreeNode<List<KeyValuePair<string, string>>> node)
         {
-            List<string> columns = [];
-            HashSet<string> knownColumnKeys = new(StringComparer.Ordinal);
-
-            foreach (TreeNode<List<KeyValuePair<string, string>>> leaf in leafs)
+            FlowDocument document = new()
             {
-                if (leaf.Data is null)
-                {
-                    continue;
-                }
+                PagePadding = new Thickness(0)
+            };
 
-                foreach (KeyValuePair<string, string> property in leaf.Data)
-                {
-                    if (string.IsNullOrWhiteSpace(property.Key))
-                    {
-                        continue;
-                    }
+            document.SetResourceReference(TextElement.ForegroundProperty, "App.Text");
 
-                    string columnName = property.Key == "Path" ? "Name" : property.Key;
+            Table table = new()
+            {
+                CellSpacing = 0
+            };
 
-                    if (knownColumnKeys.Add(columnName))
-                    {
-                        columns.Add(columnName);
-                    }
-                }
+            table.Columns.Add(new TableColumn { Width = new GridLength(220) });
+            table.Columns.Add(new TableColumn { Width = new GridLength(130) });
+            table.Columns.Add(new TableColumn());
+
+            TableRowGroup rows = new();
+
+            rows.Rows.Add(BuildHeaderRow());
+
+            foreach (TreeNode<List<KeyValuePair<string, string>>> leaf
+                     in node.Children.Where(child => child.IsLeaf))
+            {
+                string path =
+                    leaf.Data?.FirstOrDefault(x => x.Key == "Path").Value
+                    ?? string.Empty;
+
+                string name = path
+                    .Split(['/', '\\'], StringSplitOptions.RemoveEmptyEntries)
+                    .LastOrDefault()
+                    ?? string.Empty;
+
+                string type =
+                    leaf.Data?.FirstOrDefault(x => x.Key == "Type").Value
+                    ?? string.Empty;
+
+                string data =
+                    leaf.Data?.FirstOrDefault(x => x.Key == "Data").Value
+                    ?? string.Empty;
+
+                TableRow row = new();
+
+                row.Cells.Add(BuildCell(name));
+                row.Cells.Add(BuildCell(type));
+                row.Cells.Add(BuildCell(data));
+
+                rows.Rows.Add(row);
             }
 
-            return columns;
+            table.RowGroups.Add(rows);
+            document.Blocks.Add(table);
+
+            LeafRichTextBox.Document = document;
         }
+
+        #region helpers
+
+        private TableRow BuildHeaderRow()
+        {
+            TableRow row = new();
+
+            row.Cells.Add(BuildCell("Name"));
+            row.Cells.Add(BuildCell("Type"));
+            row.Cells.Add(BuildCell("Data"));
+
+            return row;
+        }
+
+        private TableCell BuildCell(string text)
+        {
+            Paragraph paragraph = new(new Run(text))
+            {
+                Margin = new Thickness(0)
+            };
+
+            TableCell cell = new(paragraph)
+            {
+                Padding = new Thickness(8, 5, 8, 5),
+                BorderThickness = new Thickness(0, 0, 0, 1)
+            };
+
+            cell.SetResourceReference(TextElement.ForegroundProperty, "App.Text");
+            cell.SetResourceReference(TableCell.BorderBrushProperty, "App.Border");
+
+            return cell;
+        }
+
+        #endregion
     }
 }
