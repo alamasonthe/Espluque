@@ -1,6 +1,6 @@
 [
   {
-    "FormatTag": "Windows Installer — MSI",
+    "FormatTag": "Windows Installer MSI",
 	  "FavoriteObservedDataList": "MSI infos",
     "InstallCommand": "msiexec.exe",
     "InstallArguments": "/i \"{InstallerFilePath}\" /qn /norestart",
@@ -8,7 +8,7 @@
     "UninstallArguments": "/x \"{ProductCode}\" /qn /norestart"
   },
   {
-    "FormatTag": "Windows Installer Patch — MSP",
+    "FormatTag": "Windows Installer Patch MSP",
 	  "FavoriteObservedDataList": "MSI infos",
     "InstallCommand": "msiexec.exe",
     "InstallArguments": "/update \"{InstallerFilePath}\" /quiet /norestart",
@@ -16,7 +16,7 @@
     "UninstallArguments": "/uninstall \"{PatchPath}\" /package \"{ProductMsiPath}\" /quiet /norestart"
   },
   {
-    "FormatTag": "Windows Installer Transform — MST",
+    "FormatTag": "Windows Installer Transform MST",
 	  "FavoriteObservedDataList": "MSI infos",
     "InstallCommand": "msiexec.exe",
     "InstallArguments": "/i \"{PackagePath}\" TRANSFORMS=\"{InstallerFilePath}\" /qn /norestart",

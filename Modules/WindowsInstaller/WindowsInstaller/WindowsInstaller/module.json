@@ -1,0 +1,19 @@
+{
+  "name": "Windows Installer",
+  "version": "0.0.1",
+  "author": "Alamasonthe",
+  "description": "MSI family",
+  "assembly": "WindowsInstaller.dll",
+  "contributions": [
+    {
+      "interfaceType": "IGrabber",
+      "label": "Windows Installer infos",
+      "description": "",
+      "className": "WindowsInstaller.WindowsInstallerInfos",
+      "contributionSettings": {
+        "tags": [ "Windows Installer MSI" ],
+        "active": true
+      }
+    }
+  ]
+}
