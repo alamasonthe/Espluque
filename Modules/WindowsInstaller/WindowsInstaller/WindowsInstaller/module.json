@@ -6,6 +6,16 @@
   "assembly": "WindowsInstaller.dll",
   "contributions": [
     {
+      "interfaceType": "IWpfViewer",
+      "label": "Msi Viewer",
+      "description": "",
+      "className": "WindowsInstaller.MsiViewer",
+      "contributionSettings": {
+        "tags": [ "Windows Installer MSI" ],
+        "active": true
+      }
+    },
+    {
       "interfaceType": "IGrabber",
       "label": "Windows Installer infos",
       "description": "",
