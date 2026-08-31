@@ -200,9 +200,9 @@ namespace WindowsInstaller.Files
         }
 
         private static string BuildDirectoryPath(
-            string directoryKey,
-            Dictionary<string, (string Parent, string TargetName, string SourceName)> directories,
-            bool source)
+    string directoryKey,
+    Dictionary<string, (string Parent, string TargetName, string SourceName)> directories,
+    bool source)
         {
             List<string> parts = [];
 
@@ -211,14 +211,20 @@ namespace WindowsInstaller.Files
             while (!string.IsNullOrWhiteSpace(currentKey) &&
                    directories.TryGetValue(currentKey, out var directory))
             {
-                string name = source
-                    ? directory.SourceName
-                    : directory.TargetName;
-
-                if (!string.IsNullOrWhiteSpace(name) &&
-                    name != ".")
+                if (!string.Equals(
+                    currentKey,
+                    "TARGETDIR",
+                    StringComparison.OrdinalIgnoreCase))
                 {
-                    parts.Add(name);
+                    string name = source
+                        ? directory.SourceName
+                        : directory.TargetName;
+
+                    if (!string.IsNullOrWhiteSpace(name) &&
+                        name != ".")
+                    {
+                        parts.Add(name);
+                    }
                 }
 
                 currentKey = directory.Parent;
