@@ -5,14 +5,14 @@ using System.IO;
 
 namespace WindowsInstaller
 {
-    public class MsiViewer: IWpfViewer
+    public class MsiDbViewer: IWpfViewer
     {
         private readonly IMessageCenter _messageCenter;
         private readonly ILogger _logger;
         private readonly ISettingsService _settingsService;
         private readonly IEntityFactory _entityFactory;
 
-        public MsiViewer(IMessageCenter messageCenter,
+        public MsiDbViewer(IMessageCenter messageCenter,
             ILogger logger,
             ISettingsService settingsService,
             IEntityFactory entityFactory)
@@ -23,14 +23,14 @@ namespace WindowsInstaller
             _entityFactory = entityFactory;
         }
 
-        public MsiViewer()
+        public MsiDbViewer()
         {
 
         }
 
         public async Task<object?> GetViewer(IAnalysisContext analysisContext)
         {
-            object viewer = new MsiDbViewer(analysisContext.FilePath);
+            object viewer = new MsiDbViewerUC(analysisContext.FilePath);
             return viewer;
         }
     }

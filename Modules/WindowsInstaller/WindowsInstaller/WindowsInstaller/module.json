@@ -7,9 +7,19 @@
   "contributions": [
     {
       "interfaceType": "IWpfViewer",
-      "label": "Msi Viewer",
+      "label": "Msi DB Viewer",
       "description": "",
-      "className": "WindowsInstaller.MsiViewer",
+      "className": "WindowsInstaller.MsiDbViewer",
+      "contributionSettings": {
+        "tags": [ "Windows Installer MSI" ],
+        "active": true
+      }
+    },
+    {
+      "interfaceType": "IWpfViewer",
+      "label": "Msi File Viewer",
+      "description": "",
+      "className": "WindowsInstaller.MsiFileViewer",
       "contributionSettings": {
         "tags": [ "Windows Installer MSI" ],
         "active": true
@@ -20,6 +30,16 @@
       "label": "Windows Installer infos",
       "description": "",
       "className": "WindowsInstaller.WindowsInstallerInfos",
+      "contributionSettings": {
+        "tags": [ "Windows Installer MSI" ],
+        "active": true
+      }
+    },
+    {
+      "interfaceType": "IGrabber",
+      "label": "MSI Summary infos",
+      "description": "",
+      "className": "WindowsInstaller.MsiSummaryInfos",
       "contributionSettings": {
         "tags": [ "Windows Installer MSI" ],
         "active": true

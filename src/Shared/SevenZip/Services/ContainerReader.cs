@@ -43,7 +43,7 @@ namespace SevenZip.Services
                     FileAccess.Read,
                     FileShare.ReadWrite);
 
-                return (new ArchiveFile(forcedFormatStream, SevenZipFormat.Compound), forcedFormatStream);
+                return ( new ArchiveFile( forcedFormatStream, SevenZipFormat.Compound, libraryFilePath), forcedFormatStream);
             }
         }
 

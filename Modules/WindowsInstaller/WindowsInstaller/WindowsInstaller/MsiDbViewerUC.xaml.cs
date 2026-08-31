@@ -4,12 +4,12 @@ using System.Windows.Documents;
 
 namespace WindowsInstaller
 {
-    public partial class MsiDbViewer : UserControl
+    public partial class MsiDbViewerUC : UserControl
     {
         private readonly WindowsInstallerService _windowsInstallerService = new();
         private readonly string _filename;
 
-        public MsiDbViewer(string filename)
+        public MsiDbViewerUC(string filename)
         {
             InitializeComponent();
 

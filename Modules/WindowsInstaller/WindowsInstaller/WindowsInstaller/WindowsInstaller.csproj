@@ -13,6 +13,8 @@
 	<ProjectReference Include="$(ContractsProjectPath)" />
 	<ProjectReference Include="$(ModuleCommonsProjectPath)" />
 	<ProjectReference Include="$(ThemingProjectPath)" />
+	<ProjectReference Include="..\..\..\..\src\Shared\SevenZip\SevenZip.csproj" />
+	<ProjectReference Include="..\..\..\..\src\Shared\Util\Util.csproj" />
   </ItemGroup>
 
   <ItemGroup>

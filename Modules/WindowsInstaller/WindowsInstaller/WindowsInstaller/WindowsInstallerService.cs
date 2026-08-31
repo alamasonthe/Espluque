@@ -224,5 +224,115 @@ namespace WindowsInstaller
             if (value != null && Marshal.IsComObject(value))
                 Marshal.FinalReleaseComObject(value);
         }
+
+        public int? GetWordCount(string filename)
+        {
+            if (string.IsNullOrWhiteSpace(filename) || !File.Exists(filename))
+                return null;
+
+            dynamic? installer = null;
+            dynamic? summaryInfo = null;
+
+            try
+            {
+                Type? installerType = Type.GetTypeFromProgID("WindowsInstaller.Installer");
+
+                if (installerType == null)
+                    return null;
+
+                installer = Activator.CreateInstance(installerType);
+
+                if (installer == null)
+                    return null;
+
+                summaryInfo = installer.SummaryInformation(filename, 0);
+
+                object? value = summaryInfo.Property[15];
+
+                return value == null ? 0 : Convert.ToInt32(value);
+            }
+            finally
+            {
+                ReleaseComObject(summaryInfo);
+                ReleaseComObject(installer);
+            }
+        }
+
+        private static readonly (int Id, string Name)[] SummaryProperties =
+            [
+                (1, "Codepage"),
+                (2, "Title"),
+                (3, "Subject"),
+                (4, "Author"),
+                (5, "Keywords"),
+                (6, "Comments"),
+                (7, "Template"),
+                (8, "Last Saved By"),
+                (9, "Revision Number"),
+                (10, "Edit Time"),
+                (11, "Last Printed"),
+                (12, "Create Time/Date"),
+                (13, "Last Save Time/Date"),
+                (14, "Page Count"),
+                (15, "Word Count"),
+                (16, "Character Count"),
+                (17, "Thumbnail"),
+                (18, "Creating Application"),
+                (19, "Security")
+            ];
+
+        public List<KeyValuePair<string, string>>? GetSummaryInfos(string filename)
+        {
+            if (string.IsNullOrWhiteSpace(filename) || !File.Exists(filename))
+                return null;
+
+            dynamic? installer = null;
+            dynamic? summaryInfo = null;
+
+            try
+            {
+                Type? installerType =
+                    Type.GetTypeFromProgID("WindowsInstaller.Installer");
+
+                if (installerType == null)
+                    return null;
+
+                installer = Activator.CreateInstance(installerType);
+
+                if (installer == null)
+                    return null;
+
+                summaryInfo = installer.SummaryInformation(filename, 0);
+
+                List<KeyValuePair<string, string>> infos = [];
+
+                foreach ((int id, string name) in SummaryProperties)
+                {
+                    string value;
+
+                    try
+                    {
+                        object? propertyValue = summaryInfo.Property[id];
+
+                        value = propertyValue?.ToString() ?? string.Empty;
+                    }
+                    catch
+                    {
+                        value = id == 17
+                            ? "[binary]"
+                            : string.Empty;
+                    }
+
+                    infos.Add(new KeyValuePair<string, string>(name, value));
+                }
+
+                return infos;
+            }
+            finally
+            {
+                ReleaseComObject(summaryInfo);
+                ReleaseComObject(installer);
+            }
+        }
     }
 }

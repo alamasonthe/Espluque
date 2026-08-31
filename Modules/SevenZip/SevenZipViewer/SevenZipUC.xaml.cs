@@ -181,17 +181,6 @@ namespace SevenZipViewer
 
         #region Message to open & analyze embedded file
 
-        private void LeafDataGrid_MouseDoubleClickOld(object sender, MouseButtonEventArgs e)
-        {
-            if (LeafDataGrid.SelectedItem is not Dictionary<string, string> row)
-            {
-                return;
-            }
-
-            row.TryGetValue("Path", out string? internalPath);
-
-        }
-
         private async void LeafDataGrid_MouseDoubleClick(object sender, MouseButtonEventArgs e)
         {
             if (LeafDataGrid.SelectedItem is not Dictionary<string, string> row)
