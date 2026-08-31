@@ -34,5 +34,23 @@
     "moduleName": "Inf File module",
     "contributionLabel": "Inf Version Section",
     "grabbedInformationKey": "DriverVer"
+  },
+  {
+    "targetPropertyName": "Manufacturer",
+    "moduleName": "Windows Installer",
+    "contributionLabel": "Windows Installer infos",
+    "grabbedInformationKey": "Manufacturer"
+  },
+  {
+    "targetPropertyName": "ProductName",
+    "moduleName": "Windows Installer",
+    "contributionLabel": "Windows Installer infos",
+    "grabbedInformationKey": "ProductName"
+  },
+  {
+    "targetPropertyName": "ProductVersion",
+    "moduleName": "Windows Installer",
+    "contributionLabel": "Windows Installer infos",
+    "grabbedInformationKey": "ProductVersion"
   }
 ]
