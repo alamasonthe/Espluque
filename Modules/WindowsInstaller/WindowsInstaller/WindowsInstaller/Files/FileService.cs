@@ -317,8 +317,7 @@ namespace WindowsInstaller.Files
             if ((file.Attributes & compressedAttribute) != 0)
                 return true;
 
-            int wordCount =
-                _windowsInstallerService.GetWordCount(filename) ?? 0;
+            int wordCount = _windowsInstallerService.GetWordCount(filename) ?? 0;
 
             return (wordCount & 2) != 0;
         }

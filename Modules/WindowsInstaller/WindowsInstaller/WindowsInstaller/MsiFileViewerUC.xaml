@@ -66,5 +66,10 @@
 
         </DataGrid>
 
+        <Grid x:Name="LoadingPanel" Grid.ColumnSpan="3" Panel.ZIndex="10">
+            <Grid Width="120" HorizontalAlignment="Center" VerticalAlignment="Center">
+                <TextBlock x:Name="LoadingText" Text="Loading" HorizontalAlignment="Left" Style="{StaticResource App.DropMessageText}" />
+            </Grid>
+        </Grid>
     </Grid>
 </UserControl>
