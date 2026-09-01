@@ -1,10 +1,11 @@
 ﻿using Espluque.Contracts.CrossCutting;
+using System.IO;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
+using System.Windows.Threading;
 using Util;
 using WindowsInstaller.Files;
-using System.IO;
 
 namespace WindowsInstaller
 {
@@ -17,6 +18,9 @@ namespace WindowsInstaller
         private readonly IMessageCenter _messageCenter;
         private readonly IEntityFactory _entityFactory;
         private readonly ILogger _logger;
+
+        private readonly DispatcherTimer _loadingTimer = new();
+        private int _loadingStep;
 
 
         private TreeNode<MsiDirectoryItem>? _tree;
@@ -34,26 +38,44 @@ namespace WindowsInstaller
             _windowsInstallerService = new WindowsInstallerService();
             _fileService = new FileService(_windowsInstallerService);
 
-            LoadTree();
+            Loaded += MsiFileViewerUC_Loaded;
+
+            _loadingTimer.Interval = TimeSpan.FromMilliseconds(400);
+            _loadingTimer.Tick += LoadingTimer_Tick;
         }
 
-        private void LoadTree()
+        private async void MsiFileViewerUC_Loaded(object sender, RoutedEventArgs e)
         {
-            _tree = _fileService.GetTree(_filename);
+            await LoadTreeAsync();
+        }
 
-            if (_tree == null)
-                return;
+        public async Task LoadTreeAsync()
+        {
+            _loadingTimer.Start();
 
-            FileTreeView.ItemsSource = _tree.BranchChildren;
-
-            FileTreeView.UpdateLayout();
-
-            TreeViewItem? installDirItem = FindDirectoryItem( FileTreeView, "INSTALLDIR");
-
-            if (installDirItem != null)
+            try
             {
-                installDirItem.IsSelected = true;
-                installDirItem.BringIntoView();
+                _tree = await Task.Run(() => _fileService.GetTree(_filename));
+
+                if (_tree == null)
+                    return;
+
+                FileTreeView.ItemsSource = _tree.BranchChildren;
+
+                FileTreeView.UpdateLayout();
+
+                TreeViewItem? installDirItem = FindDirectoryItem(FileTreeView, "INSTALLDIR");
+
+                if (installDirItem != null)
+                {
+                    installDirItem.IsSelected = true;
+                    installDirItem.BringIntoView();
+                }
+            }
+            finally
+            {
+                _loadingTimer.Stop();
+                LoadingPanel.Visibility = Visibility.Collapsed;
             }
         }
 
@@ -105,7 +127,7 @@ namespace WindowsInstaller
             if (FileDataGrid.SelectedItem is not MsiFileItem file)
                 return;
 
-            string? cabinet = _fileService.GetCabinet(_filename, file);
+            string? cabinet = await Task.Run(() => _fileService.GetCabinet(_filename, file));
 
             if (cabinet == null)
             {
@@ -182,5 +204,10 @@ namespace WindowsInstaller
             e.Handled = true;
         }
 
+        private void LoadingTimer_Tick(object? sender, EventArgs e)
+        {
+            _loadingStep = (_loadingStep + 1) % 4;
+            LoadingText.Text = "Loading" + new string('.', _loadingStep);
+        }
     }
 }

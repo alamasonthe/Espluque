@@ -15,12 +15,17 @@ namespace WindowsInstaller
 
             _filename = filename;
 
-            LoadTables();
+            Loaded += MsiDbViewerUC_Loaded;
         }
 
-        private void LoadTables()
+        private async void MsiDbViewerUC_Loaded(object sender, RoutedEventArgs e)
         {
-            List<string>? tables = _windowsInstallerService.GetTableList(_filename);
+            await LoadTables();
+        }
+
+        private async Task LoadTables()
+        {
+            List<string>? tables = await Task.Run(() => _windowsInstallerService.GetTableList(_filename));
 
             if (tables == null)
                 return;
@@ -36,14 +41,14 @@ namespace WindowsInstaller
             }
         }
 
-        private void TableList_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        private async void TableList_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             if (TableList.SelectedItem is not string tableName)
                 return;
 
-            var tableData = _windowsInstallerService.GetTableData(
+            var tableData = await Task.Run(() => _windowsInstallerService.GetTableData(
                 _filename,
-                tableName);
+                tableName));
 
             if (tableData == null)
                 return;

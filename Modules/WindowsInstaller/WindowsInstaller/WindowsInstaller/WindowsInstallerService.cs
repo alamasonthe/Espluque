@@ -114,9 +114,7 @@ namespace WindowsInstaller
             }
         }
 
-        public (List<string> Columns, List<List<string>> Rows)? GetTableData(
-            string filename,
-            string tableName)
+        public (List<string> Columns, List<List<string>> Rows)? GetTableData( string filename, string tableName)
         {
             if (string.IsNullOrWhiteSpace(filename) ||
                 !File.Exists(filename) ||

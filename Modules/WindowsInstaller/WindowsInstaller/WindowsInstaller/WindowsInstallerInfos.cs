@@ -31,13 +31,13 @@ namespace WindowsInstaller
         {
             try
             {
-                WindowsInstallerService windowsInstallerService = new WindowsInstallerService();
-                return windowsInstallerService.GetInfos(analysisContext.FilePath);
+                WindowsInstallerService windowsInstallerService = new();
+                return await Task.Run(() => windowsInstallerService.GetInfos(analysisContext.FilePath)) ?? [];
             }
             catch (Exception ex)
             {
                 _logger.Log(Microsoft.Extensions.Logging.LogLevel.Error, $"Windows Installer module: {ex.Message}");
-                return new List<KeyValuePair<string, string>>();
+                return [];
             }
         }
 
