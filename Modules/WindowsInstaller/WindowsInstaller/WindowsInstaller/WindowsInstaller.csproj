@@ -1,0 +1,38 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net10.0-windows</TargetFramework>
+    <Nullable>enable</Nullable>
+    <UseWPF>true</UseWPF>
+    <ImplicitUsings>enable</ImplicitUsings>
+	<CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
+	<EnableDynamicLoading>true</EnableDynamicLoading>
+  </PropertyGroup>
+
+  <ItemGroup>
+	<ProjectReference Include="$(ContractsProjectPath)" />
+	<ProjectReference Include="$(ModuleCommonsProjectPath)" />
+	<ProjectReference Include="$(ThemingProjectPath)" />
+	<ProjectReference Include="..\..\..\..\src\Shared\SevenZip\SevenZip.csproj" />
+	<ProjectReference Include="..\..\..\..\src\Shared\Util\Util.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Update="module.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
+  <Target Name="CopyModuleToHost" AfterTargets="Build">
+	<PropertyGroup>
+		<HostModuleDirectory>$(ModuleOutputDirectory)$(AssemblyName)\</HostModuleDirectory>
+	</PropertyGroup>
+
+	<MakeDir Directories="$(HostModuleDirectory)" />
+	<Copy SourceFiles="$(TargetPath)" DestinationFolder="$(HostModuleDirectory)" />
+	<Copy SourceFiles="$(TargetDir)$(TargetName).pdb" DestinationFolder="$(HostModuleDirectory)" Condition="'$(Configuration)' == 'Debug'" />
+	<Copy SourceFiles="$(ProjectDir)module.json" DestinationFolder="$(HostModuleDirectory)" />
+
+  </Target>
+
+</Project>

@@ -1,0 +1,49 @@
+{
+  "name": "Windows Installer",
+  "version": "0.0.1",
+  "author": "Alamasonthe",
+  "description": "MSI family",
+  "assembly": "WindowsInstaller.dll",
+  "contributions": [
+    {
+      "interfaceType": "IWpfViewer",
+      "label": "Msi DB Viewer",
+      "description": "",
+      "className": "WindowsInstaller.MsiDbViewer",
+      "contributionSettings": {
+        "tags": [ "Windows Installer MSI" ],
+        "active": true
+      }
+    },
+    {
+      "interfaceType": "IWpfViewer",
+      "label": "Msi File Viewer",
+      "description": "",
+      "className": "WindowsInstaller.MsiFileViewer",
+      "contributionSettings": {
+        "tags": [ "Windows Installer MSI" ],
+        "active": true
+      }
+    },
+    {
+      "interfaceType": "IGrabber",
+      "label": "Windows Installer infos",
+      "description": "",
+      "className": "WindowsInstaller.WindowsInstallerInfos",
+      "contributionSettings": {
+        "tags": [ "Windows Installer MSI" ],
+        "active": true
+      }
+    },
+    {
+      "interfaceType": "IGrabber",
+      "label": "MSI Summary infos",
+      "description": "",
+      "className": "WindowsInstaller.MsiSummaryInfos",
+      "contributionSettings": {
+        "tags": [ "Windows Installer MSI" ],
+        "active": true
+      }
+    }
+  ]
+}
