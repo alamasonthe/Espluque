@@ -1,21 +1,22 @@
-﻿using Espluque.Contracts.CrossCutting;
+﻿using Espluque.Contracts.Contributions;
 using Espluque.Contracts.Contributions.Types;
+using Espluque.Contracts.CrossCutting;
 using Espluque.Contracts.Workflow;
 using Microsoft.Extensions.Logging;
-using Espluque.Contracts.Contributions;
 
-namespace detectorTemplate
+namespace WindowsFileType
 {
-    public class Detector : IDetector
+    public class FileAssociationDetector : IDetector
     {
         private readonly IMessageCenter _messageCenter;
         private readonly Espluque.Contracts.CrossCutting.ILogger _logger;
         private readonly ISettingsService _settingsService;
         private readonly IEntityFactory _entityFactory;
 
-        private readonly string _referentiel = "TemplateReferentiel";
+        private readonly string _referentiel = "WindowsFileAssociation";
 
-        public Detector(IMessageCenter messageCenter,
+        public FileAssociationDetector(
+            IMessageCenter messageCenter,
             Espluque.Contracts.CrossCutting.ILogger logger,
             ISettingsService settingsService,
             IEntityFactory entityFactory)
@@ -38,18 +39,21 @@ namespace detectorTemplate
 
             try
             {
+                (string TypeLabel, string? ContentType)? windowsType =
+                    AssociationService.GetFileTypeFromExtension(analysisContext.FilePath);
 
-                if (File.Exists(analysisContext.FilePath))
+                if (windowsType.HasValue)
                 {
-                    fileFormat.Label = "ThisIsAFile";
+                    fileFormat.Label = windowsType.Value.TypeLabel;
                     fileFormat.Version = string.Empty;
-                    fileFormat.MIMEType = string.Empty;
+                    fileFormat.MIMEType = windowsType.Value.ContentType;
                 }
-
             }
             catch (Exception ex)
             {
-                _logger.Log(LogLevel.Error, $"{formattedFileName}\tdetectorTemplate error: {ex.Message}");
+                _logger.Log(
+                    LogLevel.Error,
+                    $"{formattedFileName}\tWindowsFileAssociation error: {ex.Message}");
             }
 
             return Task.FromResult(fileFormat);
