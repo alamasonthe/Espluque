@@ -93,6 +93,7 @@
 		<FileMoves Include="$(TargetDir)Lucene.Net.dll" TargetRelativePath="managed\nuGet\Lucene.Net.dll" />
 		<FileMoves Include="$(TargetDir)Lucene.Net.Analysis.Common.dll" TargetRelativePath="managed\nuGet\Lucene.Net.Analysis.Common.dll" />
 		<FileMoves Include="$(TargetDir)Microsoft.Extensions.Configuration.Abstractions.dll" TargetRelativePath="managed\nuGet\Microsoft.Extensions.Configuration.Abstractions.dll" />
+		<FileMoves Include="$(TargetDir)System.Security.Cryptography.Pkcs.dll" TargetRelativePath="managed\nuGet\System.Security.Cryptography.Pkcs.dll" />
 
 		<FileMoves Include="$(TargetDir)Bootstrap.dll" TargetRelativePath="managed\Espluque\Bootstrap.dll" />
 		<FileMoves Include="$(TargetDir)Espluque.Theming.dll" TargetRelativePath="managed\Espluque\Espluque.Theming.dll" />
