@@ -1,0 +1,19 @@
+{
+  "name": "Windows File Association",
+  "version": "0.0.1",
+  "author": "Alamasonthe",
+  "description": "Simply based on Windows file associations",
+  "assembly": "WindowsFileAssociation.dll",
+  "contributions": [
+    {
+      "interfaceType": "IDetector",
+      "label": "Windows File Association detector",
+      "description": "",
+      "className": "WindowsFileAssociation.Detector",
+      "contributionSettings": {
+        "tags": [ "AnyFile" ],
+        "active": true
+      }
+    }
+  ]
+}

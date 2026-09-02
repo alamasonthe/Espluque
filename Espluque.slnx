@@ -51,6 +51,9 @@
   <Folder Name="/Modules/WindowsAppPackage/">
     <Project Path="Modules/WindowsAppPackage/WindowsAppPackage/WindowsAppPackage/WindowsAppPackage.csproj" Id="db2ce064-c99b-4c03-b509-58fbce46d716" />
   </Folder>
+  <Folder Name="/Modules/WindowsFileAssociation/">
+    <Project Path="Modules/WindowsFileAssociation/WindowsFileAssociation/WindowsFileAssociation/WindowsFileAssociation.csproj" Id="6dd47b34-8d50-4d07-9ad0-13e041a13d40" />
+  </Folder>
   <Folder Name="/Modules/WindowsInstaller/">
     <Project Path="Modules/WindowsInstaller/WindowsInstaller/WindowsInstaller/WindowsInstaller.csproj" Id="b5eb8c5f-385b-42ec-b1d0-34910d48a000" />
   </Folder>
