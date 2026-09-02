@@ -1,0 +1,19 @@
+{
+  "name": "Catalog file module",
+  "version": "0.0.1",
+  "author": "Alamasonthe",
+  "description": "",
+  "assembly": "CatalogFile.dll",
+  "contributions": [
+    {
+      "interfaceType": "IGrabber",
+      "label": "Catalog File",
+      "description": "",
+      "className": "CatalogFile.Grabber",
+      "contributionSettings": {
+        "tags": [ "CATFile" ],
+        "active": true
+      }
+    }
+  ]
+}
