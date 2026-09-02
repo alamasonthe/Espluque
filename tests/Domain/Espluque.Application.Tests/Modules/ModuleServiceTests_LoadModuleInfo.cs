@@ -1,6 +1,8 @@
 ﻿using Espluque.Application.Contributions;
+using Espluque.Application.Modules;
 using Espluque.Contracts.Contributions;
 using Moq;
+using Espluque.Contracts.CrossCutting;
 
 namespace Espluque.Application.Tests.Modules
 {
@@ -23,9 +25,10 @@ namespace Espluque.Application.Tests.Modules
                         "TestModule.TestGrabber"))
                     .ReturnsAsync((IContributionSettings?)null);
 
+                var logger = new Mock<ILogger>();
+
                 var service =
-                    new Espluque.Application.Modules.ModuleService(
-                        settingsService.Object);
+                    new ModuleService(settingsService.Object, logger.Object);
 
                 var result = await service.LoadModuleInfo(filePath);
 
@@ -69,9 +72,10 @@ namespace Espluque.Application.Tests.Modules
                         "TestModule.TestGrabber"))
                     .ReturnsAsync(userSettings);
 
+                var logger = new Mock<ILogger>();
+
                 var service =
-                    new Espluque.Application.Modules.ModuleService(
-                        settingsService.Object);
+                    new ModuleService(settingsService.Object, logger.Object);
 
                 var result = await service.LoadModuleInfo(filePath);
 
@@ -107,9 +111,10 @@ namespace Espluque.Application.Tests.Modules
                         "TestModule.TestGrabber"))
                     .ReturnsAsync((IContributionSettings?)null);
 
+                var logger = new Mock<ILogger>();
+
                 var service =
-                    new Espluque.Application.Modules.ModuleService(
-                        settingsService.Object);
+                    new ModuleService(settingsService.Object, logger.Object);
 
                 var result = await service.LoadModuleInfo(filePath);
 
@@ -138,9 +143,10 @@ namespace Espluque.Application.Tests.Modules
                 var settingsService =
                     new Mock<IContributionSettingsService>();
 
+                var logger = new Mock<ILogger>();
+
                 var service =
-                    new Espluque.Application.Modules.ModuleService(
-                        settingsService.Object);
+                    new ModuleService(settingsService.Object, logger.Object);
 
                 var result = await service.LoadModuleInfo(filePath);
 

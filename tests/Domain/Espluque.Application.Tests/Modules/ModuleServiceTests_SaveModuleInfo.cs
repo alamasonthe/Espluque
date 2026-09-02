@@ -2,6 +2,7 @@
 using Espluque.Application.Modules;
 using Espluque.Contracts.Contributions;
 using Moq;
+using Espluque.Contracts.CrossCutting;
 
 namespace Espluque.Application.Tests.Modules
 {
@@ -18,8 +19,10 @@ namespace Espluque.Application.Tests.Modules
                 var settingsService =
                     new Mock<IContributionSettingsService>();
 
+                var logger = new Mock<ILogger>();
+
                 var service =
-                    new ModuleService(settingsService.Object);
+                    new ModuleService(settingsService.Object, logger.Object);
 
                 var moduleInfo = CreateModuleInfo(filePath);
 
@@ -58,8 +61,10 @@ namespace Espluque.Application.Tests.Modules
                 var settingsService =
                     new Mock<IContributionSettingsService>();
 
+                var logger = new Mock<ILogger>();
+
                 var service =
-                    new ModuleService(settingsService.Object);
+                    new ModuleService(settingsService.Object, logger.Object);
 
                 var moduleInfo = CreateModuleInfo(defaultFilePath);
 
@@ -94,8 +99,10 @@ namespace Espluque.Application.Tests.Modules
                 var settingsService =
                     new Mock<IContributionSettingsService>();
 
+                var logger = new Mock<ILogger>();
+
                 var service =
-                    new ModuleService(settingsService.Object);
+                    new ModuleService(settingsService.Object, logger.Object);
 
                 var moduleInfo =
                     CreateModuleInfo(invalidFilePath);

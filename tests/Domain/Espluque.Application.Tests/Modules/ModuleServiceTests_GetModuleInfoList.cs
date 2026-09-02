@@ -1,4 +1,6 @@
-﻿using Espluque.Contracts.Contributions;
+﻿using Espluque.Application.Modules;
+using Espluque.Contracts.Contributions;
+using Espluque.Contracts.CrossCutting;
 using Moq;
 
 namespace Espluque.Application.Tests.Modules
@@ -40,9 +42,10 @@ namespace Espluque.Application.Tests.Modules
                         It.IsAny<string>()))
                     .ReturnsAsync((IContributionSettings?)null);
 
+                var logger = new Mock<ILogger>();
+
                 var service =
-                    new Espluque.Application.Modules.ModuleService(
-                        settingsService.Object);
+                    new ModuleService(settingsService.Object, logger.Object);
 
                 var result = await service.GetModuleInfoList(
                     [validModulePath, invalidModulePath]);
