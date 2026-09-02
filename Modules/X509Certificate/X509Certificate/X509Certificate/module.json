@@ -1,0 +1,19 @@
+{
+  "name": "X509Certificate",
+  "version": "0.0.1",
+  "author": "Espluque",
+  "description": "This is a template for creating a new grabber module.",
+  "assembly": "X509Certificate.dll",
+  "contributions": [
+    {
+      "interfaceType": "IGrabber",
+      "label": "X509 Certificate infos",
+      "description": "",
+      "className": "X509Certificate.Grabber",
+      "contributionSettings": {
+        "tags": [ "X509 Certificates" ],
+        "active": true
+      }
+    }
+  ]
+}

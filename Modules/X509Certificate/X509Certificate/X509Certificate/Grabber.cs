@@ -1,10 +1,10 @@
-﻿using Espluque.Contracts.CrossCutting;
-using Espluque.Contracts.Contributions.Types;
+﻿using Espluque.Contracts.Contributions.Types;
+using Espluque.Contracts.CrossCutting;
 using Espluque.Contracts.Workflow;
 
-namespace GrabberTemplate
+namespace X509Certificate
 {
-    public class Grabber: IGrabber
+    public class Grabber : IGrabber
     {
         private readonly IMessageCenter _messageCenter;
         private readonly Espluque.Contracts.CrossCutting.ILogger _logger;
@@ -24,13 +24,9 @@ namespace GrabberTemplate
 
         public Task<List<KeyValuePair<string, string>>> Grab(IAnalysisContext analysisContext)
         {
-            List<KeyValuePair<string, string>> infos = new List<KeyValuePair<string, string>>
-                {
-                    new KeyValuePair<string, string>("Key1", "Value1"),
-                    new KeyValuePair<string, string>("Key2", "Value2")
-                };
+            X509Service service = new(_logger);
 
-            return Task.FromResult(infos);
+            return service.GetInfos(analysisContext.FilePath);
         }
     }
 }

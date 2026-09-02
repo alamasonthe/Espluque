@@ -342,6 +342,19 @@ namespace Espluque.Application.Workflow
                     return;
             }
 
+            foreach (IFileFormat format in detectedFileFormats.DistinctBy(x => $"{x.Referentiel}|{x.Label}|{x.MIMEType}"))
+            {
+                var concept = await FindConceptAsync(format);
+
+                if (concept is null)
+                {
+                    _logger.Log(
+                        LogLevel.Information,
+                        $"Format is missing in thesaurus: {format.Referentiel} - " +
+                        $"{(string.IsNullOrWhiteSpace(format.Label) ? format.MIMEType : format.Label)}");
+                }
+            }
+
             bool hasMoved;
             do
             {
@@ -372,18 +385,20 @@ namespace Espluque.Application.Workflow
             _analysisContext.CurrentFileFormat = detectedFileFormats[0];
         }
 
-        private async Task<bool> IsSecondFormatMoreSpecificAsync( IFileFormat firstFormat, IFileFormat secondFormat)
+        private async Task<bool> IsSecondFormatMoreSpecificAsync(IFileFormat firstFormat, IFileFormat secondFormat)
         {
             (int ConceptId, string MainTerm)? firstConcept = await FindConceptAsync(firstFormat);
             (int ConceptId, string MainTerm)? secondConcept = await FindConceptAsync(secondFormat);
 
             switch (firstConcept, secondConcept)
             {
-                case (null, _):
-                    _logger.Log(LogLevel.Warning, $"Format is missing in thesaurus: {firstFormat.Referentiel} - {firstFormat.Label}");
+                case (null, null):
                     return false;
+
+                case (null, _):
+                    return true;
+
                 case (_, null):
-                    _logger.Log( LogLevel.Warning, $"Format is missing in thesaurus: {secondFormat.Referentiel} - {secondFormat.Label}");
                     return false;
             }
 
@@ -392,7 +407,7 @@ namespace Espluque.Application.Workflow
                 return false;
             }
 
-            bool? secondIsDescendant = await _thesaurusService.GetConceptPathExists(firstConcept.Value.ConceptId,secondConcept.Value.ConceptId);
+            bool? secondIsDescendant = await _thesaurusService.GetConceptPathExists(firstConcept.Value.ConceptId, secondConcept.Value.ConceptId);
             switch (secondIsDescendant)
             {
                 case null:
@@ -401,7 +416,7 @@ namespace Espluque.Application.Workflow
                     return true;
             }
 
-            bool? firstIsDescendant = await _thesaurusService.GetConceptPathExists( secondConcept.Value.ConceptId, firstConcept.Value.ConceptId);
+            bool? firstIsDescendant = await _thesaurusService.GetConceptPathExists(secondConcept.Value.ConceptId, firstConcept.Value.ConceptId);
             switch (firstIsDescendant)
             {
                 case null:

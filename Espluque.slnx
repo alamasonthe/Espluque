@@ -60,6 +60,9 @@
   <Folder Name="/Modules/WpfHexaEditor/">
     <Project Path="Modules/WpfHexaEditor/HexaEditor/HexaEditor.csproj" Id="deb9b8d4-5316-403c-b81c-60482dd3cdb8" />
   </Folder>
+  <Folder Name="/Modules/X509Certificate/">
+    <Project Path="Modules/X509Certificate/X509Certificate/X509Certificate/X509Certificate.csproj" Id="fddb945c-2e29-4e00-885c-dd4ec0940f2e" />
+  </Folder>
   <Folder Name="/ModuleSamples/">
     <File Path="ModuleSamples/Directory.Build.props" />
     <Project Path="ModuleSamples/CompositeMdModule/CompositeMdModule/CompositeMdModule.csproj" Id="28ec42d6-106f-4638-b35f-94ac7ddf5073" />
