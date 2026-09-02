@@ -1,0 +1,29 @@
+{
+  "name": "Windows File",
+  "version": "0.0.1",
+  "author": "Alamasonthe",
+  "description": "",
+  "assembly": "WindowsFileType.dll",
+  "contributions": [
+    {
+      "interfaceType": "IDetector",
+      "label": "Windows File Association detector",
+      "description": "Simply based on Windows file associations",
+      "className": "WindowsFileType.FileAssociationDetector",
+      "contributionSettings": {
+        "tags": [ "AnyFile" ],
+        "active": true
+      }
+    },
+    {
+      "interfaceType": "IDetector",
+      "label": "Windows MIME type detector",
+      "description": "Based on old URLMon/Internet Explore FindMimeFromData",
+      "className": "WindowsFileType.MimeTypeDetector",
+      "contributionSettings": {
+        "tags": [ "AnyFile" ],
+        "active": true
+      }
+    }
+  ]
+}

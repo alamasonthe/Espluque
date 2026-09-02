@@ -28,10 +28,12 @@ namespace Bootstrap
             IContributionSettingsService contributionSettingsService = new ContributionSettingsService(settingsService);
             services.AddSingleton(contributionSettingsService);
 
-            IModuleService moduleService = new ModuleService(contributionSettingsService);
-            services.AddSingleton(moduleService);
 
-            services.AddSingleton<ILogger, MiniFileLogger.Logger>();
+            ILogger logger = new MiniFileLogger.Logger(settingsService);
+            services.AddSingleton(logger);
+
+            IModuleService moduleService = new ModuleService(contributionSettingsService, logger);
+            services.AddSingleton(moduleService);
 
             services.AddSingleton<IMessageCenter, MessageCenter>();
 

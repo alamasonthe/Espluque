@@ -4,9 +4,9 @@ using Espluque.Contracts.CrossCutting;
 using Espluque.Contracts.Workflow;
 using Microsoft.Extensions.Logging;
 
-namespace WindowsFileAssociation
+namespace WindowsFileType
 {
-    public class Detector : IDetector
+    public class FileAssociationDetector : IDetector
     {
         private readonly IMessageCenter _messageCenter;
         private readonly Espluque.Contracts.CrossCutting.ILogger _logger;
@@ -15,7 +15,7 @@ namespace WindowsFileAssociation
 
         private readonly string _referentiel = "WindowsFileAssociation";
 
-        public Detector(
+        public FileAssociationDetector(
             IMessageCenter messageCenter,
             Espluque.Contracts.CrossCutting.ILogger logger,
             ISettingsService settingsService,

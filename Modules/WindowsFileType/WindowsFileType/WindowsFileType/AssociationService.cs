@@ -1,6 +1,6 @@
 ﻿using Microsoft.Win32;
 
-namespace WindowsFileAssociation
+namespace WindowsFileType
 {
     public class AssociationService
     {
