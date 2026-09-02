@@ -11,6 +11,9 @@
   <Folder Name="/Modules/AvalonEdit/">
     <Project Path="Modules/AvalonEdit/AvalonEditViewer/AvalonEditViewer.csproj" Id="558d161d-e80a-4a1c-9a08-1360dffa3d94" />
   </Folder>
+  <Folder Name="/Modules/CatalogFile/">
+    <Project Path="Modules/CatalogFile/CatalogFile/CatalogFile/CatalogFile.csproj" Id="02a78692-c63f-46e3-9d1c-a5b03248758e" />
+  </Folder>
   <Folder Name="/Modules/FFmpeg/">
     <Project Path="Modules/FFmpeg/FFmpeg/FFmpeg.csproj" Id="4ee5b452-6b62-43bc-9d48-296515d846c8" />
   </Folder>
