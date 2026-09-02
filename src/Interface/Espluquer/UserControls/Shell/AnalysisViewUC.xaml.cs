@@ -103,6 +103,13 @@ namespace Espluquer.UserControls.Shell
                         case AnalysisMessageTypeEnum.GrabberResult:
                             if (message.Information is not null)
                             {
+                                if (message.Information.Information is null || message.Information.Information.Count == 0)
+                                {
+                                    string formattedFileName = System.IO.Path.GetFileName(_analysisContext.FilePath).PadRight(35);
+                                    _logger.Log( Microsoft.Extensions.Logging.LogLevel.Debug, $"{formattedFileName}\tGrabber {message.Information.Label}: Empty list");
+                                    break;
+                                }
+
                                 AddTabItem(
                                     message.Information.Label,
                                     new ListRichTextBoxUC(message.Information.Information),
@@ -184,7 +191,8 @@ namespace Espluquer.UserControls.Shell
 
                 if (result is null)
                 {
-                    _logger.Log(Microsoft.Extensions.Logging.LogLevel.Debug, $"Espluquer Viewer display: viewer unavailable ({label})");
+                    string formattedFileName = System.IO.Path.GetFileName(_analysisContext.FilePath).PadRight(35);
+                    _logger.Log(Microsoft.Extensions.Logging.LogLevel.Debug, $"{formattedFileName}\tViewer {label}: Empty result");
                     return;
                 }
 
