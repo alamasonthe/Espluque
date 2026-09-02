@@ -1,4 +1,6 @@
-﻿using Moq;
+﻿using Espluque.Application.Modules;
+using Moq;
+using Espluque.Contracts.CrossCutting;
 
 namespace Espluque.Application.Tests.Modules
 {
@@ -34,9 +36,10 @@ namespace Espluque.Application.Tests.Modules
                 var contributionSettingsService =
                     new Mock<Contracts.Contributions.IContributionSettingsService>();
 
+                var logger = new Mock<ILogger>();
+
                 var service =
-                    new Espluque.Application.Modules.ModuleService(
-                        contributionSettingsService.Object);
+                    new ModuleService( contributionSettingsService.Object, logger.Object);
 
                 List<string> result =
                     service.GetModuleInfoPaths(rootPath);

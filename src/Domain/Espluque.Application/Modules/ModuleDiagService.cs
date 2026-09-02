@@ -210,15 +210,29 @@ namespace Espluque.Application.Modules
                     {
                         bool preferredTagFound = false;
 
+                        List<string> references = await _thesaurusService.GetReferences();
+
                         foreach (string tag in contribution.ContributionSettings.Tags)
                         {
-                            (int ConceptId, string MainTerm)? concept = await _thesaurusService.GetConceptMainTermByTerm("Espluque", tag);
-
-                            if (concept is not null
-                                && string.Equals(concept.Value.MainTerm, tag, StringComparison.OrdinalIgnoreCase))
+                            foreach (string reference in references)
                             {
-                                preferredTagFound = true;
-                                diag.Add($"Check contribution tags: OK");
+                                (int ConceptId, string MainTerm)? concept =
+                                    await _thesaurusService.GetConceptMainTermByTerm(reference, tag);
+
+                                if (concept is not null
+                                    && string.Equals(
+                                        concept.Value.MainTerm,
+                                        tag,
+                                        StringComparison.OrdinalIgnoreCase))
+                                {
+                                    preferredTagFound = true;
+                                    break;
+                                }
+                            }
+
+                            if (preferredTagFound)
+                            {
+                                diag.Add("Check contribution tags: OK");
                                 break;
                             }
                         }

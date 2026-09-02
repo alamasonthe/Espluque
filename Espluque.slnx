@@ -27,6 +27,9 @@
   <Folder Name="/Modules/LibMagic/">
     <Project Path="Modules/LibMagic/LibMagic/LibMagic.csproj" Id="4c58c2f8-eef9-4091-9732-4b46c480424e" />
   </Folder>
+  <Folder Name="/Modules/PortableExecutable/">
+    <Project Path="Modules/PortableExecutable/PortableExecutable/PortableExecutable/PortableExecutable.csproj" Id="f9a631ad-f216-455f-9e02-21bace3c8696" />
+  </Folder>
   <Folder Name="/Modules/Pronom/">
     <Project Path="Modules/Pronom/Pronom/Pronom.csproj" Id="9e7d78bc-484c-4547-b5b8-d517fdcbff1b" />
   </Folder>
