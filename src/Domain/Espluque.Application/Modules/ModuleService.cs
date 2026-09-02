@@ -6,17 +6,23 @@ using Espluque.Contracts.Modules;
 using System.Reflection;
 using System.Runtime.Loader;
 using System.Text.Json;
+using Espluque.Contracts.CrossCutting;
+using Microsoft.Extensions.Logging;
 
 namespace Espluque.Application.Modules
 {
     public class ModuleService : IModuleService
     {
         private readonly IContributionSettingsService _contributionSettingsService;
+        private readonly Espluque.Contracts.CrossCutting.ILogger _logger;
 
-        public ModuleService(IContributionSettingsService contributionSettingsService)
+        public ModuleService(
+    IContributionSettingsService contributionSettingsService, Espluque.Contracts.CrossCutting.ILogger logger)
         {
             _contributionSettingsService = contributionSettingsService;
+            _logger = logger;
         }
+
 
         public List<string> GetModuleInfoPaths(string modulesRootPath)
         {
@@ -60,7 +66,7 @@ namespace Espluque.Application.Modules
             }
             catch (Exception ex)
             {
-                // log!
+                _logger.Log( LogLevel.Error, $"ModuleService: Cannot load module '{moduleInfoPath}': {ex.Message}");
                 return null;
             }
         }
