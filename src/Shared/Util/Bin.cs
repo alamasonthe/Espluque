@@ -500,15 +500,51 @@ namespace Util
             return bytesResult.ToUInt64();
         }
 
+        public static Result<short> ToInt16(this Result<byte[]> bytesResult)
+        {
+            if (!bytesResult.IsSuccess)
+            {
+                if (bytesResult.Error is not null)
+                    return Result<short>.Failure(bytesResult.Error.Code, bytesResult.Error.Message);
+
+                return Result<short>.Failure("BINARY_RESULT_ERROR_MISSING", "Binary result failed without error details.");
+            }
+
+            if (bytesResult.Value is null)
+                return Result<short>.Failure("BINARY_RESULT_VALUE_MISSING", "Binary result succeeded without a byte array.");
+
+            if (bytesResult.Value.Length != sizeof(short))
+                return Result<short>.Failure("BINARY_SIZE_INVALID", "Byte array size must be exactly 2 bytes to convert to Int16.");
+
+            return Result<short>.Success(BitConverter.ToInt16(bytesResult.Value));
+        }
+
+        public static Result<int> ToInt32(this Result<byte[]> bytesResult)
+        {
+            if (!bytesResult.IsSuccess)
+            {
+                if (bytesResult.Error is not null)
+                    return Result<int>.Failure(bytesResult.Error.Code, bytesResult.Error.Message);
+
+                return Result<int>.Failure("BINARY_RESULT_ERROR_MISSING", "Binary result failed without error details.");
+            }
+
+            if (bytesResult.Value is null)
+                return Result<int>.Failure("BINARY_RESULT_VALUE_MISSING", "Binary result succeeded without a byte array.");
+
+            if (bytesResult.Value.Length != sizeof(int))
+                return Result<int>.Failure("BINARY_SIZE_INVALID", "Byte array size must be exactly 4 bytes to convert to Int32.");
+
+            return Result<int>.Success(BitConverter.ToInt32(bytesResult.Value));
+        }
+
         #endregion numeric convert
 
         public static Result<byte[]> FromBytes(byte[] bytes)
         {
             if (bytes is null)
             {
-                return Result<byte[]>.Failure(
-                    "BINARY_BYTES_MISSING",
-                    "Byte array is null.");
+                return Result<byte[]>.Failure( "BINARY_BYTES_MISSING", "Byte array is null.");
             }
 
             return Result<byte[]>.Success(bytes);

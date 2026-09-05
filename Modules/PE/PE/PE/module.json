@@ -1,0 +1,29 @@
+{
+  "name": "PE",
+  "version": "0.0.1",
+  "author": "Espluque",
+  "description": "PE files (.exe, .dll...)",
+  "assembly": "PE.dll",
+  "contributions": [
+    {
+      "interfaceType": "IGrabber",
+      "label": "PE File Infos",
+      "description": "",
+      "className": "PE.FileInfosGrabber",
+      "contributionSettings": {
+        "tags": [ "Portable Executable" ],
+        "active": true
+      }
+    },
+    {
+      "interfaceType": "IGrabber",
+      "label": "PE MZ Header",
+      "description": "",
+      "className": "PE.MzHeaderGrabber",
+      "contributionSettings": {
+        "tags": [ "Portable Executable" ],
+        "active": true
+      }
+    }
+  ]
+}

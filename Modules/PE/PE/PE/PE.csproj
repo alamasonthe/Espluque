@@ -4,17 +4,32 @@
     <TargetFramework>net10.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
+	  <CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
   </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Remove="mappings\**" />
+    <EmbeddedResource Remove="mappings\**" />
+    <None Remove="mappings\**" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Tomlyn" Version="2.10.1" />
+  </ItemGroup>
 
 	<ItemGroup>
 		<ProjectReference Include="$(ContractsProjectPath)" />
 		<ProjectReference Include="$(ModuleCommonsProjectPath)" />
 		<ProjectReference Include="$(UtilProjectPath)" />
+		<ProjectReference Include="$(SqliteUtilProjectPath)" />
 	</ItemGroup>
 
 	<ItemGroup>
 		<None Update="module.json">
 			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+		</None>
+		<None Update="pe.db">
+		  <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
 		</None>
 	</ItemGroup>
 
@@ -28,6 +43,9 @@
 		<Copy SourceFiles="$(TargetPath)" DestinationFolder="$(HostModuleDirectory)" />
 		<Copy SourceFiles="$(TargetDir)$(TargetName).pdb" DestinationFolder="$(HostModuleDirectory)" Condition="'$(Configuration)' == 'Debug'" />
 		<Copy SourceFiles="$(ProjectDir)module.json" DestinationFolder="$(HostModuleDirectory)" />
+		<Copy SourceFiles="$(ProjectDir)pe.db" DestinationFolder="$(HostModuleDirectory)" />
+		
+		<Copy SourceFiles="$(TargetDir)Tomlyn.dll" DestinationFolder="$(HostModuleDirectory)" />
 	</Target>
 
 </Project>
