@@ -112,7 +112,7 @@ namespace PE.Extensions
 
         #region Mapped Display Format Methods
 
-        public static string ToFlagString(this PeField field, List<KeyValuePair<int, string>> mapTable)
+        public static string ToFlagString(this PeField field, List<KeyValuePair<long, string>> mapTable)
         {
             if (field.Value is null)
                 return string.Empty;
@@ -124,7 +124,7 @@ namespace PE.Extensions
 
             List<string> flags = [];
 
-            foreach (KeyValuePair<int, string> item in mapTable.OrderByDescending(item => item.Key))
+            foreach (KeyValuePair<long, string> item in mapTable.OrderByDescending(item => item.Key))
             {
                 ulong flag = Convert.ToUInt64(item.Key);
 
@@ -137,14 +137,14 @@ namespace PE.Extensions
                 : $"{binaryValue} ({string.Join(", ", flags)})";
         }
 
-        public static string ToMapString(this PeField field, List<KeyValuePair<int, string>> mapTable)
+        public static string ToMapString(this PeField field, List<KeyValuePair<long, string>> mapTable)
         {
             if (field.Value is null)
                 return string.Empty;
 
-            int value = Convert.ToInt32(field.Value, CultureInfo.InvariantCulture);
+            long value = Convert.ToInt64(field.Value, CultureInfo.InvariantCulture);
 
-            foreach (KeyValuePair<int, string> item in mapTable)
+            foreach (KeyValuePair<long, string> item in mapTable)
             {
                 if (item.Key == value)
                     return item.Value;

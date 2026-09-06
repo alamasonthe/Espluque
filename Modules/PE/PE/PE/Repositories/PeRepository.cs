@@ -65,11 +65,11 @@ namespace PE.Repositories
             }
         }
 
-        public Result<List<KeyValuePair<int, string>>> GetMapTable(string tableName)
+        public Result<List<KeyValuePair<long, string>>> GetMapTable(string tableName)
         {
             try
             {
-                List<KeyValuePair<int, string>> mappings = [];
+                List<KeyValuePair<long, string>> mappings = [];
 
                 using SqliteConnection connection = SqliteUtil.DbConnectionFactory.CreateConnection(_dbFilePath);
                 connection.Open();
@@ -90,16 +90,16 @@ namespace PE.Repositories
 
                 while (reader.Read())
                 {
-                    mappings.Add(new KeyValuePair<int, string>(
-                        reader.GetInt32(0),
+                    mappings.Add(new KeyValuePair<long, string>(
+                        reader.GetInt64(0),
                         reader.GetString(1)));
                 }
 
-                return Result<List<KeyValuePair<int, string>>>.Success(mappings);
+                return Result<List<KeyValuePair<long, string>>>.Success(mappings);
             }
             catch (Exception exception)
             {
-                return Result<List<KeyValuePair<int, string>>>.Failure("PE_MAPPING_READ_FAILED", exception.Message);
+                return Result<List<KeyValuePair<long, string>>>.Failure("PE_MAPPING_READ_FAILED", exception.Message);
             }
         }
     }
