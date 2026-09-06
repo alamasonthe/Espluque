@@ -1,6 +1,7 @@
 ﻿using Microsoft.Data.Sqlite;
 using PE.Entities;
 using PE.Enums;
+using PE.Services;
 using Util;
 
 namespace PE.Repositories
@@ -9,9 +10,9 @@ namespace PE.Repositories
     {
         private readonly string _dbFilePath;
 
-        public PeRepository(string dbFilePath)
+        public PeRepository()
         {
-            _dbFilePath = dbFilePath;
+            _dbFilePath = PeModulePaths.DatabaseFilePath;
         }
 
         public Result<PeField[]> GetFields(string structureName)
@@ -61,6 +62,44 @@ namespace PE.Repositories
             catch (Exception exception)
             {
                 return Result<PeField[]>.Failure("PE_FIELDS_READ_FAILED", exception.Message);
+            }
+        }
+
+        public Result<List<KeyValuePair<int, string>>> GetMapTable(string tableName)
+        {
+            try
+            {
+                List<KeyValuePair<int, string>> mappings = [];
+
+                using SqliteConnection connection = SqliteUtil.DbConnectionFactory.CreateConnection(_dbFilePath);
+                connection.Open();
+
+                using SqliteCommand command = connection.CreateCommand();
+                command.CommandText = """
+                    SELECT
+                        Value,
+                        Label
+                    FROM PeMapping
+                    WHERE TableName = $tableName
+                    ORDER BY Value;
+                    """;
+
+                command.Parameters.AddWithValue("$tableName", tableName);
+
+                using SqliteDataReader reader = command.ExecuteReader();
+
+                while (reader.Read())
+                {
+                    mappings.Add(new KeyValuePair<int, string>(
+                        reader.GetInt32(0),
+                        reader.GetString(1)));
+                }
+
+                return Result<List<KeyValuePair<int, string>>>.Success(mappings);
+            }
+            catch (Exception exception)
+            {
+                return Result<List<KeyValuePair<int, string>>>.Failure("PE_MAPPING_READ_FAILED", exception.Message);
             }
         }
     }

@@ -13,10 +13,6 @@
     <None Remove="mappings\**" />
   </ItemGroup>
 
-  <ItemGroup>
-    <PackageReference Include="Tomlyn" Version="2.10.1" />
-  </ItemGroup>
-
 	<ItemGroup>
 		<ProjectReference Include="$(ContractsProjectPath)" />
 		<ProjectReference Include="$(ModuleCommonsProjectPath)" />
@@ -44,8 +40,7 @@
 		<Copy SourceFiles="$(TargetDir)$(TargetName).pdb" DestinationFolder="$(HostModuleDirectory)" Condition="'$(Configuration)' == 'Debug'" />
 		<Copy SourceFiles="$(ProjectDir)module.json" DestinationFolder="$(HostModuleDirectory)" />
 		<Copy SourceFiles="$(ProjectDir)pe.db" DestinationFolder="$(HostModuleDirectory)" />
-		
-		<Copy SourceFiles="$(TargetDir)Tomlyn.dll" DestinationFolder="$(HostModuleDirectory)" />
+
 	</Target>
 
 </Project>

@@ -1,5 +1,6 @@
 ﻿using PE.Entities;
 using PE.Enums;
+using PE.Repositories;
 using System.Globalization;
 using Util;
 
@@ -9,6 +10,24 @@ namespace PE.Extensions
     {
         public static string ToDisplayString(this PeField field)
         {
+            if (!string.IsNullOrWhiteSpace(field.MappingName))
+            {
+                var peRepository = new PeRepository();
+                var mapTableResult = peRepository.GetMapTable(field.MappingName);
+                if (mapTableResult.IsSuccess)
+                {
+                    switch (field.DisplayFormat)
+                    {
+                        case PeFieldDisplayFormat.Flags:
+                            return field.ToFlagString(mapTableResult.Value!);
+
+                        case PeFieldDisplayFormat.Decimal:
+                        case PeFieldDisplayFormat.Hexadecimal:
+                            return field.ToMapString(mapTableResult.Value!);
+                    }
+                }
+            }
+
             return field.DisplayFormat switch
             {
                 PeFieldDisplayFormat.Decimal => field.ToDecimalString(),
@@ -20,6 +39,8 @@ namespace PE.Extensions
                 _ => string.Empty
             };
         }
+
+        #region Simple Display Format Methods
 
         public static string ToDecimalString(this PeField field)
         {
@@ -86,5 +107,57 @@ namespace PE.Extensions
 
             return new Guid(field.RawValue).ToString();
         }
+
+        #endregion
+
+        #region Mapped Display Format Methods
+
+        public static string ToFlagString(this PeField field, List<KeyValuePair<int, string>> mapTable)
+        {
+            if (field.Value is null)
+                return string.Empty;
+
+            ulong value = Convert.ToUInt64(field.Value, CultureInfo.InvariantCulture);
+            int bitCount = field.Size * 8;
+
+            string binaryValue = Convert.ToString((long)value, 2).PadLeft(bitCount, '0');
+
+            List<string> flags = [];
+
+            foreach (KeyValuePair<int, string> item in mapTable.OrderByDescending(item => item.Key))
+            {
+                ulong flag = Convert.ToUInt64(item.Key);
+
+                if ((value & flag) == flag && !string.IsNullOrWhiteSpace(item.Value))
+                    flags.Add(item.Value);
+            }
+
+            return flags.Count == 0
+                ? binaryValue
+                : $"{binaryValue} ({string.Join(", ", flags)})";
+        }
+
+        public static string ToMapString(this PeField field, List<KeyValuePair<int, string>> mapTable)
+        {
+            if (field.Value is null)
+                return string.Empty;
+
+            int value = Convert.ToInt32(field.Value, CultureInfo.InvariantCulture);
+
+            foreach (KeyValuePair<int, string> item in mapTable)
+            {
+                if (item.Key == value)
+                    return item.Value;
+            }
+
+            return field.DisplayFormat switch
+            {
+                PeFieldDisplayFormat.Decimal => field.ToDecimalString(),
+                PeFieldDisplayFormat.Hexadecimal => field.ToHexadecimalString(),
+                _ => string.Empty
+            };
+        }
+
+        #endregion
     }
 }

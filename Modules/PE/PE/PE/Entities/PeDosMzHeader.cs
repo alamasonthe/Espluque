@@ -8,7 +8,6 @@ namespace PE.Entities
         private readonly string _filePath;
         private readonly long _structureStartOffset = 0;
 
-        private readonly string _dbFilePath;
         private readonly ILogger _logger;
         private bool _isLoaded = false;
         private PeField[] _fields = [];
@@ -241,8 +240,6 @@ namespace PE.Entities
         {
             _filePath = filePath;
             _logger = logger;
-            string dllDirectory = Path.GetDirectoryName(typeof(PeDosMzHeader).Assembly.Location)!;
-            _dbFilePath = Path.Combine(dllDirectory, "pe.db");
         }
 
         private bool EnsureLoaded()
@@ -263,7 +260,7 @@ namespace PE.Entities
 
         private bool LoadStructureDefinition()
         {
-            PeRepository repository = new(_dbFilePath);
+            PeRepository repository = new();
             var fieldsResult = repository.GetFields("DosMzHeader");
 
             if (!fieldsResult.IsSuccess)

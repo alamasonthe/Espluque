@@ -7,6 +7,7 @@
         Text,
         DateTime,
         HexBytes,
-        Guid
+        Guid,
+        Flags
     }
 }
