@@ -27,8 +27,9 @@ namespace PE
 
         public Task<List<KeyValuePair<string, string>>> Grab(IAnalysisContext analysisContext)
         {
-            PeDosMzHeader header = new(analysisContext.FilePath ?? string.Empty, _logger);
-            List<KeyValuePair<string, string>> infos = header.ToGrabberList();
+            PeFile peFile = new(analysisContext.FilePath ?? string.Empty, analysisContext.TempFolderPath, _logger);
+            List<KeyValuePair<string, string>> infos = peFile.DosMzHeader.ToGrabberList();
+            peFile.SaveCache(analysisContext.TempFolderPath);
 
             return Task.FromResult(infos);
         }

@@ -1,4 +1,6 @@
 ﻿using PE.Entities;
+using System.Text.Json;
+using System.Text.Json.Nodes;
 
 namespace PE.Extensions
 {
@@ -19,6 +21,15 @@ namespace PE.Extensions
             }
 
             return result;
+        }
+
+        public static JsonObject ToJson(this PeDosMzHeader header)
+        {
+            return new JsonObject
+            {
+                ["IsLoaded"] = header._isLoaded,
+                ["Fields"] = JsonSerializer.SerializeToNode(header._fields)
+            };
         }
     }
 }

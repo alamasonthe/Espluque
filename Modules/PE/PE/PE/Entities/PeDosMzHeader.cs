@@ -1,5 +1,7 @@
 ﻿using Espluque.Contracts.CrossCutting;
 using PE.Repositories;
+using System.Text.Json;
+using System.Text.Json.Nodes;
 
 namespace PE.Entities
 {
@@ -9,8 +11,8 @@ namespace PE.Entities
         private readonly long _structureStartOffset = 0;
 
         private readonly ILogger _logger;
-        private bool _isLoaded = false;
-        private PeField[] _fields = [];
+        internal bool _isLoaded = false;
+        internal PeField[] _fields = [];
 
         internal PeField[]? Fields
         {
@@ -236,10 +238,18 @@ namespace PE.Entities
 
         #endregion
 
-        public PeDosMzHeader(string filePath, ILogger logger)
+        public PeDosMzHeader(string filePath, ILogger logger, JsonObject? cache = null)
         {
             _filePath = filePath;
             _logger = logger;
+
+            if (cache is null)
+                return;
+
+            _isLoaded = cache["IsLoaded"]?.GetValue<bool>() ?? false;
+            _fields = cache["Fields"] is JsonNode fieldsNode
+                ? JsonSerializer.Deserialize<PeField[]>(fieldsNode.ToJsonString()) ?? []
+                : [];
         }
 
         private bool EnsureLoaded()
