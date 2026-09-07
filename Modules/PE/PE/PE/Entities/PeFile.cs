@@ -4,7 +4,7 @@ using System.Text.Json.Nodes;
 
 namespace PE.Entities
 {
-    internal class PeFile
+    internal class PeFile : PeStructure
     {
         public PeDosMzHeader DosMzHeader { get; set; }
         public PeDosStub DosStub { get; set; }
@@ -13,7 +13,10 @@ namespace PE.Entities
         public List<PeSection> Sections { get; set; }
 
         public PeFile(string filePath, string tempFolderPath, ILogger logger)
+            : base(filePath, logger)
         {
+            Root = this;
+
             string cacheFilePath = PeModulePaths.CacheFilePath(tempFolderPath);
 
             JsonObject? cache = null;
@@ -21,7 +24,8 @@ namespace PE.Entities
             if (File.Exists(cacheFilePath))
                 cache = JsonNode.Parse(File.ReadAllText(cacheFilePath))?.AsObject();
 
-            DosMzHeader = new PeDosMzHeader( filePath, logger, cache?["DosMzHeader"] as JsonObject);
+            DosMzHeader = new PeDosMzHeader(this, filePath, logger, cache?["DosMzHeader"] as JsonObject);
+            DosStub = new PeDosStub(this, filePath, logger);
         }
     }
 }

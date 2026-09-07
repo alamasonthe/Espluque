@@ -47,8 +47,8 @@ namespace PE.Repositories
                     fields.Add(new PeField
                     {
                         Name = reader.GetString(0),
-                        Offset = reader.GetInt32(1),
-                        Size = reader.GetInt32(2),
+                        Offset = reader.IsDBNull(1) ? 0 : reader.GetInt32(1),
+                        Size = reader.IsDBNull(2) ? 0 : reader.GetInt32(2),
                         Type = Enum.Parse<PeFieldType>(reader.GetString(3)),
                         MappingName = reader.IsDBNull(4) ? null : reader.GetString(4),
                         DisplayFormat = reader.IsDBNull(5)

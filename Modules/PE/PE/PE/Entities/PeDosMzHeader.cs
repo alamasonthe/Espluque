@@ -5,12 +5,10 @@ using System.Text.Json.Nodes;
 
 namespace PE.Entities
 {
-    internal class PeDosMzHeader
+    internal class PeDosMzHeader : PeStructure
     {
-        private readonly string _filePath;
         private readonly long _structureStartOffset = 0;
 
-        private readonly ILogger _logger;
         internal bool _isLoaded = false;
         internal PeField[] _fields = [];
 
@@ -238,10 +236,10 @@ namespace PE.Entities
 
         #endregion
 
-        public PeDosMzHeader(string filePath, ILogger logger, JsonObject? cache = null)
+        public PeDosMzHeader(PeFile root, string filePath, ILogger logger, JsonObject? cache = null)
+            : base(root, filePath, logger)
         {
-            _filePath = filePath;
-            _logger = logger;
+            _structureStartOffset = 0;
 
             if (cache is null)
                 return;

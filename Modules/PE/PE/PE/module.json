@@ -24,6 +24,16 @@
         "tags": [ "Portable Executable" ],
         "active": true
       }
+    },
+    {
+      "interfaceType": "IGrabber",
+      "label": "PE DOS Stub",
+      "description": "",
+      "className": "PE.DosStubGrabber",
+      "contributionSettings": {
+        "tags": [ "Portable Executable" ],
+        "active": true
+      }
     }
   ]
 }
