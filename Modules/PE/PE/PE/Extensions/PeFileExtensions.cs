@@ -10,7 +10,8 @@ namespace PE.Extensions
             return new JsonObject
             {
                 ["DosMzHeader"] = peFile.DosMzHeader?.ToJson(),
-                ["DosStub"] = peFile.DosStub?.ToJson()
+                ["DosStub"] = peFile.DosStub?.ToJson(),
+                ["Header"] = peFile.Header?.ToJson()
             };
         }
 

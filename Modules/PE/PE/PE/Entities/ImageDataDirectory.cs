@@ -1,11 +1,12 @@
 ﻿using Espluque.Contracts.CrossCutting;
 using PE.Repositories;
+using PE.Services;
 using System.Text.Json;
 using System.Text.Json.Nodes;
 
 namespace PE.Entities
 {
-    internal class PeDosRelocation : PeStructure
+    internal class ImageDataDirectory : PeStructure
     {
         internal bool _isLoaded = false;
         internal PeField[] _fields = [];
@@ -21,49 +22,37 @@ namespace PE.Entities
             }
         }
 
-        #region Properties
-
-        public PeField? Offset
+        public PeField? VirtualAddress
         {
             get
             {
                 if (!EnsureLoaded())
                     return null;
 
-                return _fields.First(item => item.Name == nameof(Offset));
+                return _fields.First(item => item.Name == nameof(VirtualAddress));
             }
         }
 
-        public PeField? Segment
+        public PeField? Size
         {
             get
             {
                 if (!EnsureLoaded())
                     return null;
 
-                return _fields.First(item => item.Name == nameof(Segment));
+                return _fields.First(item => item.Name == nameof(Size));
             }
         }
 
-        #endregion
-
-        private readonly int _relocationTableEntryIndex;
-
-        public PeDosRelocation(
-            PeFile root,
-            string filePath,
-            int relocationTableEntryIndex,
-            ILogger logger,
-            JsonObject? cache = null)
+        public ImageDataDirectory( PeFile root, string filePath, long structureStartOffset, ILogger logger, JsonObject? cache = null)
             : base(root, filePath, logger)
         {
-            _relocationTableEntryIndex = relocationTableEntryIndex;
-
+            _structureStartOffset = structureStartOffset;
             if (cache is null)
                 return;
 
             _isLoaded = cache["IsLoaded"]?.GetValue<bool>() ?? false;
-            _structureStartOffset = cache["StructureStartOffset"]?.GetValue<long>() ?? _structureStartOffset;
+            _structureStartOffset = cache["StructureStartOffset"]?.GetValue<long>() ?? structureStartOffset;
             _fields = cache["Fields"] is JsonNode fieldsNode
                 ? JsonSerializer.Deserialize<PeField[]>(fieldsNode.ToJsonString()) ?? []
                 : [];
@@ -73,6 +62,11 @@ namespace PE.Entities
         {
             if (!_isLoaded)
             {
+                /*
+                if (!LoadStructureOffset())
+                    return false;
+                */
+
                 if (!LoadStructureDefinition())
                     return false;
 
@@ -85,34 +79,49 @@ namespace PE.Entities
             return true;
         }
 
+        /*
         private bool LoadStructureOffset()
         {
-            object? relocationTableOffsetValue = Root?.GetValue("DosMzHeader.ELfarlc");
-            if (relocationTableOffsetValue is null)
+            object? peHeaderOffsetValue = Root?.GetValue("DosMzHeader.ELfanew");
+            object? magicValue = Root?.GetValue("Header.OptionalHeader.Magic");
+            if (peHeaderOffsetValue is null || magicValue is null)
+                return false;
+
+            long optionalHeaderOffset = Convert.ToInt64(peHeaderOffsetValue) + 24;
+            int dataDirectoryStartOffset = Convert.ToUInt16(magicValue) switch
+            {
+                0x10B => 96,
+                0x20B => 112,
+                _ => -1
+            };
+            if (dataDirectoryStartOffset < 0)
                 return false;
 
             _structureStartOffset =
-                Convert.ToInt64(relocationTableOffsetValue) +
-                (_relocationTableEntryIndex * 4);
+                optionalHeaderOffset +
+                dataDirectoryStartOffset +
+                (_dataDirectoryTableEntryIndex * 8);
 
             return true;
         }
+        */
 
         private bool LoadStructureDefinition()
         {
             PeRepository repository = new();
-            var fieldsResult = repository.GetFields("DosRelocation");
+            var fieldsResult = repository.GetFields("ImageDataDirectory");
 
             if (!fieldsResult.IsSuccess)
             {
                 _logger.Log(
                     Microsoft.Extensions.Logging.LogLevel.Error,
-                    $"Failed to retrieve DOS relocation fields: {fieldsResult.Error?.Message}");
+                    $"Failed to retrieve IMAGE_DATA_DIRECTORY fields: {fieldsResult.Error?.Message}");
 
                 return false;
             }
 
             _fields = fieldsResult.Value!;
+
             return true;
         }
 
@@ -121,17 +130,20 @@ namespace PE.Entities
             if (_structureStartOffset is null)
                 return false;
 
-            PE.Services.PeReader reader = new();
+            PeReader reader = new();
 
             for (int i = 0; i < _fields.Length; i++)
             {
-                var result = reader.ReadField(_filePath, _structureStartOffset.Value, _fields[i]);
+                var result = reader.ReadField(
+                    _filePath,
+                    _structureStartOffset.Value,
+                    _fields[i]);
 
                 if (!result.IsSuccess)
                 {
                     _logger.Log(
                         Microsoft.Extensions.Logging.LogLevel.Error,
-                        $"Failed to read DOS relocation field {_fields[i].Name}: {result.Error?.Message}");
+                        $"Failed to read IMAGE_DATA_DIRECTORY field {_fields[i].Name}: {result.Error?.Message}");
 
                     return false;
                 }
@@ -141,6 +153,5 @@ namespace PE.Entities
 
             return true;
         }
-
     }
 }

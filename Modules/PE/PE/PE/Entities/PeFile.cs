@@ -26,6 +26,7 @@ namespace PE.Entities
 
             DosMzHeader = new PeDosMzHeader(this, filePath, logger, cache?["DosMzHeader"] as JsonObject);
             DosStub = new PeDosStub(this, filePath, logger);
+            Header = new PeHeader(this, filePath, logger);
         }
     }
 }

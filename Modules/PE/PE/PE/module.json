@@ -34,6 +34,16 @@
         "tags": [ "Portable Executable" ],
         "active": true
       }
+    },
+    {
+      "interfaceType": "IGrabber",
+      "label": "PE Header",
+      "description": "",
+      "className": "PE.PeHeaderGrabber",
+      "contributionSettings": {
+        "tags": [ "Portable Executable" ],
+        "active": true
+      }
     }
   ]
 }

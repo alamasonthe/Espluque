@@ -100,31 +100,46 @@ namespace Espluquer.Usercontrols.Shell
         private void UpdateDocumentLayout()
         {
             if (_keyColumn is null || _valueColumn is null)
-            {
                 return;
-            }
 
             double documentWidth = ContentRichTextBox.ActualWidth - SystemParameters.VerticalScrollBarWidth;
-
             if (documentWidth <= 0)
-            {
                 return;
-            }
 
-            double valueColumnWidth = documentWidth - KeyColumnWidth;
+            double keyColumnWidth = GetKeyColumnWidth();
+            keyColumnWidth = Math.Min(keyColumnWidth, documentWidth - MinimumValueColumnWidth);
 
+            double valueColumnWidth = documentWidth - keyColumnWidth;
             if (valueColumnWidth < MinimumValueColumnWidth)
-            {
                 valueColumnWidth = MinimumValueColumnWidth;
-            }
 
             ContentRichTextBox.Document.PageWidth = documentWidth;
             ContentRichTextBox.Document.MinPageWidth = documentWidth;
             ContentRichTextBox.Document.MaxPageWidth = documentWidth;
             ContentRichTextBox.Document.ColumnWidth = documentWidth;
 
-            _keyColumn.Width = new GridLength(KeyColumnWidth);
+            _keyColumn.Width = new GridLength(keyColumnWidth);
             _valueColumn.Width = new GridLength(valueColumnWidth);
+        }
+
+        private double GetKeyColumnWidth()
+        {
+            double width = KeyColumnWidth;
+
+            foreach (KeyValuePair<string, string?> item in _items)
+            {
+                TextBlock textBlock = new()
+                {
+                    Text = item.Key,
+                    FontFamily = new System.Windows.Media.FontFamily("Segoe UI"),
+                    FontSize = 13
+                };
+
+                textBlock.Measure(new Size(double.PositiveInfinity, double.PositiveInfinity));
+                width = Math.Max(width, textBlock.DesiredSize.Width + 16);
+            }
+
+            return width;
         }
     }
 }
