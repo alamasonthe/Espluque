@@ -1,6 +1,8 @@
 ﻿using Espluque.Contracts.CrossCutting;
 using PE.Repositories;
 using PE.Services;
+using System.Text.Json;
+using System.Text.Json.Nodes;
 
 namespace PE.Entities
 {
@@ -46,9 +48,18 @@ namespace PE.Entities
 
         #endregion
 
-        public PeHeader(PeFile root, string filePath, ILogger logger)
+        public PeHeader(PeFile root, string filePath, ILogger logger, JsonObject? cache = null)
             : base(root, filePath, logger)
         {
+            if (cache is null)
+                return;
+            _isLoaded = cache["IsLoaded"]?.GetValue<bool>() ?? false;
+            _structureStartOffset = cache["StructureStartOffset"]?.GetValue<long>() ?? _structureStartOffset;
+            _fields = cache["Fields"] is JsonNode fieldsNode
+                ? JsonSerializer.Deserialize<PeField[]>(fieldsNode.ToJsonString()) ?? []
+                : [];
+            _coffFileHeader = new PeCoffFileHeader(root, filePath, logger, cache["CoffFileHeader"] as JsonObject);
+            _optionalHeader = new PeOptionalHeader(root, filePath, logger, cache["OptionalHeader"] as JsonObject);
         }
 
         private bool EnsureLoaded()

@@ -27,31 +27,42 @@ namespace PE.Entities
         internal object? GetValue(string path)
         {
             int separatorIndex = path.IndexOf('.');
+            string segment = separatorIndex >= 0 ? path[..separatorIndex] : path;
+            string remainingPath = separatorIndex >= 0 ? path[(separatorIndex + 1)..] : string.Empty;
 
-            string propertyName = separatorIndex >= 0 ? path[..separatorIndex] : path;
+            int bracketIndex = segment.IndexOf('[');
+            string propertyName = bracketIndex >= 0 ? segment[..bracketIndex] : segment;
 
             var property = GetType().GetProperty(propertyName);
-            bool propertyExists = property is not null;
-
-            if (!propertyExists) {
+            if (property is null)
                 return null;
-            }
 
-            bool isTerminal = separatorIndex < 0;
+            object? propertyValue = property.GetValue(this);
+            if (propertyValue is null)
+                return null;
 
-            if (isTerminal && property!.PropertyType == typeof(PeField))
+            if (bracketIndex >= 0)
             {
-                PeField? field = property.GetValue(this) as PeField;
-                return field?.Value;
+                int closingBracketIndex = segment.IndexOf(']', bracketIndex);
+                if (closingBracketIndex < 0)
+                    return null;
+                string indexText = segment[(bracketIndex + 1)..closingBracketIndex];
+                if (!int.TryParse(indexText, out int index))
+                    return null;
+                if (propertyValue is not System.Collections.IList list || index < 0 || index >= list.Count)
+                    return null;
+                propertyValue = list[index];
             }
 
-            if (separatorIndex >= 0 && typeof(PeStructure).IsAssignableFrom(property!.PropertyType))
+            if (separatorIndex < 0)
             {
-                PeStructure? structure = property.GetValue(this) as PeStructure;
-                string remainingPath = path[(separatorIndex + 1)..];
-
-                return structure?.GetValue(remainingPath);
+                if (propertyValue is PeField field)
+                    return field.Value;
+                return propertyValue;
             }
+
+            if (propertyValue is PeStructure structure)
+                return structure.GetValue(remainingPath);
 
             return null;
         }

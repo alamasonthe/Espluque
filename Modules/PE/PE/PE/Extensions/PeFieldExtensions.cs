@@ -144,18 +144,20 @@ namespace PE.Extensions
 
             long value = Convert.ToInt64(field.Value, CultureInfo.InvariantCulture);
 
-            foreach (KeyValuePair<long, string> item in mapTable)
-            {
-                if (item.Key == value)
-                    return item.Value;
-            }
-
-            return field.DisplayFormat switch
+            string rawValue = field.DisplayFormat switch
             {
                 PeFieldDisplayFormat.Decimal => field.ToDecimalString(),
                 PeFieldDisplayFormat.Hexadecimal => field.ToHexadecimalString(),
                 _ => string.Empty
             };
+
+            foreach (KeyValuePair<long, string> item in mapTable)
+            {
+                if (item.Key == value)
+                    return $"{rawValue} ({item.Value})";
+            }
+
+            return rawValue;
         }
 
         #endregion

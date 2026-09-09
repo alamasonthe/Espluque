@@ -7,11 +7,16 @@ namespace PE.Extensions
     {
         public static JsonObject ToJson(this PeFile peFile)
         {
+            JsonArray sectionTable = [];
+            foreach (PeSectionHeader sectionHeader in peFile.SectionTable)
+                sectionTable.Add(sectionHeader.ToJson());
+
             return new JsonObject
             {
                 ["DosMzHeader"] = peFile.DosMzHeader?.ToJson(),
                 ["DosStub"] = peFile.DosStub?.ToJson(),
-                ["Header"] = peFile.Header?.ToJson()
+                ["Header"] = peFile.Header?.ToJson(),
+                ["SectionTable"] = sectionTable
             };
         }
 

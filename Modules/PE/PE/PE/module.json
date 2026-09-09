@@ -44,6 +44,36 @@
         "tags": [ "Portable Executable" ],
         "active": true
       }
+    },
+    {
+      "interfaceType": "IGrabber",
+      "label": "PE Section Headers",
+      "description": "",
+      "className": "PE.PeSectionHeaderGrabber",
+      "contributionSettings": {
+        "tags": [ "Portable Executable" ],
+        "active": true
+      }
+    },
+    {
+      "interfaceType": "IGrabber",
+      "label": "PE Resource Directory",
+      "description": "",
+      "className": "PE.RsrcDirectoryGrabber",
+      "contributionSettings": {
+        "tags": [ "Portable Executable" ],
+        "active": true
+      }
+    },
+    {
+      "interfaceType": "IGrabber",
+      "label": "PE Resource Strings",
+      "description": "",
+      "className": "PE.RsrcStringGrabber",
+      "contributionSettings": {
+        "tags": [ "Portable Executable" ],
+        "active": true
+      }
     }
   ]
 }
