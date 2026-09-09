@@ -74,6 +74,26 @@
         "tags": [ "Portable Executable" ],
         "active": true
       }
+    },
+    {
+      "interfaceType": "IGrabber",
+      "label": "PE Version Info",
+      "description": "",
+      "className": "PE.RsrcVersionInfoGrabber",
+      "contributionSettings": {
+        "tags": [ "Portable Executable" ],
+        "active": true
+      }
+    },
+    {
+      "interfaceType": "IGrabber",
+      "label": "PE Manifest",
+      "description": "",
+      "className": "PE.RsrcManifestGrabber",
+      "contributionSettings": {
+        "tags": [ "Portable Executable" ],
+        "active": true
+      }
     }
   ]
 }

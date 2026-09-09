@@ -11,7 +11,6 @@
 		<ApplicationIcon>Espluquer.ico</ApplicationIcon>
 		<RuntimeIdentifier>win-x64</RuntimeIdentifier>
 		<Platforms>x64</Platforms>
-		<DisableFastUpToDateCheck>true</DisableFastUpToDateCheck>
 		<Version>0.1.0</Version>
 	</PropertyGroup>
 
@@ -19,7 +18,7 @@
 		<ModuleProject Include="$(MSBuildProjectDirectory)\..\..\..\Modules\**\*.csproj" />
 	</ItemGroup>
 
-	<Target Name="BuildAndDeployModules" AfterTargets="Build" Condition="'$(DesignTimeBuild)' != 'true'">
+	<Target Name="BuildAndDeployModules" AfterTargets="Build" Condition="'$(DesignTimeBuild)' != 'true' And '$(Configuration)' == 'Release'">
 
 		<MSBuild Projects="@(ModuleProject)" Targets="Build" BuildInParallel="true" Properties="Configuration=$(Configuration);Platform=$(Platform);BuildProjectReferences=true" />
 	</Target>
