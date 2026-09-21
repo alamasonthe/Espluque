@@ -171,6 +171,9 @@ namespace Espluquer.UserControls.Shell
 
         private async Task DisplayViewerAsync(string label, IWpfViewer viewer)
         {
+            string formattedFileName = System.IO.Path.GetFileName(_analysisContext.FilePath).PadRight(35);
+            _logger.Log( Microsoft.Extensions.Logging.LogLevel.Debug, $"{formattedFileName}\tViewer START: {label} [{viewer.GetType().FullName}]");
+
             try
             {
                 AssemblyLoadContext? loadContext = AssemblyLoadContext.GetLoadContext(viewer.GetType().Assembly);
@@ -186,12 +189,12 @@ namespace Espluquer.UserControls.Shell
                     using (loadContext.EnterContextualReflection())
                     {
                         result = await viewer.GetViewer(_analysisContext);
+                        _logger.Log(Microsoft.Extensions.Logging.LogLevel.Debug, $"{formattedFileName}\tViewer CREATED: {label} [{viewer.GetType().FullName}]");
                     }
                 }
 
                 if (result is null)
                 {
-                    string formattedFileName = System.IO.Path.GetFileName(_analysisContext.FilePath).PadRight(35);
                     _logger.Log(Microsoft.Extensions.Logging.LogLevel.Debug, $"{formattedFileName}\tViewer {label}: Empty result");
                     return;
                 }

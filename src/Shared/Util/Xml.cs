@@ -136,24 +136,21 @@ namespace Util
         public static async Task<Result<XDocument?>> ReadXDocumentFromFile(string filePath)
         {
             XDocument? xmlDocument;
-            Result<bool> canOpenReadResult = Util.File.CanOpenRead(filePath);
-
-            if (!canOpenReadResult.IsSuccess)
-            {
-                return Result<XDocument?>.Failure(canOpenReadResult.Error!.Code, canOpenReadResult.Error.Message);
-            }
+            Result<FileStream> fileStreamResult = Util.File.OpenRead(filePath);
+            if (!fileStreamResult.IsSuccess)
+                return Result<XDocument?>.Failure(fileStreamResult.Error!.Code, fileStreamResult.Error.Message);
 
             string xmlContent;
 
             try
             {
-                xmlContent = await System.IO.File.ReadAllTextAsync(filePath);
+                using FileStream fileStream = fileStreamResult.Value!;
+                using StreamReader streamReader = new(fileStream);
+                xmlContent = await streamReader.ReadToEndAsync();
             }
             catch (Exception ex)
             {
-                return Result<XDocument?>.Failure(
-                    "XML_READ_FAILED",
-                    $"Xml.ReadXDocumentFromFile: failed to read file '{filePath}'. {ex.Message}");
+                return Result<XDocument?>.Failure("XML_READ_FAILED", $"Xml.ReadXDocumentFromFile: failed to read file '{filePath}'. {ex.Message}");
             }
 
             if (string.IsNullOrWhiteSpace(xmlContent))

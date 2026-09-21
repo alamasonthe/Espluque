@@ -196,34 +196,37 @@ namespace CatalogFile
 
         private void ReadSignature(string filename, CatalogFileInfo result)
         {
+            var fileStreamResult = Util.File.OpenRead(filename);
+            if (!fileStreamResult.IsSuccess)
+            {
+                _logger.Log(LogLevel.Warning, $"Unable to read catalog signature {filename}: {fileStreamResult.Error!.Code} - {fileStreamResult.Error.Message}");
+                return;
+            }
+
             try
             {
+                using FileStream fileStream = fileStreamResult.Value!;
+                using MemoryStream memoryStream = new();
+                fileStream.CopyTo(memoryStream);
+
                 SignedCms signedCms = new();
-                signedCms.Decode(File.ReadAllBytes(filename));
+                signedCms.Decode(memoryStream.ToArray());
 
                 if (signedCms.SignerInfos.Count == 0)
                     return;
 
-                X509Certificate2? certificate =
-                    signedCms.SignerInfos[0].Certificate;
-
+                X509Certificate2? certificate = signedCms.SignerInfos[0].Certificate;
                 if (certificate == null)
                     return;
 
-                result.Signer =
-                    certificate.GetNameInfo(X509NameType.SimpleName, false);
-
-                result.Issuer =
-                    certificate.GetNameInfo(X509NameType.SimpleName, true);
-
+                result.Signer = certificate.GetNameInfo(X509NameType.SimpleName, false);
+                result.Issuer = certificate.GetNameInfo(X509NameType.SimpleName, true);
                 result.CertificateValidFrom = certificate.NotBefore;
                 result.CertificateValidTo = certificate.NotAfter;
             }
             catch (Exception ex)
             {
-                _logger.Log(
-                    LogLevel.Warning,
-                    $"Unable to read catalog signature {filename}: {ex.Message}");
+                _logger.Log(LogLevel.Warning, $"Unable to read catalog signature {filename}: {ex.Message}");
             }
         }
 

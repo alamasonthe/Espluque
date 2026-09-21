@@ -1,6 +1,8 @@
-﻿using System.Security.Cryptography.X509Certificates;
+﻿using System.Security.Cryptography;
 using System.Security.Cryptography.Pkcs;
-using System.Security.Cryptography;
+using System.Security.Cryptography.X509Certificates;
+using System.Text;
+using Util;
 
 namespace X509Certificate
 {
@@ -13,49 +15,60 @@ namespace X509Certificate
             _logger = logger;
         }
 
-        public Task<List<KeyValuePair<string, string>>> GetInfos(string filename)
+        public async Task<List<KeyValuePair<string, string>>> GetInfos(string filename)
         {
-            if (string.IsNullOrWhiteSpace(filename) || !File.Exists(filename))
-                return Task.FromResult(new List<KeyValuePair<string, string>>());
+            if (string.IsNullOrWhiteSpace(filename))
+                return [];
+
+            Result<FileStream> fileStreamResult = Util.File.OpenRead(filename);
+            if (!fileStreamResult.IsSuccess)
+            {
+                string formattedFileName = Path.GetFileName(filename).PadRight(35);
+                _logger.Log(Microsoft.Extensions.Logging.LogLevel.Error, $"{formattedFileName}\tX509 certificate reading error: {fileStreamResult.Error!.Code} - {fileStreamResult.Error.Message}");
+                return [];
+            }
 
             try
             {
-                X509ContentType contentType =
-                    X509Certificate2.GetCertContentType(filename);
+                byte[] fileData;
+
+                using (FileStream fileStream = fileStreamResult.Value!)
+                using (MemoryStream memoryStream = new())
+                {
+                    await fileStream.CopyToAsync(memoryStream);
+                    fileData = memoryStream.ToArray();
+                }
+
+                X509ContentType contentType = X509Certificate2.GetCertContentType(fileData);
 
                 return contentType switch
                 {
-                    X509ContentType.Cert => GetCertificateInfos(filename),
-                    X509ContentType.Pkcs7 => GetPkcs7Infos(filename),
-                    X509ContentType.Pfx => GetPfxInfos(filename),
-
-                    _ => Task.FromResult(
-                        new List<KeyValuePair<string, string>>())
+                    X509ContentType.Cert => GetCertificateInfos(filename, fileData),
+                    X509ContentType.Pkcs7 => GetPkcs7Infos(filename, fileData),
+                    X509ContentType.Pfx => GetPfxInfos(filename, fileData),
+                    _ => []
                 };
             }
             catch (Exception ex)
             {
                 string formattedFileName = Path.GetFileName(filename).PadRight(35);
                 _logger.Log(Microsoft.Extensions.Logging.LogLevel.Error, $"{formattedFileName}\tX509 certificate reading error: {ex.GetType().Name}: {ex.Message}");
-                return Task.FromResult(new List<KeyValuePair<string, string>>());
+                return [];
             }
         }
 
-        private Task<List<KeyValuePair<string, string>>> GetCertificateInfos(string filename)
+        private List<KeyValuePair<string, string>> GetCertificateInfos(string filename, byte[] fileData)
         {
-            using X509Certificate2 certificate =
-                X509CertificateLoader.LoadCertificateFromFile(filename);
-
+            using X509Certificate2 certificate = X509CertificateLoader.LoadCertificate(fileData);
             var data = CreateCertificateData(filename, certificate);
-
-            return Task.FromResult(ToKeyValuePairs(data));
+            return ToKeyValuePairs(data);
         }
 
-        private Task<List<KeyValuePair<string, string>>> GetPkcs7Infos(string filename)
+        private List<KeyValuePair<string, string>> GetPkcs7Infos(string filename, byte[] fileData)
         {
             var infos = new List<KeyValuePair<string, string>>();
 
-            byte[] cmsData = GetPkcs7Data(filename);
+            byte[] cmsData = GetPkcs7Data(fileData);
 
             var cms = new SignedCms();
             cms.Decode(cmsData);
@@ -78,18 +91,17 @@ namespace X509Certificate
                 }
             }
 
-            return Task.FromResult(infos);
+            return infos;
         }
 
-        private Task<List<KeyValuePair<string, string>>> GetPfxInfos(string filename)
+        private List<KeyValuePair<string, string>> GetPfxInfos(string filename, byte[] fileData)
         {
             var infos = new List<KeyValuePair<string, string>>();
 
-            X509Certificate2Collection certificates =
-                X509CertificateLoader.LoadPkcs12CollectionFromFile(
-                    filename,
-                    null,
-                    X509KeyStorageFlags.Exportable | X509KeyStorageFlags.EphemeralKeySet);
+            X509Certificate2Collection certificates = X509CertificateLoader.LoadPkcs12Collection(
+                fileData,
+                null,
+                X509KeyStorageFlags.Exportable | X509KeyStorageFlags.EphemeralKeySet);
 
             if (certificates.Count == 1)
             {
@@ -107,7 +119,7 @@ namespace X509Certificate
                 }
             }
 
-            return Task.FromResult(infos);
+            return infos;
         }
 
         private static X509CertificateData CreateCertificateData(
@@ -179,13 +191,11 @@ namespace X509Certificate
 
         #region Helpers
 
-        private static byte[] GetPkcs7Data(string filename)
+        private static byte[] GetPkcs7Data(byte[] data)
         {
-            byte[] data = File.ReadAllBytes(filename);
-
             try
             {
-                string text = File.ReadAllText(filename);
+                string text = Encoding.UTF8.GetString(data);
 
                 if (PemEncoding.TryFind(text, out PemFields fields))
                 {

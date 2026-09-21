@@ -20,7 +20,13 @@ namespace RegViewer
         {
             try
             {
-                string regText = await System.IO.File.ReadAllTextAsync(filePath);
+                Result<FileStream> fileStreamResult = Util.File.OpenRead(filePath);
+                if (!fileStreamResult.IsSuccess)
+                    return Result<IConfiguration>.Failure(fileStreamResult.Error!.Code, fileStreamResult.Error.Message);
+
+                using FileStream fileStream = fileStreamResult.Value!;
+                using StreamReader streamReader = new(fileStream);
+                string regText = await streamReader.ReadToEndAsync();
 
                 string[] lines = regText
                     .Replace("\r\n", "\n")

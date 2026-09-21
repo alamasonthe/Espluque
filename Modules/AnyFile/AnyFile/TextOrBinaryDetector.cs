@@ -45,7 +45,7 @@ namespace AnyFile
 
                 if (!byteSampleResult.IsSuccess)
                 {
-                    _logger.Log(LogLevel.Error, $"{formattedFileName}\tTextOrBinary Detect error: Cannot read file");
+                    _logger.Log(LogLevel.Error, $"{formattedFileName}\tTextOrBinary Detect error: {byteSampleResult.Error?.Code} - {byteSampleResult.Error?.Message}");
                     return fileFormat;
                 }
 

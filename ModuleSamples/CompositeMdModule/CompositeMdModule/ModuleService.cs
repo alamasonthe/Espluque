@@ -3,6 +3,7 @@ using Espluque.Contracts.Contributions.Types;
 using Espluque.Contracts.CrossCutting;
 using Espluque.Contracts.Workflow;
 using System.IO;
+using Util;
 
 namespace CompositeMdModule
 {
@@ -54,7 +55,20 @@ namespace CompositeMdModule
         {
             List<KeyValuePair<string, string>> infos = [];
 
-            var linesCount = File.ReadLines(analysisContext.FilePath).LongCount();
+            Result<FileStream> fileStreamResult = Util.File.OpenRead(analysisContext.FilePath);
+            if (!fileStreamResult.IsSuccess)
+            {
+                _logger.Log(Microsoft.Extensions.Logging.LogLevel.Error, $"{Path.GetFileName(analysisContext.FilePath)}\tCompositeMdModule read error: {fileStreamResult.Error!.Code} - {fileStreamResult.Error.Message}");
+                return infos;
+            }
+
+            long linesCount = 0;
+
+            using FileStream fileStream = fileStreamResult.Value!;
+            using StreamReader streamReader = new(fileStream);
+
+            while (await streamReader.ReadLineAsync() is not null)
+                linesCount++;
 
             infos.Add(new("Lines", linesCount.ToString()));
 
