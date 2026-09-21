@@ -7,8 +7,6 @@ namespace PE.Entities
 {
     internal class PeDosMzHeader : PeStructure
     {
-        private readonly long _structureStartOffset = 0;
-
         internal bool _isLoaded = false;
         internal PeField[] _fields = [];
 
@@ -240,7 +238,6 @@ namespace PE.Entities
             : base(root, filePath, logger)
         {
             _structureStartOffset = 0;
-
             if (cache is null)
                 return;
 

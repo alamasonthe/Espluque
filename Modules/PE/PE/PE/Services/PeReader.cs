@@ -8,9 +8,12 @@ namespace PE.Services
         /// <summary>
         /// Reads a single PE field from a file using its relative offset and size.
         /// </summary>
-        public Result<PeField> ReadField(string filePath, long structureOffset, PeField field)
+        public Result<PeField> ReadField(string filePath, long? structureOffset, PeField field)
         {
-            long offset = structureOffset + field.Offset;
+            if (structureOffset is null)
+                return Result<PeField>.Failure("InvalidOffset", "Structure offset is null.");
+
+            long offset = structureOffset.Value + field.Offset;
             var bytesResult = Bin.ReadBytesFromFile(filePath, offset, field.Size);
 
             if (!bytesResult.IsSuccess)
@@ -29,5 +32,6 @@ namespace PE.Services
 
             return Result<PeField>.Success(result);
         }
+
     }
 }

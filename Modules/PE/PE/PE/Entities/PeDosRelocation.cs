@@ -73,9 +73,10 @@ namespace PE.Entities
         {
             if (!_isLoaded)
             {
+                if (!LoadStructureOffset())
+                    return false;
                 if (!LoadStructureDefinition())
                     return false;
-
                 if (!LoadStructureData())
                     return false;
 

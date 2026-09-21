@@ -36,34 +36,6 @@ namespace PE.Entities
             return true;
         }
 
-        private bool LoadStructureOffsetOld()
-        {
-            object? sectionCountValue = Root?.GetValue("Header.CoffFileHeader.NumberOfSections");
-            if (sectionCountValue is null)
-                return false;
-
-            int sectionCount = Convert.ToInt32(sectionCountValue);
-            for (int i = 0; i < sectionCount; i++)
-            {
-                object? nameValue = Root?.GetValue($"SectionTable[{i}].Name");
-                if (nameValue is null)
-                    continue;
-
-                string sectionName = Convert.ToString(nameValue)?.TrimEnd('\0') ?? string.Empty;
-                if (sectionName != ".rsrc")
-                    continue;
-
-                object? pointerToRawDataValue = Root?.GetValue($"SectionTable[{i}].PointerToRawData");
-                if (pointerToRawDataValue is null)
-                    return false;
-
-                _structureStartOffset = Convert.ToInt64(pointerToRawDataValue);
-                return true;
-            }
-
-            return false;
-        }
-
         private bool LoadStructureOffset()
         {
             object? resourceRvaValue = Root?.GetValue("Header.OptionalHeader.ResourceTable.VirtualAddress");
@@ -131,12 +103,6 @@ namespace PE.Entities
 
             if (TypeDirectoryTable?.Entries is null)
                 return result;
-
-            // Test to remove
-            List<object?> types = TypeDirectoryTable.Entries
-                .Select(entry => entry.Name?.Value)
-                .ToList();
-            // end test
 
             PeRsrcDirectoryEntry? stringTypeEntry = TypeDirectoryTable.Entries
                 .FirstOrDefault(entry => entry.Name?.Value is not null && Convert.ToUInt32(entry.Name.Value) == RT_STRING);
