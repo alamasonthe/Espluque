@@ -4,11 +4,15 @@ using System.Windows.Controls;
 using System.Windows.Media;
 using System.Windows.Threading;
 using System.IO;
+using Espluque.Contracts.CrossCutting;
+using Util;
 
 namespace Espluquer.UserControls.Shell
 {
     public partial class TextEditUC : UserControl
     {
+        private readonly ILogger? _logger;
+
         public static readonly DependencyProperty TextProperty =
             DependencyProperty.Register(
                 nameof(Text),
@@ -76,8 +80,9 @@ namespace Espluquer.UserControls.Shell
 
         }
 
-        public TextEditUC(string filePath) : this()
+        public TextEditUC(string filePath, ILogger logger) : this()
         {
+            _logger = logger;
             Text = ReadTextFile(filePath);
 
             WordWrapButton.Content = IconService.FluentGlyph("ic_fluent_text_wrap_20_regular");
@@ -277,12 +282,29 @@ namespace Espluquer.UserControls.Shell
             return null;
         }
 
-        private static string ReadTextFile(string filePath)
+        private string ReadTextFile(string filePath)
         {
-            using FileStream fileStream = File.Open(filePath, FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
-            using StreamReader streamReader = new(fileStream, detectEncodingFromByteOrderMarks: true);
+            Result<FileStream> fileStreamResult = Util.File.OpenRead(filePath);
 
-            return streamReader.ReadToEnd();
+            if (!fileStreamResult.IsSuccess)
+            {
+                string errorMessage = $"{fileStreamResult.Error!.Code} - {fileStreamResult.Error.Message}";
+                _logger?.Log(Microsoft.Extensions.Logging.LogLevel.Error, $"{Path.GetFileName(filePath)}\tTextEditUC read error: {errorMessage}");
+                return errorMessage;
+            }
+
+            try
+            {
+                using FileStream fileStream = fileStreamResult.Value!;
+                using StreamReader streamReader = new(fileStream, detectEncodingFromByteOrderMarks: true);
+                return streamReader.ReadToEnd();
+            }
+            catch (Exception exception)
+            {
+                string errorMessage = $"TEXT_FILE_READ_ERROR - {exception.Message}";
+                _logger?.Log(Microsoft.Extensions.Logging.LogLevel.Error, $"{Path.GetFileName(filePath)}\tTextEditUC read error: {errorMessage}");
+                return errorMessage;
+            }
         }
 
     }

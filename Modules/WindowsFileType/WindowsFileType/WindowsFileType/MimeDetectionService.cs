@@ -24,15 +24,15 @@ namespace WindowsFileType
 
         public static string? DetectMimeType(string filePath)
         {
-            if (!File.Exists(filePath))
+            var fileStreamResult = Util.File.OpenRead(filePath);
+            if (!fileStreamResult.IsSuccess)
                 return null;
 
             byte[] buffer;
 
-            using (FileStream stream = File.OpenRead(filePath))
+            using (FileStream stream = fileStreamResult.Value!)
             {
                 int length = (int)Math.Min(stream.Length, 256);
-
                 if (length == 0)
                     return null;
 

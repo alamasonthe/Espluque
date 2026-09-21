@@ -13,10 +13,16 @@ namespace CompositeMdModule
 
             _filePath = filePath;
 
-            if (File.Exists(filePath))
+            var fileStreamResult = Util.File.OpenRead(filePath);
+            if (!fileStreamResult.IsSuccess)
             {
-                MarkdownViewer.Markdown = File.ReadAllText(filePath);
+                MarkdownViewer.Markdown = $"{fileStreamResult.Error!.Code} - {fileStreamResult.Error.Message}";
+                return;
             }
+
+            using FileStream fileStream = fileStreamResult.Value!;
+            using StreamReader streamReader = new(fileStream);
+            MarkdownViewer.Markdown = streamReader.ReadToEnd();
         }
     }
 }

@@ -10,23 +10,17 @@ namespace Util
         {
             if (string.IsNullOrWhiteSpace(filepath))
             {
-                return Result<byte[]>.Failure(
-                    "FILEPATH_EMPTY",
-                    "File path is empty.");
+                return Result<byte[]>.Failure( "FILEPATH_EMPTY", "File path is empty.");
             }
 
             if (offset < 0)
             {
-                return Result<byte[]>.Failure(
-                    "OFFSET_INVALID",
-                    "Offset cannot be negative.");
+                return Result<byte[]>.Failure( "OFFSET_INVALID", "Offset cannot be negative.");
             }
 
             if (size < 0)
             {
-                return Result<byte[]>.Failure(
-                    "SIZE_INVALID",
-                    "Size cannot be negative.");
+                return Result<byte[]>.Failure( "SIZE_INVALID", "Size cannot be negative.");
             }
 
             try
@@ -35,23 +29,25 @@ namespace Util
 
                 if (!fileInfo.Exists)
                 {
-                    return Result<byte[]>.Failure(
-                        "FILE_NOT_FOUND",
-                        "File was not found.");
+                    return Result<byte[]>.Failure( "FILE_NOT_FOUND", "File was not found.");
                 }
 
                 if (offset > fileInfo.Length)
                 {
-                    return Result<byte[]>.Failure(
-                        "OFFSET_OUT_OF_RANGE",
-                        "Offset is beyond the end of the file.");
+                    return Result<byte[]>.Failure( "OFFSET_OUT_OF_RANGE", "Offset is beyond the end of the file.");
                 }
 
                 int readableSize = (int)Math.Min(size, fileInfo.Length - offset);
 
                 byte[] bytes = new byte[readableSize];
 
-                using FileStream fileStream = new FileStream(filepath, FileMode.Open, FileAccess.Read);
+                Result<FileStream> fileStreamResult = Util.File.OpenRead(filepath);
+                if (!fileStreamResult.IsSuccess)
+                {
+                    return Result<byte[]>.Failure(fileStreamResult.Error!.Code, fileStreamResult.Error.Message);
+                }
+                using FileStream fileStream = fileStreamResult.Value!;
+
                 using BinaryReader reader = new BinaryReader(fileStream);
 
                 reader.BaseStream.Seek(offset, SeekOrigin.Begin);
@@ -60,18 +56,14 @@ namespace Util
 
                 if (bytesRead != readableSize)
                 {
-                    return Result<byte[]>.Failure(
-                        "FILE_BLOCK_READ_INCOMPLETE",
-                        "The requested block was not fully read.");
+                    return Result<byte[]>.Failure( "FILE_BLOCK_READ_INCOMPLETE", "The requested block was not fully read.");
                 }
 
                 return Result<byte[]>.Success(bytes);
             }
             catch (Exception exception)
             {
-                return Result<byte[]>.Failure(
-                    "FILE_READ_ERROR",
-                    exception.Message);
+                return Result<byte[]>.Failure( "FILE_READ_ERROR", exception.Message);
             }
         }
 
