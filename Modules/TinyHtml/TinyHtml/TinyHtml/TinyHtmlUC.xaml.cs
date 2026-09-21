@@ -1,5 +1,6 @@
-﻿using System.Windows.Controls;
-using System.IO;
+﻿using System.IO;
+using System.Windows.Controls;
+using Util;
 
 namespace TinyHtml
 {
@@ -15,7 +16,16 @@ namespace TinyHtml
         {
             _filePath = filePath;
 
-            HtmlViewer.Html = File.ReadAllText(filePath);
+            Result<FileStream> fileStreamResult = Util.File.OpenRead(filePath);
+            if (!fileStreamResult.IsSuccess)
+            {
+                HtmlViewer.Html = $"{fileStreamResult.Error!.Code} - {fileStreamResult.Error.Message}";
+                return;
+            }
+
+            using FileStream fileStream = fileStreamResult.Value!;
+            using StreamReader streamReader = new(fileStream);
+            HtmlViewer.Html = streamReader.ReadToEnd();
         }
     }
 }

@@ -4,80 +4,66 @@
     {
         public static bool isfilelocked(string filename)
         {
-            FileStream stream = null;
+            Result<FileStream> fileStreamResult = OpenRead(filename);
 
-            try
-            {
-                stream = new FileStream(filename, FileMode.Open, FileAccess.Read);
-                return false;
-            }
-            catch
-            {
-                //the file is unavailable because it is:
-                //still being written to
-                //or being processed by another thread
-                //or does not exist (has already been processed)
+            if (!fileStreamResult.IsSuccess)
                 return true;
-            }
-            finally
-            {
-                if (stream != null)
-                    stream.Close();
-            }
+
+            using FileStream fileStream = fileStreamResult.Value!;
+            return false;
         }
 
         public static Result<bool> CanOpenRead(string filepath)
         {
+            Result<FileStream> fileStreamResult = OpenRead(filepath);
+
+            if (!fileStreamResult.IsSuccess)
+            {
+                return Result<bool>.Failure( fileStreamResult.Error.Code, fileStreamResult.Error.Message);
+            }
+
+            using FileStream fileStream = fileStreamResult.Value;
+
+            return Result<bool>.Success(true);
+        }
+
+        public static Result<FileStream> OpenRead(string filepath)
+        {
             if (string.IsNullOrWhiteSpace(filepath))
             {
-                return Result<bool>.Failure(
-                    "FILEPATH_EMPTY",
-                    "File path is empty.");
+                return Result<FileStream>.Failure( "FILEPATH_EMPTY", "File path is empty.");
             }
 
             try
             {
                 if (System.IO.Directory.Exists(filepath))
                 {
-                    return Result<bool>.Failure(
-                        "TARGET_IS_DIRECTORY",
-                        "Target path is a directory.");
+                    return Result<FileStream>.Failure( "TARGET_IS_DIRECTORY", "Target path is a directory.");
                 }
 
-                System.IO.FileInfo fileInfo = new System.IO.FileInfo(filepath);
-
-                if (!fileInfo.Exists)
-                {
-                    return Result<bool>.Failure(
-                        "FILE_NOT_FOUND",
-                        "File was not found.");
-                }
-
-                using System.IO.FileStream fileStream = new System.IO.FileStream(
+                System.IO.FileStream fileStream = new System.IO.FileStream(
                     filepath,
                     System.IO.FileMode.Open,
                     System.IO.FileAccess.Read,
-                    System.IO.FileShare.Read);
+                    System.IO.FileShare.ReadWrite | System.IO.FileShare.Delete);
 
-                return Result<bool>.Success(true);
+                return Result<FileStream>.Success(fileStream);
+            }
+            catch (FileNotFoundException exception)
+            {
+                return Result<FileStream>.Failure( "FILE_NOT_FOUND", exception.Message);
             }
             catch (UnauthorizedAccessException exception)
             {
-                return Result<bool>.Failure(
-                    "FILE_ACCESS_DENIED",
-                    exception.Message);
+                return Result<FileStream>.Failure( "FILE_ACCESS_DENIED", exception.Message);
             }
             catch (IOException exception)
             {
-                return Result<bool>.Failure(
-                    "FILE_IO_ERROR",
-                    exception.Message);
+                return Result<FileStream>.Failure( "FILE_IO_ERROR", exception.Message);
             }
             catch (Exception exception)
             {
-                return Result<bool>.Failure(
-                    "FILE_OPEN_READ_ERROR",
-                    exception.Message);
+                return Result<FileStream>.Failure( "FILE_OPEN_READ_ERROR", exception.Message);
             }
         }
 

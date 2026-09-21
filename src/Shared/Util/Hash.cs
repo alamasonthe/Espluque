@@ -31,7 +31,11 @@ namespace Util
 
             byte[] buffer = new byte[1024 * 1024];
 
-            using FileStream stream = new(filePath, FileMode.Open, FileAccess.Read, FileShare.Read);
+            Result<FileStream> fileStreamResult = File.OpenRead(filePath);
+            if (!fileStreamResult.IsSuccess)
+                return null;
+
+            using FileStream stream = fileStreamResult.Value!;
 
             long size = stream.Length;
 

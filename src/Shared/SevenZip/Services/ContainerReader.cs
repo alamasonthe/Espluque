@@ -8,64 +8,83 @@ namespace SevenZip.Services
     {
         internal static Result<IContainerSession> OpenSession(string filePath)
         {
-            Result<bool> canOpenReadResult = Util.File.CanOpenRead(filePath);
-            if (!canOpenReadResult.IsSuccess)
+            Result<FileStream> fileStreamResult = Util.File.OpenRead(filePath);
+
+            if (!fileStreamResult.IsSuccess)
             {
-                return Result<IContainerSession>.Failure(canOpenReadResult.Error!.Code, canOpenReadResult.Error.Message);
+                return Result<IContainerSession>.Failure(
+                    fileStreamResult.Error!.Code,
+                    fileStreamResult.Error.Message);
             }
+
+            FileStream fileStream = fileStreamResult.Value;
 
             try
             {
-                var (archiveFile, forcedFormatStream) = ContainerReader.OpenArchiveFile(filePath);
-                IContainerSession session = new ContainerSession(filePath, archiveFile, forcedFormatStream);
+                ArchiveFile archiveFile = OpenArchiveFile(fileStream);
+
+                IContainerSession session = new ContainerSession(
+                    filePath,
+                    archiveFile,
+                    null);
 
                 return Result<IContainerSession>.Success(session);
             }
             catch (Exception ex)
             {
-                return BuildFailureFromException<IContainerSession>(ex, "ARCHIVE_OPEN_SESSION_FAILED", "Failed to open container session");
+                fileStream.Dispose();
+
+                return BuildFailureFromException<IContainerSession>(
+                    ex,
+                    "ARCHIVE_OPEN_SESSION_FAILED",
+                    "Failed to open container session");
             }
         }
 
-        internal static (ArchiveFile ArchiveFile, FileStream? ForcedFormatStream) OpenArchiveFile(string filePath)
+        internal static ArchiveFile OpenArchiveFile(FileStream fileStream)
         {
-            string libraryFilePath = Path.Combine( AppContext.BaseDirectory, "native", "sevenzip", "7z.dll");
+            string libraryFilePath = Path.Combine(
+                AppContext.BaseDirectory,
+                "native",
+                "sevenzip",
+                "7z.dll");
 
             try
             {
-                return (new ArchiveFile(filePath, libraryFilePath), null);
+                return new ArchiveFile(
+                    fileStream,
+                    null,
+                    libraryFilePath);
             }
-            catch (SevenZipException) when (IsOle2CompoundFile(filePath))
+            catch (SevenZipException) when (IsOle2CompoundFile(fileStream))
             {
-                FileStream forcedFormatStream = new FileStream(
-                    filePath,
-                    FileMode.Open,
-                    FileAccess.Read,
-                    FileShare.ReadWrite);
+                fileStream.Position = 0;
 
-                return ( new ArchiveFile( forcedFormatStream, SevenZipFormat.Compound, libraryFilePath), forcedFormatStream);
+                return new ArchiveFile(
+                    fileStream,
+                    SevenZipFormat.Compound,
+                    libraryFilePath);
             }
         }
 
-        private static bool IsOle2CompoundFile(string filePath)
+        private static bool IsOle2CompoundFile(FileStream fileStream)
         {
             byte[] expected =
             [
                 0xD0, 0xCF, 0x11, 0xE0,
-                0xA1, 0xB1, 0x1A, 0xE1
+        0xA1, 0xB1, 0x1A, 0xE1
             ];
 
             byte[] actual = new byte[8];
 
-            using FileStream stream = new FileStream(
-                filePath,
-                FileMode.Open,
-                FileAccess.Read,
-                FileShare.ReadWrite);
+            fileStream.Position = 0;
 
-            int read = stream.Read(actual, 0, actual.Length);
+            int read = fileStream.Read(actual, 0, actual.Length);
 
-            return read == actual.Length && actual.SequenceEqual(expected);
+            fileStream.Position = 0;
+
+            return read == actual.Length &&
+                   actual.SequenceEqual(expected);
         }
 
         internal static IReadOnlyList<IArchiveEntryInfo> ReadArchiveEntries(ContainerSession containerSession)

@@ -110,7 +110,11 @@ namespace Shortcut
         {
             try
             {
-                using FileStream fileStream = System.IO.File.OpenRead(filePath);
+                Result<FileStream> fileStreamResult = Util.File.OpenRead(filePath);
+                if (!fileStreamResult.IsSuccess)
+                    return Result<uint>.Failure(fileStreamResult.Error!.Code, fileStreamResult.Error.Message);
+
+                using FileStream fileStream = fileStreamResult.Value!;
                 using BinaryReader binaryReader = new BinaryReader(fileStream);
 
                 uint headerSize = binaryReader.ReadUInt32();
@@ -139,7 +143,14 @@ namespace Shortcut
         {
             try
             {
-                byte[] fileBytes = await System.IO.File.ReadAllBytesAsync(filePath);
+                Result<FileStream> fileStreamResult = Util.File.OpenRead(filePath);
+                if (!fileStreamResult.IsSuccess)
+                    return Result<List<KeyValuePair<string, string>>>.Failure(fileStreamResult.Error!.Code, fileStreamResult.Error.Message);
+
+                using FileStream fileStream = fileStreamResult.Value!;
+                using MemoryStream memoryStream = new();
+                await fileStream.CopyToAsync(memoryStream);
+                byte[] fileBytes = memoryStream.ToArray();
 
                 if (fileBytes.Length < 0x4C)
                 {
@@ -496,7 +507,14 @@ namespace Shortcut
         {
             try
             {
-                byte[] fileBytes = await System.IO.File.ReadAllBytesAsync(filePath);
+                Result<FileStream> fileStreamResult = Util.File.OpenRead(filePath);
+                if (!fileStreamResult.IsSuccess)
+                    return Result<List<KeyValuePair<string, string>>>.Failure(fileStreamResult.Error!.Code, fileStreamResult.Error.Message);
+
+                using FileStream fileStream = fileStreamResult.Value!;
+                using MemoryStream memoryStream = new();
+                await fileStream.CopyToAsync(memoryStream);
+                byte[] fileBytes = memoryStream.ToArray();
 
                 if (fileBytes.Length < 0x4C)
                 {
